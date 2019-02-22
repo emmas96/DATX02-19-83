@@ -4,7 +4,7 @@ from FrozenLake import FrozenLake
 from TicTacToe import TicTacToe
 
 # Constants
-EPOCHS = 1000
+EPOCHS = 200
 MOVES = 20
 
 
@@ -28,6 +28,9 @@ def playFrozenLake():
                 break
 
     # print("Win rate: " + str((0.0+last_num_wins)/100.0))
+
+
+
 
 
 def playTicTacToe():
@@ -60,6 +63,34 @@ def playTicTacToe():
                       ", number of moves: " + str(move + 1))
                 print(game.getBoard())
                 break
+    while True:
+        game.resetGame()
+        for move in range(MOVES):
+            print(state)
+            if move > 9:
+                print("FEL")
+            agent = agentList[0]
+            state = game.getState()
+            action = agent.getAction(state)
+            if agent == agentX:
+                player = 1
+            else:
+                player = -1
+            next_state, reward, done = game.play(player, action)
+            if(done):
+                print(game.getState())
+                print("AI Win")
+                break;
+            state = game.getState()
+            print(state)
+            action = input("välj var")
+            next_state, reward, done  = game.play(-1, int(action))
+            if (done):
+                print(game.getState())
+                print("Player Win")
+                break;
+
+
 
 def main():
     playTicTacToe()

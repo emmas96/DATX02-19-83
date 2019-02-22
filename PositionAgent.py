@@ -5,7 +5,7 @@ import tensorflow.keras as keras
 import random
 from collections import deque
 
-HIDDEN_LAYER_SIZE = 32
+HIDDEN_LAYER_SIZE = 81
 GAMMA = 0.8
 ALPHA = 0.001
 EPSILON_FROM = 1.0
