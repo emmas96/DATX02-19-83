@@ -17,9 +17,11 @@ class Agent:
         self.EPSILON_FROM = 1.0
         self.EPSILON = self.EPSILON_FROM
         self.EPSILON_TO = 0.0
-        self.EPSILON_DECAY = 0.99
+        self.EPSILON_DECAY = 0.9
         self.BATCH_SIZE = 32
         self.memory = deque(maxlen=100)
+        self.replays = [2, 2, 1, 2, 1, 1]
+        self.counter = 0
 
         # Initialize model
         self.model = keras.Sequential()
@@ -56,6 +58,9 @@ class Agent:
     # Get next action to preform, using Q-values
     # and the epsilon-greedy policy
     def getAction(self, state):
+        if self.counter < 36:
+            self.counter += 1
+            return self.replays[(self.counter-1) % 6]
         if np.random.rand() <= self.EPSILON:
             return random.randrange(self.NUM_ACTIONS)
         action = self.model.predict(state)
