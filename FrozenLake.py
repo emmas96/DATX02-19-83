@@ -21,12 +21,17 @@ class FrozenLake:
     def play(self, action):
         if action == 0:
             self.posrow -= 1
+            # print(“Go up”)
         elif action == 1:
             self.poscol += 1
+            # print(“Go right”)
         elif action == 2:
             self.posrow += 1
+            # print(“Go down”)
         elif action == 3:
             self.poscol -= 1
+            # print(“Go left”)
+
 
         if self.posrow < 0 or self.posrow > 3 or self.poscol < 0 or self.poscol > 3:
             reward = REWARD_OUT

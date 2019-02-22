@@ -64,7 +64,7 @@ class Agent:
                 if state[0][rand] == 0:
                     return rand
         action = self.model.predict(state)
-        i = 0
+        i = np.argmin(action)
         for a in range(self.NUM_ACTIONS):
             if state[0][a] == 0 and action[0][a] > action[0][i]:
                 i = a

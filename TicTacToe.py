@@ -15,7 +15,7 @@ class TicTacToe:
 
     # Play a move in the game and receive a reward
     def play(self, player, action):
-        self.board[action/3][action % 3] = player
+        self.board[int(action/3)][action % 3] = player
         reward = REWARD_ACTION
         done = False
         # Check win
@@ -33,7 +33,7 @@ class TicTacToe:
             return self.getState(), reward, done
 
 
-        if np.count_nonzero(np.reshape(self.board, [1, self.getNumStates()])) == 9:
+        if np.count_nonzero(self.board) == 9:
             done = True
             print("Lika")
         return self.getState(), reward, done
