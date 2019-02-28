@@ -5,13 +5,17 @@ import tensorflow.keras as keras
 import random
 from collections import deque
 
+config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 2} )
+sess = tf.Session(config=config)
+keras.backend.set_session(sess)
+
 HIDDEN_LAYER_SIZE = 81
 GAMMA = 0.8
 ALPHA = 0.001
 EPSILON_FROM = 1.0
 
 EPSILON_TO = 0.0
-EPSILON_DECAY = 0.9
+EPSILON_DECAY = 0.95
 BATCH_SIZE = 32
 
 class Agent:

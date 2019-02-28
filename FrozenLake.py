@@ -66,5 +66,5 @@ class FrozenLake:
         return BOARD_SIZE ** 2
 
     def getNumActions(self):
-        return BOARD_SIZE
+        return 4
 

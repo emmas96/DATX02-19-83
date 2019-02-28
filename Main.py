@@ -2,6 +2,12 @@ from ActionAgent import Agent as aa
 from PositionAgent import Agent as pa
 from FrozenLake import FrozenLake
 from TicTacToe import TicTacToe
+import keras
+import tensorflow as tf
+
+config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 4} )
+sess = tf.Session(config=config)
+keras.backend.set_session(sess)
 
 # Constants
 EPOCHS = 200
@@ -23,8 +29,9 @@ def playFrozenLake():
             if agent.getMemoryLength() > agent.getBatchSize():
                 agent.train()
             if done:
-                print("epoch: {}/{}, reward: {}".format(epoch, EPOCHS, reward))
-                print("number of wins: " + str(num_wins) + ", number of moves: " + str(move + 1))
+                #print("epoch: {}/{}, reward: {}".format(epoch, EPOCHS, reward))
+                #print("number of wins: " + str(num_wins) + ", number of moves: " + str(move + 1))
+                print(str(epoch) + "," + str(num_wins))
                 break
 
     # print("Win rate: " + str((0.0+last_num_wins)/100.0))
@@ -93,7 +100,8 @@ def playTicTacToe():
 
 
 def main():
-    playTicTacToe()
+    #playTicTacToe()
+    playFrozenLake()
 
 
 

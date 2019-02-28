@@ -5,6 +5,12 @@ import tensorflow.keras as keras
 import random
 from collections import deque
 
+
+config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 2} )
+sess = tf.Session(config=config)
+keras.backend.set_session(sess)
+
+
 HIDDEN_LAYER_SIZE = 32
 GAMMA = 0.8
 ALPHA = 0.001
@@ -26,13 +32,13 @@ class Agent:
 
         # Initialize model
         self.model = keras.Sequential()
-        self.model.add(layers.Dense(self.HIDDEN_LAYER_SIZE,
+        self.model.add(layers.Dense(HIDDEN_LAYER_SIZE,
                                     input_dim=self.NUM_STATES,
                                     activation='relu'))
         # model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu'))
         self.model.add(layers.Dense(self.NUM_ACTIONS,
                                     activation='linear'))
-        self.model.compile(optimizer=tf.train.AdamOptimizer(self.ALPHA),
+        self.model.compile(optimizer=tf.train.AdamOptimizer(ALPHA),
                            loss='mse',
                            metrics=['accuracy'])
 
