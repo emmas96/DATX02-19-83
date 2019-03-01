@@ -8,15 +8,16 @@ import tensorflow as tf
 import tensorflow.layers as layers
 import tensorflow.keras as keras
 
-HIDDEN_LAYER_SIZE = 225
+HIDDEN_LAYER_SIZE = 625
 GAMMA = 0.8
 ALPHA = 0.001
 EPSILON_FROM = 1.0
-BOARD_SIZE_X = 15
+BOARD_SIZE_X = 25
 BOARD_SIZE_Y = 10
 EPSILON_TO = 0.0
-EPSILON_DECAY = 0.999
+EPSILON_DECAY = 0.99
 BATCH_SIZE = 16
+NUMSTATE = 625
 
 
 
@@ -28,21 +29,22 @@ class SimpleAgent(base_agent.BaseAgent):
     def __init__(self):
         base_agent.BaseAgent.__init__(self)
         # Learning parameters
-        self.NUM_STATES = 225
-        self.NUM_ACTIONS = 225
+        self.NUM_STATES = NUMSTATE
+        self.NUM_ACTIONS = NUMSTATE
         self.EPSILON = EPSILON_FROM
-        self.memory = deque(maxlen=20000)
+        self.memory = deque(maxlen=2000)
         self.counter = 0
         self.score = 0
+        self.c = 0
 
         # Initialize model
         self.model = keras.Sequential()
 
         self.model.add(layers.Dense(HIDDEN_LAYER_SIZE,
-                                    input_dim=225,
+                                    input_dim=NUMSTATE,
                                     activation='relu'))
         self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu'))
-        self.model.add(layers.Dense(self.NUM_ACTIONS,
+        self.model.add(layers.Dense(NUMSTATE,
                                     activation='linear'))
         self.model.compile(optimizer=tf.train.AdamOptimizer(ALPHA),
                            loss='mse',
@@ -50,8 +52,8 @@ class SimpleAgent(base_agent.BaseAgent):
 
     def get_action(self, state):
         if np.random.rand() <= self.EPSILON:
-            return random.randrange(self.NUM_ACTIONS)
-        action = self.model.predict(np.reshape(state, [1,225]))
+            return random.randrange(NUMSTATE)
+        action = self.model.predict(np.reshape(state, [1,NUMSTATE]))
         return np.argmax(action[0])
 
     def step(self, obs):
@@ -69,11 +71,18 @@ class SimpleAgent(base_agent.BaseAgent):
             self.score += 1
 
             state = np.array(obs.observation.feature_screen.unit_type)
-            action = self.get_action(state)
 
-            if self.oldAction is not None and obs.reward == 1:
-                self.memory.append((self.oldState, self.oldAction, reward, state, False))
-                print("spara")
+
+            if(self.c < 128):
+                action = beacon[0].x + 25 * beacon[0].y
+                self.c += 1
+                print(str(self.c))
+            else:
+                action = self.get_action(state)
+
+            if self.oldAction is not None:
+                self.memory.append((self.oldState, self.oldAction, obs.reward, state, False))
+                #print("spara")
 
             #if self.oldAction is not None:
             #    if self.reward != self.oldScore:
@@ -120,10 +129,10 @@ class SimpleAgent(base_agent.BaseAgent):
             target = reward
 
             if not done:
-                target = reward + GAMMA * np.amax(self.model.predict(np.reshape(next_state, [1,225])))
-            target_f = self.model.predict(np.reshape(state,[1,225]))
+                target = reward + GAMMA * np.amax(self.model.predict(np.reshape(next_state, [1,NUMSTATE])))
+            target_f = self.model.predict(np.reshape(state,[1,NUMSTATE]))
             target_f[0][action] = target
-            self.model.fit(np.reshape(state,[1,225]), target_f, epochs=1, verbose=0)
+            self.model.fit(np.reshape(state,[1,NUMSTATE]), target_f, epochs=1, verbose=0)
         if self.EPSILON > EPSILON_TO:
             self.EPSILON *= EPSILON_DECAY
 

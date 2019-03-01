@@ -100,8 +100,8 @@ def playTicTacToe():
 
 
 def main():
-    #playTicTacToe()
-    playFrozenLake()
+    playTicTacToe()
+    #playFrozenLake()
 
 
 
