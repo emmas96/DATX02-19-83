@@ -8,16 +8,16 @@ import tensorflow as tf
 import tensorflow.layers as layers
 import tensorflow.keras as keras
 
-HIDDEN_LAYER_SIZE = 625
+HIDDEN_LAYER_SIZE = 1600
 GAMMA = 0.8
 ALPHA = 0.001
 EPSILON_FROM = 1.0
-BOARD_SIZE_X = 25
+BOARD_SIZE_X = 40
 BOARD_SIZE_Y = 10
 EPSILON_TO = 0.0
 EPSILON_DECAY = 0.99
 BATCH_SIZE = 16
-NUMSTATE = 625
+NUMSTATE = 1600
 
 
 
@@ -74,7 +74,7 @@ class SimpleAgent(base_agent.BaseAgent):
 
 
             if(self.c < 128):
-                action = beacon[0].x + 25 * beacon[0].y
+                action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1
                 print(str(self.c))
             else:

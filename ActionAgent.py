@@ -6,18 +6,18 @@ import random
 from collections import deque
 
 
-config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 2} )
+config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 4} )
 sess = tf.Session(config=config)
 keras.backend.set_session(sess)
 
 
-HIDDEN_LAYER_SIZE = 32
+HIDDEN_LAYER_SIZE = 8
 GAMMA = 0.8
 ALPHA = 0.001
 EPSILON_FROM = 1.0
 
 EPSILON_TO = 0.0
-EPSILON_DECAY = 0.9
+EPSILON_DECAY = 0.995
 BATCH_SIZE = 32
 replays = [2, 2, 1, 2, 1, 1]
 
@@ -27,7 +27,7 @@ class Agent:
         self.NUM_STATES = num_states
         self.NUM_ACTIONS = num_actions
         self.EPSILON = EPSILON_FROM
-        self.memory = deque(maxlen=100)
+        self.memory = deque(maxlen=1000)
         self.counter = 0
 
         # Initialize model
@@ -65,7 +65,7 @@ class Agent:
     # Get next action to preform, using Q-values
     # and the epsilon-greedy policy
     def getAction(self, state):
-        if self.counter < 36:
+        if self.counter < 0:
             self.counter += 1
             return replays[(self.counter-1) % 6]
         if np.random.rand() <= self.EPSILON:

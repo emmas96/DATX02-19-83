@@ -16,7 +16,7 @@ def main(unused_argv):
                 map_name="MoveToBeacon",
                 players=[sc2_env.Agent(sc2_env.Race.terran)],
                 agent_interface_format=features.AgentInterfaceFormat(
-                    feature_dimensions=features.Dimensions(screen=25, minimap=10),
+                    feature_dimensions=features.Dimensions(screen=40, minimap=10),
                     use_feature_units=True),
                 step_mul=64,
                 game_steps_per_episode=0,

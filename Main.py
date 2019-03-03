@@ -29,9 +29,9 @@ def playFrozenLake():
             if agent.getMemoryLength() > agent.getBatchSize():
                 agent.train()
             if done:
-                #print("epoch: {}/{}, reward: {}".format(epoch, EPOCHS, reward))
-                #print("number of wins: " + str(num_wins) + ", number of moves: " + str(move + 1))
-                print(str(epoch) + "," + str(num_wins))
+                print("epoch: {}/{}, reward: {}".format(epoch, EPOCHS, reward))
+                print("number of wins: " + str(num_wins) + ", number of moves: " + str(move + 1))
+                #print(str(epoch) + "," + str(num_wins))
                 break
 
     # print("Win rate: " + str((0.0+last_num_wins)/100.0))
@@ -100,8 +100,8 @@ def playTicTacToe():
 
 
 def main():
-    playTicTacToe()
-    #playFrozenLake()
+    #playTicTacToe()
+    playFrozenLake()
 
 
 
