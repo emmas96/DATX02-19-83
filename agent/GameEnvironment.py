@@ -22,20 +22,46 @@ class GE:
         return actions.FUNCTIONS.Move_screen("now", pos)
 
     def set_game_action(self, action, position, obs):
-
+        if len(self.ActionQueue) >= 90:
+            return
         if action == 0:
-            self.ActionQueue.append(actions.FUNCTIONS.no_op())
+            if len(self.ActionQueue) > 0:
+                return
+            self.ActionQueue.append((actions.FUNCTIONS.no_op(),
+                                     actions.FUNCTIONS.no_op.id))
         if action == 1:
             larva = [unit for unit in obs.observation.feature_units
                      if unit.unit_type == units.Zerg.Larva]
-            self.ActionQueue.append(actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y)))
-            self.ActionQueue.append(actions.FUNCTIONS.Train_Drone_quick("now"))
+            if len(larva) == 0:
+                return
+            self.ActionQueue.append((actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y)),
+                                    actions.FUNCTIONS.select_point.id))
+            self.ActionQueue.append((actions.FUNCTIONS.Train_Drone_quick("now"),
+                                     actions.FUNCTIONS.Train_Drone_quick.id))
         if action == 2:
-            self.ActionQueue.append(actions.FUNCTIONS.select_army("select"))
-            self.ActionQueue.append(actions.FUNCTIONS.Attack_screen("now", position))
+            larva = [unit for unit in obs.observation.feature_units
+                     if unit.unit_type == units.Zerg.Larva]
+            if len(larva) == 0:
+                return
+            self.ActionQueue.append((actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y)),
+                                     actions.FUNCTIONS.select_point.id))
+            self.ActionQueue.append((actions.FUNCTIONS.Train_Overlord_quick("now"),
+                                     actions.FUNCTIONS.Train_Overlord_quick.id))
+            self.ActionQueue.append((actions.FUNCTIONS.Rally_Units_minimap("now", (0, 0)),
+                                     actions.FUNCTIONS.Rally_Units_minimap.id))
+        if action == 5:
+            self.ActionQueue.append((actions.FUNCTIONS.select_army("select"),
+                                     actions.FUNCTIONS.select_army.id))
+            self.ActionQueue.append((actions.FUNCTIONS.Attack_screen("now", position),
+                                     actions.FUNCTIONS.Attack_screen.id))
 
-    def get_game_action(self):
+    def get_game_action(self, obs):
         if len(self.ActionQueue) != 0:
-            return self.ActionQueue.popleft()
+            (a, i) = self.ActionQueue.popleft()
+            print(a)
+            if i in obs.observation.available_actions:
+                return a
+            else:
+                return actions.FUNCTIONS.no_op()
         else:
             return actions.FUNCTIONS.no_op()

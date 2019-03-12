@@ -63,10 +63,15 @@ class SimpleAgent(base_agent.BaseAgent):
         super(SimpleAgent, self).step(obs)
         #larva = [unit for unit in obs.observation.feature_units
         #   if unit.unit_type == units.Zerg.Larva]
+        #actions.FUNCTIONS.Train_Overlord_quick.id in obs.observation.available_actions
 
         if self.counter == 0:
-            self.GE.set_game_action(1, (0, 10), obs)
-            self.counter = 1
+            self.GE.set_game_action(2, (0, 10), obs)
+            self.counter = 0
+
+        hat = [unit for unit in obs.observation.feature_units
+                 if unit.unit_type == units.Zerg.Hatchery]
+
         #return self.GE.get_game_action()
         #return actions.FUNCTIONS.move_camera()
 
@@ -77,7 +82,8 @@ class SimpleAgent(base_agent.BaseAgent):
         #    return actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y))
         #else:
         #    return actions.FUNCTIONS.no_op()
-        return self.GE.get_game_action()
+
+        return self.GE.get_game_action(obs)
 
     @staticmethod
     def move_to(pos):
