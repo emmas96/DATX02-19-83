@@ -5,8 +5,9 @@ from pysc2.agents import base_agent
 from pysc2.lib import actions, units
 import numpy as np
 import tensorflow as tf
-import tensorflow.layers as layers
+import tensorflow.keras.layers as layers
 import tensorflow.keras as keras
+#tf.keras.
 
 HIDDEN_LAYER_SIZE = 1600
 GAMMA = 0.8
@@ -16,10 +17,12 @@ BOARD_SIZE_X = 40
 BOARD_SIZE_Y = 10
 EPSILON_TO = 0.0
 EPSILON_DECAY = 0.99
-BATCH_SIZE = 16
+BATCH_SIZE = 32
 NUMSTATE = 1600
 
-
+config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 4} )
+sess = tf.Session(config=config)
+keras.backend.set_session(sess)
 
 class SimpleAgent(base_agent.BaseAgent):
     oldState = None
@@ -32,7 +35,8 @@ class SimpleAgent(base_agent.BaseAgent):
         self.NUM_STATES = NUMSTATE
         self.NUM_ACTIONS = NUMSTATE
         self.EPSILON = EPSILON_FROM
-        self.memory = deque(maxlen=2000)
+        self.memory = deque(maxlen=200)
+        self.tmpmemory = deque(maxlen=50)
         self.counter = 0
         self.score = 0
         self.c = 0
@@ -40,13 +44,15 @@ class SimpleAgent(base_agent.BaseAgent):
         # Initialize model
         self.model = keras.Sequential()
 
-        self.model.add(layers.Dense(HIDDEN_LAYER_SIZE,
-                                    input_dim=NUMSTATE,
-                                    activation='relu'))
-        self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu'))
+        #self.model.add(layers.Conv2D(filters=16,kernel_size=5, activation='relu', padding="same" , input_shape=(40,40,1) ))
+        #self.model.add(layers.Conv2D(filters=32, kernel_size=3, padding="same", activation='relu'))
+        #self.model.add(layers.Flatten())
+        #self.model.add(tf.keras.layers.BatchNormalization())
+        #self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu', kernal_initializer='random_uniform'))
+        self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu', kernel_initializer='random_uniform'))
         self.model.add(layers.Dense(NUMSTATE,
-                                    activation='linear'))
-        self.model.compile(optimizer=tf.train.AdamOptimizer(ALPHA),
+                                    activation='linear', kernel_initializer='random_uniform'))
+        self.model.compile(optimizer=tf.keras.optimizers.Adam(ALPHA),
                            loss='mse',
                            metrics=['accuracy'])
 
@@ -54,6 +60,7 @@ class SimpleAgent(base_agent.BaseAgent):
         if np.random.rand() <= self.EPSILON:
             return random.randrange(NUMSTATE)
         action = self.model.predict(np.reshape(state, [1,NUMSTATE]))
+        #action = self.model.predict(np.expand_dims(np.expand_dims(state, axis=0),axis=3))
         return np.argmax(action[0])
 
     def step(self, obs):
@@ -73,15 +80,14 @@ class SimpleAgent(base_agent.BaseAgent):
             state = np.array(obs.observation.feature_screen.unit_type)
 
 
-            if(self.c < 128):
+            if(self.c < 200):
                 action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1
                 print(str(self.c))
             else:
                 action = self.get_action(state)
 
-            if self.oldAction is not None:
-                self.memory.append((self.oldState, self.oldAction, obs.reward, state, False))
+            self.tmpmemory.append((self.oldState, self.oldAction, state, False))
                 #print("spara")
 
             #if self.oldAction is not None:
@@ -111,16 +117,19 @@ class SimpleAgent(base_agent.BaseAgent):
             #marine = marines[0]
             #stuff = obs.observation.feature_screen.unit_type.nonzero()
 
-            return self.move_to((action % BOARD_SIZE_X, action/BOARD_SIZE_X))
+            #return self.move_to((action % BOARD_SIZE_X, action/BOARD_SIZE_X))
+            return self.move_to((action % BOARD_SIZE_X,action / BOARD_SIZE_X,))
         else:
+
             return actions.FUNCTIONS.select_army("select")
 
     @staticmethod
     def move_to(pos):
         return actions.FUNCTIONS.Move_screen("now", pos)
 
+
     def train(self):
-        mini_batch = random.sample(self.memory, self.getMemoryLength())
+        mini_batch = random.sample(self.memory, BATCH_SIZE)
         for state, action, reward, next_state, done in mini_batch:
             #print(state)
             #print(action)
@@ -128,11 +137,19 @@ class SimpleAgent(base_agent.BaseAgent):
             #print(next_state)
             target = reward
 
+            a = np.expand_dims(next_state, axis=0)
+            #print(str(state.shape))
             if not done:
                 target = reward + GAMMA * np.amax(self.model.predict(np.reshape(next_state, [1,NUMSTATE])))
+
+                #target = reward + GAMMA * np.amax(self.model.predict(np.copy(np.expand_dims(a, axis=3))))
             target_f = self.model.predict(np.reshape(state,[1,NUMSTATE]))
+            #target_f = self.model.predict(np.copy(np.expand_dims(a, axis=3)))
             target_f[0][action] = target
             self.model.fit(np.reshape(state,[1,NUMSTATE]), target_f, epochs=1, verbose=0)
+            #b = np.expand_dims(state, axis=0)
+            #self.model.fit(np.expand_dims(b, axis=3), target_f, epochs=1, verbose=0)
+            xxxxx = self.model.get_weights()
         if self.EPSILON > EPSILON_TO:
             self.EPSILON *= EPSILON_DECAY
 

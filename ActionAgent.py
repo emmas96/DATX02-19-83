@@ -65,7 +65,7 @@ class Agent:
     # Get next action to preform, using Q-values
     # and the epsilon-greedy policy
     def getAction(self, state):
-        if self.counter < 0:
+        if self.counter < 32:
             self.counter += 1
             return replays[(self.counter-1) % 6]
         if np.random.rand() <= self.EPSILON:

@@ -2,7 +2,7 @@ from ActionAgent import Agent as aa
 from PositionAgent import Agent as pa
 from FrozenLake import FrozenLake
 from TicTacToe import TicTacToe
-import keras
+import tensorflow.keras as keras
 import tensorflow as tf
 
 config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 4} )
