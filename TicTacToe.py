@@ -7,6 +7,7 @@ REWARD_WIN = 1
 REWARD_LOSS = 0
 REWARD_ACTION = 0
 
+
 class TicTacToe:
     def __init__(self):
         self.board = [[0, 0, 0],
@@ -32,13 +33,10 @@ class TicTacToe:
             print("player: " + str(player) + " Win")
             return self.getState(), reward, done
 
-
         if np.count_nonzero(self.board) == 9:
             done = True
-            print("Lika")
+            print("Tie")
         return self.getState(), reward, done
-
-
 
     def switchPlayer(self):
         self.board = -1 * self.board
