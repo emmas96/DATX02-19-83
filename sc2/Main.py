@@ -13,7 +13,6 @@ def main(unused_argv):
     x = agent.model.get_weights()
     points = 0
     try:
-
         with sc2_env.SC2Env(
                 map_name="MoveToBeacon",
                 players=[sc2_env.Agent(sc2_env.Race.terran)],
@@ -30,7 +29,6 @@ def main(unused_argv):
                 timesteps = env.reset()
                 agent.reset()
 
-
                 if agent.getMemoryLength() > agent.getBatchSize():
                     agent.train()
                     print(str(agent.getMemoryLength()))
@@ -41,15 +39,14 @@ def main(unused_argv):
                         for state, action, next_state, done in agent.tmpmemory:
                             if next_state is not None and state is not None:
                                 bla = timesteps[0].observation['score_cumulative'][0]
-                                #TEMP VÄRDE 0.2
+                                # TEMP VÄRDE 0.2
                                 bla *= 0.2
                                 if bla > 0:
-                                    agent.memory.append((state, action,bla , next_state, done))
+                                    agent.memory.append((state, action, bla, next_state, done))
                         agent.tmpmemory.clear()
                         print("Egna action: "  + str(agent.oa))
                         break
                     timesteps = env.step(step_actions)
-
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
 
     except KeyboardInterrupt:

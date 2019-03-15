@@ -56,21 +56,30 @@ class SimpleAgent(base_agent.BaseAgent):
     def get_action(self, state):
         if np.random.rand() <= self.EPSILON:
             return random.randrange(NUMSTATE)
-        action = self.model.predict(np.reshape(state, [1,NUMSTATE]))
+        action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
         return np.argmax(action[0])
 
     def step(self, obs):
         super(SimpleAgent, self).step(obs)
+
+        if obs.first:
+            cam = np.array(obs.observation.feature_minimap.camera)
+            campos = self._xy_locs(cam == 1)
+            if np.mean(campos, axis=0).round()[1] < 32:
+                self.GE.enemyPos = (39, 42)
+                self.GE.ourPos = (20, 21)
+            else:
+                self.GE.enemyPos = (20, 21)
+                self.GE.ourPos = (39, 42)
+
         #larva = [unit for unit in obs.observation.feature_units
         #   if unit.unit_type == units.Zerg.Larva]
         #actions.FUNCTIONS.Train_Overlord_quick.id in obs.observation.available_actions
 
+        action = random.randint(0, 5)
         if self.counter == 0:
-            self.GE.set_game_action(2, (0, 10), obs)
+            self.GE.set_game_action(action, obs)
             self.counter = 0
-
-        hat = [unit for unit in obs.observation.feature_units
-                 if unit.unit_type == units.Zerg.Hatchery]
 
         #return self.GE.get_game_action()
         #return actions.FUNCTIONS.move_camera()
@@ -118,3 +127,7 @@ class SimpleAgent(base_agent.BaseAgent):
     def reset_game(self):
         self.oldScore = 0
         self.score = 0
+
+    def _xy_locs(self, mask):
+        y, x = mask.nonzero()
+        return list(zip(x, y))

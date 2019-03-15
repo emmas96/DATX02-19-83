@@ -32,7 +32,6 @@ class FrozenLake:
             self.poscol -= 1
             # print(“Go left”)
 
-
         if self.posrow < 0 or self.posrow > 3 or self.poscol < 0 or self.poscol > 3:
             reward = REWARD_OUT
             done = True

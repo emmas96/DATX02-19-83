@@ -1,13 +1,16 @@
 from pysc2.lib import actions, units, features
 import numpy as np
 from collections import deque
+import random
 
 
 class GE:
 
     def __init__(self, x):
         self.Num = x
-        self.ActionQueue = deque(maxlen=100)
+        self.ActionQueue = deque(maxlen=8)
+        self.enemyPos = None
+        self.ourPos = None
 
     @staticmethod
     def get_beacon_position(obs):
@@ -21,47 +24,92 @@ class GE:
     def move_to(pos):
         return actions.FUNCTIONS.Move_screen("now", pos)
 
-    def set_game_action(self, action, position, obs):
-        if len(self.ActionQueue) >= 90:
+    def set_game_action(self, action, obs):
+        if len(self.ActionQueue) >= 4:
             return
         if action == 0:
             if len(self.ActionQueue) > 0:
                 return
-            self.ActionQueue.append((actions.FUNCTIONS.no_op(),
+            self.ActionQueue.append((None, actions.FUNCTIONS.no_op(),
                                      actions.FUNCTIONS.no_op.id))
         if action == 1:
             larva = [unit for unit in obs.observation.feature_units
                      if unit.unit_type == units.Zerg.Larva]
             if len(larva) == 0:
                 return
-            self.ActionQueue.append((actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y)),
+            self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y)),
                                     actions.FUNCTIONS.select_point.id))
-            self.ActionQueue.append((actions.FUNCTIONS.Train_Drone_quick("now"),
+            self.ActionQueue.append((units.Zerg.Larva, actions.FUNCTIONS.Train_Drone_quick("now"),
                                      actions.FUNCTIONS.Train_Drone_quick.id))
         if action == 2:
             larva = [unit for unit in obs.observation.feature_units
                      if unit.unit_type == units.Zerg.Larva]
             if len(larva) == 0:
                 return
-            self.ActionQueue.append((actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y)),
+            self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y)),
                                      actions.FUNCTIONS.select_point.id))
-            self.ActionQueue.append((actions.FUNCTIONS.Train_Overlord_quick("now"),
+            self.ActionQueue.append((units.Zerg.Larva, actions.FUNCTIONS.Train_Overlord_quick("now"),
                                      actions.FUNCTIONS.Train_Overlord_quick.id))
-            self.ActionQueue.append((actions.FUNCTIONS.Rally_Units_minimap("now", (0, 0)),
-                                     actions.FUNCTIONS.Rally_Units_minimap.id))
+            #self.ActionQueue.append((None, actions.FUNCTIONS.Rally_Units_minimap("now", self.ourPos),
+            #                         actions.FUNCTIONS.Rally_Units_minimap.id))
+        if action == 3:  # select random drone and build spawning pool, check tstarbot if you can find coding
+
+            drones = [unit for unit in obs.observation.feature_units
+                      if unit.unit_type == units.Zerg.Drone]
+
+            if len(drones) > 0:
+                drone = random.choice(drones)
+                self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (drone.x, drone.y)),
+                                         actions.FUNCTIONS.select_point.id))
+                x = random.randint(0, 83)
+                y = random.randint(0, 83)
+                self.ActionQueue.append((units.Zerg.Drone, actions.FUNCTIONS.Build_SpawningPool_screen("now", (x, y)),
+                                         actions.FUNCTIONS.Build_SpawningPool_screen.id))
+        if action == 4:
+            larva = [unit for unit in obs.observation.feature_units
+                     if unit.unit_type == units.Zerg.Larva]
+            if len(larva) == 0:
+                return
+            self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y)),
+                                     actions.FUNCTIONS.select_point.id))
+            self.ActionQueue.append((units.Zerg.Larva, actions.FUNCTIONS.Train_Zergling_quick("now"),
+                                     actions.FUNCTIONS.Train_Zergling_quick.id))
+            #self.ActionQueue.append((None, actions.FUNCTIONS.Rally_Units_minimap("now", self.ourPos),
+            #                         actions.FUNCTIONS.Rally_Units_minimap.id))
         if action == 5:
-            self.ActionQueue.append((actions.FUNCTIONS.select_army("select"),
+            self.ActionQueue.append((None, actions.FUNCTIONS.select_army("select"),
                                      actions.FUNCTIONS.select_army.id))
-            self.ActionQueue.append((actions.FUNCTIONS.Attack_screen("now", position),
-                                     actions.FUNCTIONS.Attack_screen.id))
+            self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("now", self.enemyPos),
+                                     actions.FUNCTIONS.Attack_minimap.id))
 
     def get_game_action(self, obs):
         if len(self.ActionQueue) != 0:
-            (a, i) = self.ActionQueue.popleft()
+            (t, a, i) = self.ActionQueue.popleft()
             print(a)
             if i in obs.observation.available_actions:
-                return a
+                if t is not None:
+                    if self.unit_type_is_selected(obs, t):
+                        return a
+                    else:
+                        return actions.FUNCTIONS.no_op()
+                else:
+                    return a
             else:
                 return actions.FUNCTIONS.no_op()
         else:
             return actions.FUNCTIONS.no_op()
+
+    def _xy_locs(self, mask):
+        y, x = mask.nonzero()
+        return list(zip(x, y))
+
+    def unit_type_is_selected(self, obs, unit_type):
+        if (len(obs.observation.single_select) > 0 and
+                obs.observation.single_select[0].unit_type == unit_type):
+            return True
+
+        if (len(obs.observation.multi_select) > 0 and
+                obs.observation.multi_select[0].unit_type == unit_type):
+            return True
+
+        return False
