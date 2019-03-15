@@ -1,5 +1,6 @@
 import math
 import random
+import time
 from collections import deque
 from pysc2.agents import base_agent
 from pysc2.lib import actions, units
@@ -7,6 +8,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 import tensorflow.keras as keras
+import matplotlib.pyplot as plt
 #tf.keras.
 
 HIDDEN_LAYER_SIZE = 1600
@@ -40,6 +42,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.counter = 0
         self.score = 0
         self.c = 0
+        self.oa = 0
 
         # Initialize model
         self.model = keras.Sequential()
@@ -60,6 +63,10 @@ class SimpleAgent(base_agent.BaseAgent):
         if np.random.rand() <= self.EPSILON:
             return random.randrange(NUMSTATE)
         action = self.model.predict(np.reshape(state, [1,NUMSTATE]))
+        plot = np.reshape(action, [40,40])
+        plt.imshow(plot, cmap='hot', interpolation='nearest')
+        plt.show()
+        self.oa += 1
         #action = self.model.predict(np.expand_dims(np.expand_dims(state, axis=0),axis=3))
         return np.argmax(action[0])
 
@@ -165,4 +172,5 @@ class SimpleAgent(base_agent.BaseAgent):
     def reset_game(self):
         self.oldScore = 0
         self.score = 0
+        self.oa = 0
 

@@ -46,6 +46,7 @@ def main(unused_argv):
                                 if bla > 0:
                                     agent.memory.append((state, action,bla , next_state, done))
                         agent.tmpmemory.clear()
+                        print("Egna action: "  + str(agent.oa))
                         break
                     timesteps = env.step(step_actions)
 
