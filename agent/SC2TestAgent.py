@@ -61,7 +61,6 @@ class SimpleAgent(base_agent.BaseAgent):
 
     def step(self, obs):
         super(SimpleAgent, self).step(obs)
-
         if obs.first:
             cam = np.array(obs.observation.feature_minimap.camera)
             campos = self._xy_locs(cam == 1)
@@ -75,8 +74,8 @@ class SimpleAgent(base_agent.BaseAgent):
         #larva = [unit for unit in obs.observation.feature_units
         #   if unit.unit_type == units.Zerg.Larva]
         #actions.FUNCTIONS.Train_Overlord_quick.id in obs.observation.available_actions
-
-        action = random.randint(0, 5)
+        action = int(input("välj action:"))
+        #action = random.randint(0, 5)
         if self.counter == 0:
             self.GE.set_game_action(action, obs)
             self.counter = 0

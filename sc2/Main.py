@@ -19,7 +19,7 @@ def main(unused_argv):
                 agent_interface_format=features.AgentInterfaceFormat(
                     feature_dimensions=features.Dimensions(screen=40, minimap=10),
                     use_feature_units=True),
-                step_mul=160,
+                step_mul=220,
                 game_steps_per_episode=0,
                 visualize=True) as env:
 
