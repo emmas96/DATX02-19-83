@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7fed4ac4-319d-4fcb-9db4-f4549ec6e02d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/DATX02-19-83.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DATX02-19-83.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/agent/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/agent/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/agent/SC2TestAgent.py" beforeDir="false" afterPath="$PROJECT_DIR$/agent/SC2TestAgent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sc2/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/sc2/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sc2/SC2TestAgent.py" beforeDir="false" afterPath="$PROJECT_DIR$/sc2/SC2TestAgent.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/venv/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,10 +25,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sc2/SC2TestAgent.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="27">
+            <state relative-caret-position="833">
               <caret line="53" column="75" selection-start-line="53" selection-start-column="75" selection-end-line="53" selection-end-column="75" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -43,7 +37,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
@@ -145,9 +139,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-12" />
+    <option name="x" value="-14" />
     <option name="width" value="1944" />
-    <option name="height" value="2082" />
+    <option name="height" value="2084" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -383,7 +377,14 @@
       <option name="project" value="LOCAL" />
       <updated>1552642712040</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="blabla">
+      <created>1552993412116</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1552993412116</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TodoView">
@@ -397,14 +398,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1719" height="932" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4989899" visible="true" weight="0.12284867" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4989899" visible="true" weight="0.12284867" />
       <window_info id="Structure" order="1" sideWeight="0.5010101" side_tool="true" weight="0.12284867" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.38107097" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.38107097" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.32627645" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -424,7 +424,8 @@
     <MESSAGE value="imitationlearning för pysc2" />
     <MESSAGE value="testing cloudTPU" />
     <MESSAGE value="a working but not optimized move to becon" />
-    <option name="LAST_COMMIT_MESSAGE" value="a working but not optimized move to becon" />
+    <MESSAGE value="blabla" />
+    <option name="LAST_COMMIT_MESSAGE" value="blabla" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -548,13 +549,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Program Files/Python36/Lib/codecs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5270">
@@ -625,11 +619,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sc2/SC2TestAgent.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="27">
+        <state relative-caret-position="833">
           <caret line="53" column="75" selection-start-line="53" selection-start-column="75" selection-end-line="53" selection-end-column="75" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
