@@ -8,21 +8,21 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 import tensorflow.keras as keras
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #tf.keras.
 
-HIDDEN_LAYER_SIZE = 1600
+HIDDEN_LAYER_SIZE = 64*64
 GAMMA = 0.9
 ALPHA = 0.001
-EPSILON_FROM = 1.0
-BOARD_SIZE_X = 40
+EPSILON_FROM = 0.0
+BOARD_SIZE_X = 64
 BOARD_SIZE_Y = 10
 EPSILON_TO = 0.1
 EPSILON_DECAY = 0.998
-BATCH_SIZE = 32
-NUMSTATE = 1600
+BATCH_SIZE = 128
+NUMSTATE = 64*64
 
-config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 4} )
+config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 8} )
 sess = tf.Session(config=config)
 keras.backend.set_session(sess)
 
@@ -49,14 +49,15 @@ class SimpleAgent(base_agent.BaseAgent):
 
         #self.model.add(layers.Conv2D(filters=16,kernel_size=5, activation='relu', padding="same" , input_shape=(40,40,1) ))
         #self.model.add(layers.Conv2D(filters=32, kernel_size=3, padding="same", activation='relu'))
+        #self.model.add(layers.BatchNorm)
         #self.model.add(layers.Flatten())
         #self.model.add(tf.keras.layers.BatchNormalization())
-        self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='softmax ', kernel_initializer='random_uniform'))
-        #self.model.add(layers.Dense(400, activation='relu', kernel_initializer='random_uniform'))
+        #self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='softmax', kernel_initializer='random_uniform'))
+        self.model.add(layers.Dense(NUMSTATE, activation='relu', kernel_initializer='random_uniform'))
         self.model.add(layers.Dense(NUMSTATE, activation='linear', kernel_initializer='random_uniform'))
         self.model.compile(optimizer=tf.keras.optimizers.Adam(ALPHA),
                            loss='mse',
-                           metrics=['accuracy'])
+                           metrics=['accuracy'], use_multiprocessing=True)
 
     def get_action(self, state):
         if np.random.rand() <= self.EPSILON:
@@ -86,22 +87,22 @@ class SimpleAgent(base_agent.BaseAgent):
             state = np.array(obs.observation.feature_screen.unit_type)
 
 
-            if(self.c < 000):
+            if(self.c < 2000):
                 action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1
                 print(str(self.c))
             else:
                 action = self.get_action(state)
 
-            self.tmpmemory.append((self.oldState, self.oldAction, state, False))
+            #self.tmpmemory.append((self.oldState, self.oldAction,self.reward, state, False))
                 #print("spara")
 
-            #if self.oldAction is not None:
-             #   if self.reward != self.oldScore:
-              #      self.memory.append((self.oldState, self.oldAction, self.reward, state, False))
-               #     self.oldScore = self.reward
-                #else:
-                 #   self.memory.append((self.oldState, self.oldAction, self.reward, state, False))
+            if self.oldAction is not None:
+                if self.reward != self.oldScore:
+                    self.tmpmemory.append((self.oldState, self.oldAction, 1, state, False))
+                    self.oldScore = self.reward
+                else:
+                    self.tmpmemory.append((self.oldState, self.oldAction, 0, state, False))
 
             self.oldAction = action
             self.oldState = state
@@ -136,6 +137,9 @@ class SimpleAgent(base_agent.BaseAgent):
 
     def train(self):
         mini_batch = random.sample(self.memory, BATCH_SIZE)
+        s = []
+        t = []
+
         for state, action, reward, next_state, done in mini_batch:
             #print(state)
             #print(action)
@@ -151,11 +155,16 @@ class SimpleAgent(base_agent.BaseAgent):
                 #target = reward + GAMMA * np.amax(self.model.predict(np.copy(np.expand_dims(a, axis=3))))
             target_f = self.model.predict(np.reshape(state,[1,NUMSTATE]))
             #target_f = self.model.predict(np.copy(np.expand_dims(a, axis=3)))
-            target_f[0][action] = target
-            self.model.fit(np.reshape(state,[1,NUMSTATE]), target_f, epochs=1, verbose=0)
+            #target_f[0][action] = target
+            target_f[0][action] = target_f[0][action]*(0.5 + reward)
+            s.append(np.reshape(state,[1,NUMSTATE])[0])
+            t.append(target_f[0])
+        sa = np.asarray(s)
+        ta = np.asarray(t)
+        self.model.fit(sa, ta, epochs=1, verbose=2)
             #b = np.expand_dims(state, axis=0)
             #self.model.fit(np.expand_dims(b, axis=3), target_f, epochs=1, verbose=0)
-            xxxxx = self.model.get_weights()
+
         if self.EPSILON > EPSILON_TO:
             self.EPSILON *= EPSILON_DECAY
 

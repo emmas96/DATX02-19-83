@@ -1,7 +1,7 @@
 from absl import app
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features, units
-from SC2TestAgent import SimpleAgent
+from agent.SC2TestAgent import SimpleAgent
 
 EPOCHS = 100
 
