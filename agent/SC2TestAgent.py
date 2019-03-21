@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.layers as layers
 import tensorflow.keras as keras
-import GameEnvironment
+import agent.GameEnvironment as GameEnvironment
 
 HIDDEN_LAYER_SIZE = 100
 GAMMA = 0.8
@@ -74,8 +74,8 @@ class SimpleAgent(base_agent.BaseAgent):
         #larva = [unit for unit in obs.observation.feature_units
         #   if unit.unit_type == units.Zerg.Larva]
         #actions.FUNCTIONS.Train_Overlord_quick.id in obs.observation.available_actions
-        action = int(input("välj action:"))
-        #action = random.randint(0, 5)
+        #action = int(input("välj action:"))
+        action = random.randint(0, 5)
         if self.counter == 0:
             self.GE.set_game_action(action, obs)
             self.counter = 0
