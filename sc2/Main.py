@@ -2,13 +2,15 @@ from absl import app
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features, units
 from sc2.SC2TestAgent import SimpleAgent
+from sc2.SC2ConvAgent import ConvAgent
 
-EPOCHS = 1000
+EPOCHS = 6000
 
 
 def main(unused_argv):
     print("Jag lovar du är en duktig agent")
     agent = SimpleAgent()
+    #agent = ConvAgent()
     lol = agent.model.get_weights()
     x = agent.model.get_weights()
     points = 0
@@ -17,7 +19,7 @@ def main(unused_argv):
                 map_name="MoveToBeacon",
                 players=[sc2_env.Agent(sc2_env.Race.terran)],
                 agent_interface_format=features.AgentInterfaceFormat(
-                    feature_dimensions=features.Dimensions(screen=64, minimap=10),
+                    feature_dimensions=features.Dimensions(screen=40, minimap=10),
                     use_feature_units=True),
                 step_mul=220,
                 game_steps_per_episode=0,
