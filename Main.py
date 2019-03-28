@@ -4,6 +4,7 @@ from FrozenLake import FrozenLake
 from TicTacToe import TicTacToe
 import tensorflow.keras as keras
 import tensorflow as tf
+import matplotlib.pyplot as plt
 
 config = tf.ConfigProto(device_count={'GPU': 1, 'CPU': 4})
 sess = tf.Session(config=config)
@@ -14,7 +15,54 @@ EPOCHS = 200
 MOVES = 20
 
 
+class live_graph():
+
+    def __init__(self):
+        fig = plt.figure()
+        ax1 = fig.add_subplot(1, 1, 1)
+
+        # Wins
+        color = 'tab:red'
+        ax1.tick_params(axis='y', labelcolor=color)
+
+        ax2 = ax1.twinx()
+
+        # Epsilon
+        color = 'tab:blue'
+        ax2.tick_params(axis='y', labelcolor=color)
+
+        self.ax1 = ax1
+        self.ax2 = ax2
+
+        self.wins = []
+        self.epsilons = []
+        self.epochs = []
+
+    def update_graph(self, epoch, number_of_wins, epsilon):
+        self.epochs.append(epoch)
+        self.wins.append(number_of_wins)
+        self.epsilons.append(epsilon)
+
+        self.ax1.clear()
+        self.ax2.clear()
+
+        self.ax1.set_xlabel('epochs')
+
+        color = 'tab:red'
+        self.ax1.set_ylabel('nr wins', color=color)
+        self.ax1.plot(self.epochs, self.wins, color=color)
+
+        color = 'tab:blue'
+        self.ax2.set_ylabel('epsilon', color=color)
+        self.ax2.plot(self.epochs, self.epsilons, color=color)
+
+        plt.pause(0.005)
+
+    def keep_show(self):
+        plt.show()
+
 def playFrozenLake():
+    graph = live_graph()
     game = FrozenLake()
     agent = aa(game.getNumStates(), game.getNumActions())
     num_wins = 0
@@ -31,8 +79,12 @@ def playFrozenLake():
             if done:
                 print("epoch: {}/{}, reward: {}".format(epoch, EPOCHS, reward))
                 print("number of wins: " + str(num_wins) + ", number of moves: " + str(move + 1))
+
+                graph.update_graph(epoch, num_wins, agent.get_epsilon())
                 # print(str(epoch) + "," + str(num_wins))
                 break
+
+    graph.keep_show()
     # print("Win rate: " + str((0.0+last_num_wins)/100.0))
 
 
@@ -94,10 +146,17 @@ def playTicTacToe():
                 break
 
 
+
+
+
 def main():
     # playTicTacToe()
     playFrozenLake()
 
 
+
 if __name__ == "__main__":
     main()
+
+
+
