@@ -8,31 +8,31 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 import tensorflow.keras as keras
-import matplotlib.pyplot as plt
 from keras.utils.generic_utils import get_custom_objects
+#import matplotlib.pyplot as plt
 #tf.keras.
 
-HIDDEN_LAYER_SIZE = 40*40
+
 GAMMA = 0.9
 ALPHA = 0.001
 EPSILON_FROM = 0
 BOARD_SIZE_X = 40
 BOARD_SIZE_Y = 10
 EPSILON_TO = 0.1
-EPSILON_DECAY = 0.9995
+EPSILON_DECAY = 0.998
 BATCH_SIZE = 128
-NUMSTATE = 40*40
+HIDDEN_LAYER_SIZE = BOARD_SIZE_X * BOARD_SIZE_X
+NUMSTATE = BOARD_SIZE_X * BOARD_SIZE_X
 
 config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 8} )
 sess = tf.Session(config=config)
 keras.backend.set_session(sess)
 
-
 def test(x):
     return 1 / (1 + np.e**(-x / 100))
 
 
-class SimpleAgent(base_agent.BaseAgent):
+class ConvAgent(base_agent.BaseAgent):
     oldState = None
     oldScore = 0
     oldAction = None
@@ -49,42 +49,40 @@ class SimpleAgent(base_agent.BaseAgent):
         self.score = 0
         self.c = 0
         self.oa = 0
-
         get_custom_objects().update({'test': layers.Activation(test)})
+
         # Initialize model
         self.model = keras.Sequential()
 
-        #self.model.add(layers.Conv2D(filters=16,kernel_size=5, activation='relu', padding="same" , input_shape=(40,40,1) ))
+        self.model.add(layers.Conv2D(filters=2, kernel_size=5, activation='relu', padding="same", input_shape=[1, 40, 40]))
+        #self.model.add(layers.BatchNormalization())
         #self.model.add(layers.Conv2D(filters=32, kernel_size=3, padding="same", activation='relu'))
-        #self.model.add(layers.BatchNorm)
-        #self.model.add(layers.Flatten())
         #self.model.add(tf.keras.layers.BatchNormalization())
+        #self.model.add(layers.BatchNorm)
+        self.model.add(layers.Flatten())
         #self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='softmax', kernel_initializer='random_uniform'))
         self.model.add(layers.Dense(NUMSTATE, activation='relu', kernel_initializer='random_uniform'))
         self.model.add(layers.Dense(NUMSTATE, activation='linear', kernel_initializer='random_uniform'))
         self.model.add(layers.Activation(test))
         self.model.compile(optimizer=tf.keras.optimizers.Adam(ALPHA),
                            loss='mse',
-                           metrics=['accuracy'], use_multiprocessing=True)
+                           metrics=['accuracy'])
 
     def get_action(self, state):
         if np.random.rand() <= self.EPSILON:
             return random.randrange(NUMSTATE)
-        action = self.model.predict(np.reshape(state, [1,NUMSTATE]))
-        # Randomly pick locations near the prodiction
-        #if np.random.rand() <= self.EPSILON:
-        #    action += (random.randrange(6)-3) * 40
-        #    action += (random.randrange(6) - 3)
+        #action = self.model.predict(np.reshape(state, [1,NUMSTATE]))
         #plot = np.reshape(action, [40,40])
         #plt.imshow(plot, cmap='hot', interpolation='nearest')
         #plt.show()
         self.oa += 1
-        #action = self.model.predict(np.expand_dims(np.expand_dims(state, axis=0),axis=3))
+        action = self.model.predict(np.expand_dims(np.expand_dims(state, axis=0),axis=0))
         return np.argmax(action[0])
 
     def step(self, obs):
-        super(SimpleAgent, self).step(obs)
+        super(ConvAgent, self).step(obs)
         if actions.FUNCTIONS.Move_screen.id in obs.observation.available_actions:
+
             marines = [unit for unit in obs.observation.feature_units
                        if unit.unit_type == units.Terran.Marine]
             beacon = [unit for unit in obs.observation.feature_units
@@ -97,7 +95,8 @@ class SimpleAgent(base_agent.BaseAgent):
 
             state = np.array(obs.observation.feature_screen.unit_type)
 
-            if(self.c < 1000):
+
+            if(self.c < 2000):
                 action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1
                 print(str(self.c))
@@ -158,16 +157,13 @@ class SimpleAgent(base_agent.BaseAgent):
             target = reward
 
             a = np.expand_dims(next_state, axis=0)
+            b = np.expand_dims(state, axis=0)
             #print(str(state.shape))
             if not done:
-                target = reward + GAMMA * np.amax(self.model.predict(np.reshape(next_state, [1,NUMSTATE])))
-                #target = reward + GAMMA * np.amax(self.model.predict(np.copy(np.expand_dims(a, axis=3))))
-            target_f = self.model.predict(np.reshape(state,[1,NUMSTATE]))
-            target_f[0][action] = target
-            #target_f = self.model.predict(np.copy(np.expand_dims(a, axis=3)))
-            #target_f[0][action] = target_f[0][action]*(0.5 + reward)
-            #target_f[0][action] = reward
-            s.append(np.reshape(state,[1,NUMSTATE])[0])
+                target = reward + GAMMA * np.amax(self.model.predict(np.copy(np.expand_dims(a, axis=0))))
+            target_f = self.model.predict(np.copy(np.expand_dims(b, axis=0)))
+            target_f[0][action] = target_f[0][action]*(0.5 + reward)
+            s.append(b)
             t.append(target_f[0])
         sa = np.asarray(s)
         ta = np.asarray(t)
