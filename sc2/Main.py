@@ -3,8 +3,15 @@ from pysc2.env import sc2_env
 from pysc2.lib import actions, features, units
 from sc2.SC2TestAgent import SimpleAgent
 from sc2.SC2ConvAgent import ConvAgent
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from multiprocessing import Process
 
-EPOCHS = 6000
+EPOCHS = 2000
+fig = plt.figure()
+ax1 = fig.add_subplot(1, 1, 1)
+
 
 
 def main(unused_argv):
@@ -14,6 +21,8 @@ def main(unused_argv):
     lol = agent.model.get_weights()
     x = agent.model.get_weights()
     points = 0
+    file = open("plot.txt", "w")
+    file.close()
     try:
         with sc2_env.SC2Env(
                 map_name="MoveToBeacon",
@@ -30,12 +39,10 @@ def main(unused_argv):
                 agent.reset_game()
                 timesteps = env.reset()
                 agent.reset()
-
                 if agent.getMemoryLength() > agent.getBatchSize():
                     agent.train()
                     print(str(agent.getMemoryLength()))
                 while True:
-
                     step_actions = [agent.step(timesteps[0])]
                     if timesteps[0].last():
                         for state, action, reward, next_state, done in agent.tmpmemory:
@@ -46,13 +53,29 @@ def main(unused_argv):
                                 if bla > 0:
                                     agent.memory.append((state, action, reward, next_state, done))
                         agent.tmpmemory.clear()
-                        print("Egna action: "  + str(agent.oa))
+                        print("Egna action: " + str(agent.oa))
                         break
                     timesteps = env.step(step_actions)
+                # agent.save_plot_data(agent.reward / (epoch + 1))
+                #file.write("hej")
+                file = open("plot.txt", "a")
+                file.write(str(timesteps[0].observation['score_cumulative'][0]/8)+", ")
+                file.write(str(agent.reward / (epoch + 1))+"\n")
+                file.close()
+                #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
+                #plt.show()
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
+
 
     except KeyboardInterrupt:
         pass
+
+
+def plotdata(i):
+    graph_data = file.read()
+    lines = graph_data.split("\n")
+    ax1.clear()
+    ax1.plot(lines)
 
 
 if __name__ == "__main__":
