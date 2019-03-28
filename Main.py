@@ -5,7 +5,7 @@ from TicTacToe import TicTacToe
 import keras
 import tensorflow as tf
 
-config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 4} )
+config = tf.ConfigProto(device_count={'GPU': 1, 'CPU': 4})
 sess = tf.Session(config=config)
 keras.backend.set_session(sess)
 
@@ -36,10 +36,6 @@ def playFrozenLake():
 
     # print("Win rate: " + str((0.0+last_num_wins)/100.0))
 
-
-
-
-
 def playTicTacToe():
     game = TicTacToe()
     agentX = pa(game.getNumStates(), game.getNumActions())
@@ -49,8 +45,6 @@ def playTicTacToe():
     for epoch in range(EPOCHS):
         game.resetGame()
         for move in range(MOVES):
-            if move > 9:
-                print("FEL")
             agent = agentList[move % 2]
             state = game.getState()
             action = agent.getAction(state)
@@ -68,14 +62,18 @@ def playTicTacToe():
                 print("number of X wins: " + str(num_wins[0]) +
                       ", number of O wins: " + str(num_wins[1]) +
                       ", number of moves: " + str(move + 1))
-                print(game.getBoard())
+                game.printBoard()
                 break
+
+    save_model = input("Save model? (y/n) ")
+    if save_model == 'y':
+        name = input("Name of model")
+        agentX.saveModel(f"TicTacToe-X-{name}")
+        agentO.saveModel(f"TicTacToe-O-{name}")
+
     while True:
         game.resetGame()
         for move in range(MOVES):
-            print(state)
-            if move > 9:
-                print("FEL")
             agent = agentList[0]
             state = game.getState()
             action = agent.getAction(state)
@@ -84,26 +82,26 @@ def playTicTacToe():
             else:
                 player = -1
             next_state, reward, done = game.play(player, action)
-            if(done):
-                print(game.getState())
+            if done:
+                game.printBoard()
                 print("AI Win")
-                break;
-            state = game.getState()
-            print(state)
-            action = input("välj var")
-            next_state, reward, done  = game.play(-1, int(action))
-            if (done):
-                print(game.getState())
-                print("Player Win")
-                break;
+                break
 
+            game.printBoard()
+            action = input("välj var: ")
+            next_state, reward, done = game.play(-1, int(action))
+            if done:
+                game.printBoard()
+                print("Player Win")
+                break
 
 
 def main():
-    #playTicTacToe()
-    playFrozenLake()
-
+    playTicTacToe()
+    #playFrozenLake()
 
 
 if __name__ == "__main__":
     main()
+
+

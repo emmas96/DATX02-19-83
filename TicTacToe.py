@@ -7,6 +7,7 @@ REWARD_WIN = 1
 REWARD_LOSS = 0
 REWARD_ACTION = 0
 
+
 class TicTacToe:
     def __init__(self):
         self.board = [[0, 0, 0],
@@ -29,16 +30,13 @@ class TicTacToe:
             reward = REWARD_WIN
             done = True
         if done:
-            print("player: " + str(player) + " Win")
+            print("player: " + self.toPlayer(player) + " Win")
             return self.getState(), reward, done
-
 
         if np.count_nonzero(self.board) == 9:
             done = True
             print("Lika")
         return self.getState(), reward, done
-
-
 
     def switchPlayer(self):
         self.board = -1 * self.board
@@ -62,3 +60,51 @@ class TicTacToe:
 
     def getNumActions(self):
         return BOARD_SIZE ** 2
+
+    def toPlayer(self, elem):
+        if elem == -1:
+            player = 'O'
+        elif elem == 0:
+            player = '-'
+        else:
+            player = 'X'
+
+        return player
+
+    def printBoard(self):
+        for row in self.board:
+            print("")
+            for elem in row: #TODO Who is -1 / 1?
+                print(self.toPlayer(elem), end=" ")
+
+        print("\n")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

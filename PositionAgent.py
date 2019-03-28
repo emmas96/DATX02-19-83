@@ -3,9 +3,12 @@ import tensorflow as tf
 import tensorflow.layers as layers
 import tensorflow.keras as keras
 import random
+import time
+import os
 from collections import deque
+from sc2.visualization import heatMap
 
-config = tf.ConfigProto( device_count = {'GPU': 1 , 'CPU': 2} )
+config = tf.ConfigProto(device_count={'GPU': 1, 'CPU': 2})
 sess = tf.Session(config=config)
 keras.backend.set_session(sess)
 
@@ -27,6 +30,8 @@ class Agent:
         self.memory = deque(maxlen=100)
         self.counter = 0
 
+        self.plot = heatMap(np.empty([3, 3]))
+
         # Initialize model
         self.model = keras.Sequential()
         self.model.add(layers.Dense(HIDDEN_LAYER_SIZE,
@@ -35,7 +40,7 @@ class Agent:
         # model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu'))
         self.model.add(layers.Dense(self.NUM_ACTIONS,
                                     activation='linear'))
-        self.model.compile(optimizer=tf.train.AdamOptimizer(ALPHA),
+        self.model.compile(optimizer='adam',
                            loss='mse',
                            metrics=['accuracy'])
 
@@ -77,3 +82,9 @@ class Agent:
     # Get batch size
     def getBatchSize(self):
         return BATCH_SIZE
+
+    def saveModel(self, name):
+        if not os.path.isdir("models/"):
+            os.mkdir("models/")
+
+        self.model.save(f"models/{name}-{int(time.time())}.h5")
