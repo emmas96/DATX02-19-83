@@ -3,6 +3,7 @@ venvnoGPU/
 agent/__pycache__/
 sc2/__pycache__/
 __pycache__/
+.idea/
 
 # Found https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
 
