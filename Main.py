@@ -40,7 +40,7 @@ class live_graph():
 
     def update_graph(self, epoch, number_of_wins, epsilon):
         self.epochs.append(epoch)
-        self.wins.append(number_of_wins)
+        self.wins.append(number_of_wins/(epoch+1))
         self.epsilons.append(epsilon)
 
         self.ax1.clear()
