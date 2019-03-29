@@ -14,7 +14,7 @@ keras.backend.set_session(sess)
 EPOCHS = 200
 MOVES = 20
 
-
+##clas
 class live_graph():
 
     def __init__(self):
