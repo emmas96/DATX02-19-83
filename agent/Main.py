@@ -2,13 +2,15 @@ from absl import app
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features, units
 from agent.SC2TestAgent import SimpleAgent
+from agent.BetaStar import BetaStar
 
 EPOCHS = 100
 
 
+GAMMAs = [1, 0.9, 0.8]
 def main(unused_argv):
 
-    agent = SimpleAgent()
+    agent = BetaStar()
     points = 0
     try:
 
@@ -36,7 +38,11 @@ def main(unused_argv):
                     if timesteps[0].last():
                         break
                     timesteps = env.step(step_actions)
-
+                file = open("plot.txt", "a")
+                file.write(str(epoch + 1) + " , ")
+                file.write(str(agent.reward) + " , ")
+                file.write(str(timesteps[0].observation['score_cumulative'][0])  + "\n")
+                file.close()
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
 
     except KeyboardInterrupt:
