@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7fed4ac4-319d-4fcb-9db4-f4549ec6e02d" name="Default Changelist" comment="">
+<<<<<<< Updated upstream
       <change afterPath="$PROJECT_DIR$/sc2/cleanCopyOfAgent.py" afterDir="false" />
+=======
+>>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sc2/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/sc2/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sc2/SC2TestAgent.py" beforeDir="false" afterPath="$PROJECT_DIR$/sc2/SC2TestAgent.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/venv/" />
@@ -19,8 +21,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sc2/Main.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
             <state relative-caret-position="527">
               <caret line="73" column="16" lean-forward="true" selection-start-line="73" selection-start-column="16" selection-end-line="73" selection-end-column="16" />
+=======
+            <state relative-caret-position="85">
+              <caret line="34" selection-start-line="34" selection-end-line="34" />
+>>>>>>> Stashed changes
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -28,20 +35,18 @@
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sc2/plot.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="283">
               <caret line="1258" column="21" selection-end-line="1330" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
+=======
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sc2/SC2TestAgent.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="855">
-              <caret line="166" column="41" lean-forward="true" selection-end-line="203" />
+            <state relative-caret-position="299">
+              <caret line="64" column="8" selection-start-line="64" selection-start-column="8" selection-end-line="64" selection-end-column="8" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -49,8 +54,60 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/agent/SC2TestAgent.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="200">
+              <caret line="109" column="107" lean-forward="true" selection-start-line="109" selection-start-column="107" selection-end-line="109" selection-end-column="107" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://C:/Program Files/Python36/Lib/codecs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="5270">
+              <caret line="310" selection-start-line="310" selection-end-line="310" />
+>>>>>>> Stashed changes
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+<<<<<<< Updated upstream
+        <entry file="file://$PROJECT_DIR$/sc2/SC2TestAgent.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="855">
+              <caret line="166" column="41" lean-forward="true" selection-end-line="203" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+=======
+        <entry file="file://$PROJECT_DIR$/venvnoGPU/Lib/site-packages/tensorflow/python/keras/engine/training_utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="5644">
+              <caret line="361" selection-start-line="361" selection-end-line="361" />
+>>>>>>> Stashed changes
+            </state>
+          </provider>
+        </entry>
+      </file>
+<<<<<<< Updated upstream
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sc2/cleanCopyOfAgent.py">
+=======
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TicTacToe.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="731">
+              <caret line="43" column="9" selection-start-line="43" selection-start-column="9" selection-end-line="43" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PositionAgent.py">
+>>>>>>> Stashed changes
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="170">
               <caret line="124" column="27" selection-start-line="124" selection-start-column="27" selection-end-line="124" selection-end-column="27" />
@@ -109,10 +166,17 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
+<<<<<<< Updated upstream
     <option name="x" value="645" />
     <option name="y" value="-16" />
     <option name="width" value="855" />
     <option name="height" value="1017" />
+=======
+    <option name="x" value="1451" />
+    <option name="y" value="-36" />
+    <option name="width" value="1924" />
+    <option name="height" value="2291" />
+>>>>>>> Stashed changes
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -123,17 +187,17 @@
         <subPane>
           <expand>
             <path>
-              <item name="DATX02-19-83" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DATX02-19-83" type="462c0819:PsiDirectoryNode" />
+              <item name="DATX02-19-83 git" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DATX02-19-83 git" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="DATX02-19-83" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DATX02-19-83" type="462c0819:PsiDirectoryNode" />
+              <item name="DATX02-19-83 git" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DATX02-19-83 git" type="462c0819:PsiDirectoryNode" />
               <item name="agent" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="DATX02-19-83" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DATX02-19-83" type="462c0819:PsiDirectoryNode" />
+              <item name="DATX02-19-83 git" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DATX02-19-83 git" type="462c0819:PsiDirectoryNode" />
               <item name="sc2" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -392,22 +456,33 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
+<<<<<<< Updated upstream
     <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4989899" visible="true" weight="0.12243667" />
+=======
+    <frame x="-6" y="-6" width="1719" height="932" extended-state="6" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4989899" visible="true" weight="0.12284867" />
+>>>>>>> Stashed changes
       <window_info id="Structure" order="1" sideWeight="0.5010101" side_tool="true" weight="0.12284867" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
+<<<<<<< Updated upstream
       <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.31243002" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.36954087" />
+=======
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49970326" weight="0.34744707" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.631454" weight="0.3947696" />
+>>>>>>> Stashed changes
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3281075" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.3281075" />
+      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.49970326" weight="0.3275218" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3281075" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.36854598" side_tool="true" visible="true" weight="0.3947696" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.32876712" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -437,6 +512,29 @@
           <line>60</line>
           <option name="timeStamp" value="75" />
         </line-breakpoint>
+<<<<<<< Updated upstream
+=======
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/sc2/SC2ConvAgent.py</url>
+          <line>167</line>
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/sc2/SC2TestAgent.py</url>
+          <line>165</line>
+          <option name="timeStamp" value="81" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/sc2/SC2TestAgent.py</url>
+          <line>164</line>
+          <option name="timeStamp" value="82" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/agent/SC2TestAgent.py</url>
+          <line>110</line>
+          <option name="timeStamp" value="88" />
+        </line-breakpoint>
+>>>>>>> Stashed changes
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -489,12 +587,12 @@ plt.show()</expression-string>
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>#plot = np.reshape(action, [40,40])</expression-string>
+        <expression-string>np.argmax(target_f[0])</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.argmax(target_f[0])</expression-string>
+        <expression-string>#plot = np.reshape(action, [40,40])</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -543,7 +641,13 @@ plt.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/venvnoGPU/Lib/site-packages/tensorflow/python/keras/engine/training_utils.py" />
+    <entry file="file://$PROJECT_DIR$/venvnoGPU/Lib/site-packages/tensorflow/python/keras/engine/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5644">
+          <caret line="361" selection-start-line="361" selection-end-line="361" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -588,6 +692,7 @@ plt.show()</expression-string>
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://C:/Program Files/Python36/Lib/site-packages/numpy/core/fromnumeric.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="179">
@@ -605,6 +710,8 @@ plt.show()</expression-string>
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -627,6 +734,7 @@ plt.show()</expression-string>
     </entry>
     <entry file="file://C:/Program Files/Python36/Lib/codecs.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="94">
           <caret line="310" column="25" selection-start-line="310" selection-start-column="25" selection-end-line="310" selection-end-column="25" />
         </state>
@@ -657,13 +765,29 @@ plt.show()</expression-string>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="283">
           <caret line="1258" column="21" selection-end-line="1330" />
+=======
+        <state relative-caret-position="5270">
+          <caret line="310" selection-start-line="310" selection-end-line="310" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/agent/SC2TestAgent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="109" column="107" lean-forward="true" selection-start-line="109" selection-start-column="107" selection-end-line="109" selection-end-column="107" />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sc2/Main.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="527">
           <caret line="73" column="16" lean-forward="true" selection-start-line="73" selection-start-column="16" selection-end-line="73" selection-end-column="16" />
+=======
+        <state relative-caret-position="85">
+          <caret line="34" selection-start-line="34" selection-end-line="34" />
+>>>>>>> Stashed changes
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
@@ -672,14 +796,20 @@ plt.show()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/sc2/SC2TestAgent.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="855">
           <caret line="166" column="41" lean-forward="true" selection-end-line="203" />
+=======
+        <state relative-caret-position="299">
+          <caret line="64" column="8" selection-start-line="64" selection-start-column="8" selection-end-line="64" selection-end-column="8" />
+>>>>>>> Stashed changes
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/sc2/cleanCopyOfAgent.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -690,5 +820,7 @@ plt.show()</expression-string>
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> Stashed changes
   </component>
 </project>
