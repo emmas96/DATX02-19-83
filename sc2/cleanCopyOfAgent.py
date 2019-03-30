@@ -83,7 +83,7 @@ class SimpleAgent(base_agent.BaseAgent):
             state = self.pre_processing(state)
 
             # Imitation learning
-            if self.c < 0:
+            if self.c < 5000:
                 action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1
                 print(str(self.c))

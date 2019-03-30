@@ -14,7 +14,7 @@ from keras.utils.generic_utils import get_custom_objects
 HIDDEN_LAYER_SIZE = 40*40
 GAMMA = 0.9
 ALPHA = 0.001
-EPSILON_FROM = 1
+EPSILON_FROM = 0
 BOARD_SIZE_X = 40
 BOARD_SIZE_Y = 10
 EPSILON_TO = 0.1
@@ -62,8 +62,8 @@ class SimpleAgent(base_agent.BaseAgent):
         #self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='softmax', kernel_initializer='random_uniform'))
         self.model.add(layers.Dense(NUMSTATE, activation='relu', kernel_initializer='random_uniform'))
         #self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu', kernel_initializer='random_uniform'))
-        self.model.add(layers.Dense(NUMSTATE, activation='softmax', kernel_initializer='random_uniform'))
-        # self.model.add(layers.Activation(test))
+        self.model.add(layers.Dense(NUMSTATE, activation='linear', kernel_initializer='random_uniform'))
+        self.model.add(layers.Activation(test))
         self.model.compile(optimizer=tf.keras.optimizers.Adam(ALPHA),
                            loss='mse',
                            metrics=['accuracy'], use_multiprocessing=True)
@@ -99,7 +99,7 @@ class SimpleAgent(base_agent.BaseAgent):
             state = np.array(obs.observation.feature_screen.unit_type)
             state = self.pre_processing(state)
 
-            if(self.c < 00):
+            if(self.c < 5000):
                 action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1
                 print(str(self.c))
@@ -166,8 +166,8 @@ class SimpleAgent(base_agent.BaseAgent):
             target_f = self.model.predict(np.reshape(state, [1, NUMSTATE]))
             #target_f[0][action] = target
             #target_f = self.model.predict(np.copy(np.expand_dims(a, axis=3)))
-            #target_f[0][action] = target_f[0][action]*(0.5 + reward)
-            target_f[0][action] = target
+            target_f[0][action] = target_f[0][action]*(0.5 + reward)
+            #target_f[0][action] = target
             s.append(np.reshape(state, [1, NUMSTATE])[0])
             t.append(target_f[0])
         sa = np.asarray(s)
