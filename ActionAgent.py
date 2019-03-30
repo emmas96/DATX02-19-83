@@ -77,3 +77,7 @@ class Agent:
     # Get batch size
     def getBatchSize(self):
         return BATCH_SIZE
+
+    def get_epsilon(self):
+        return self.EPSILON
+
