@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from keras.utils.generic_utils import get_custom_objects
 
 HIDDEN_LAYER_SIZE = 40*40
-GAMMA = 0.9
+GAMMA = 0
 ALPHA = 0.001
 EPSILON_FROM = 1.0
 BOARD_SIZE_X = 40
@@ -62,7 +62,7 @@ class SimpleAgent(base_agent.BaseAgent):
         #self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='softmax', kernel_initializer='random_uniform'))
         self.model.add(layers.Dense(NUMSTATE, activation='relu', kernel_initializer='random_uniform'))
         #self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu', kernel_initializer='random_uniform'))
-        self.model.add(layers.Dense(NUMSTATE, activation='softmax', kernel_initializer='random_uniform'))
+        self.model.add(layers.Dense(NUMSTATE, activation='linear', kernel_initializer='random_uniform'))
         # self.model.add(layers.Activation(test))
         self.model.compile(optimizer=tf.keras.optimizers.Adam(ALPHA),
                            loss='mse',
@@ -99,7 +99,7 @@ class SimpleAgent(base_agent.BaseAgent):
             state = np.array(obs.observation.feature_screen.unit_type)
             state = self.pre_processing(state)
 
-            if(self.c < 00):
+            if(self.c <5000):
 
                 action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1
