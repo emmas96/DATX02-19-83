@@ -11,6 +11,7 @@ class GE:
         self.ActionQueue = deque(maxlen=8)
         self.enemyPos = None
         self.ourPos = None
+        self.enemyNat = None
         self.overlordPlace = None
 
     @staticmethod
@@ -24,6 +25,10 @@ class GE:
     @staticmethod
     def move_to(pos):
         return actions.FUNCTIONS.Move_screen("now", pos)
+
+    def get_units_by_type(self, obs, unit_type):
+        return [unit for unit in obs.observation.feature_units
+                if unit.unit_type == unit_type]
 
     def set_game_action(self, action, obs):
         print("yeah boi")
@@ -63,18 +68,25 @@ class GE:
             self.ActionQueue.append((None, actions.FUNCTIONS.Rally_Units_minimap("now", self.overlordPlace),
                                      actions.FUNCTIONS.Rally_Units_minimap.id))
         if action == 3:
-
+            spawning_pools = self.get_units_by_type(obs, units.Zerg.SpawningPool)
+            if len(spawning_pools) > 0:
+                return
             drones = [unit for unit in obs.observation.feature_units
                       if unit.unit_type == units.Zerg.Drone]
 
             if len(drones) > 0:
+
                 drone = random.choice(drones)
                 if drone.x < 0 or drone.x > 83 or drone.y < 0 or drone.y > 83:
                     return
                 self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (drone.x, drone.y)),
                                          actions.FUNCTIONS.select_point.id))
-                x = random.randint(0, 83)
-                y = random.randint(0, 83)
+                if self.ourPos == (22, 23):
+                    x = 65
+                    y = 50
+                else:
+                    x = 20
+                    y = 20
                 self.ActionQueue.append((units.Zerg.Drone, actions.FUNCTIONS.Build_SpawningPool_screen("now", (x, y)),
                                          actions.FUNCTIONS.Build_SpawningPool_screen.id))
         if action == 4:
@@ -95,6 +107,8 @@ class GE:
         if action == 5:
             self.ActionQueue.append((None, actions.FUNCTIONS.select_army("select"),
                                      actions.FUNCTIONS.select_army.id))
+            self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("now", self.enemyNat),
+                                     actions.FUNCTIONS.Attack_minimap.id))
             self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("now", self.enemyPos),
                                      actions.FUNCTIONS.Attack_minimap.id))
 

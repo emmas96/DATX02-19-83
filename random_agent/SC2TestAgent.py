@@ -68,10 +68,12 @@ class SimpleAgent(base_agent.BaseAgent):
             if np.mean(campos, axis=0).round()[1] < 32:
                 self.GE.enemyPos = (39, 44)
                 self.GE.ourPos = (22, 23)
+                self.GE.enemyNat = (22, 46)
                 self.GE.overlordPlace = (0, 0)
             else:
                 self.GE.enemyPos = (19, 21)
                 self.GE.ourPos = (36, 45)
+                self.GE.enemyNat = (36, 19)
                 self.GE.overlordPlace = (63, 63)
 
         #larva = [unit for unit in obs.observation.feature_units
