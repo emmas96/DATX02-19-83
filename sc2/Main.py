@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from multiprocessing import Process
 
-EPOCHS = 2000
+EPOCHS = 20000
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
 
@@ -59,7 +59,9 @@ def main(unused_argv):
                 # agent.save_plot_data(agent.reward / (epoch + 1))
                 #file.write("hej")
                 file = open("plot.txt", "a")
-                file.write(str(timesteps[0].observation['score_cumulative'][0]/8)+", ")
+                file.write(str(epoch) + ", ")
+                file.write(str(agent.reward) + ", ")
+                file.write(str(timesteps[0].observation['score_cumulative'][0])+", ")
                 file.write(str(agent.reward / (epoch + 1))+"\n")
                 file.close()
                 #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
