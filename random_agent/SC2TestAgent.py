@@ -69,51 +69,24 @@ class SimpleAgent(base_agent.BaseAgent):
                 self.GE.enemyPos = (39, 44)
                 self.GE.ourPos = (22, 23)
                 self.GE.overlordPlace = (0, 0)
+                self.GE.enemyExp = (32, 60)
             else:
                 self.GE.enemyPos = (19, 21)
                 self.GE.ourPos = (36, 45)
                 self.GE.overlordPlace = (63, 63)
-
-        #larva = [unit for unit in obs.observation.feature_units
-        #   if unit.unit_type == units.Zerg.Larva]
-        #actions.FUNCTIONS.Train_Overlord_quick.id in obs.observation.available_actions
-
-        #action = 0
-        #if action == "0" or action == "1" or action == "2" or action == "3" or action == "4" or action == "5":
-        #    action = int(action)
-        #else:
-        #    action = 0
+                self.GE.enemyExp = (32, 4)
 
         action = random.randint(0, 5)
 
         if self.counter == 0:
-            self.GE.set_game_action(action, obs)
             self.counter = 0
-
-        #return self.GE.get_game_action()
-        #return actions.FUNCTIONS.move_camera()
-
-        #if actions.FUNCTIONS.Train_Drone_quick.id in obs.observation.available_actions:
-        #    return actions.FUNCTIONS.Train_Drone_quick("now")
-
-        #if len(larva) != 0:
-        #    return actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y))
-        #else:
-        #    return actions.FUNCTIONS.no_op()
+            self.GE.set_game_action(action, obs)
 
         return self.GE.get_game_action(obs)
-
-    @staticmethod
-    def move_to(pos):
-        return actions.FUNCTIONS.Move_screen("now", pos)
 
     def train(self):
         mini_batch = random.sample(self.memory, self.getMemoryLength())
         for state, action, reward, next_state, done in mini_batch:
-            #print(state)
-            #print(action)
-            #print(reward)
-            #print(next_state)
             target = reward
 
             if not done:
@@ -140,3 +113,16 @@ class SimpleAgent(base_agent.BaseAgent):
     def _xy_locs(self, mask):
         y, x = mask.nonzero()
         return list(zip(x, y))
+
+    def get_state(self, obs):
+        minerals = obs.observation.player[1]
+        supply_limit = obs.observation.player[4]
+        total_supply = obs.observation.player[3]
+        army_supply = obs.observation.player[5]
+        workers = obs.observation.player[6]
+        army = obs.observation.player[8]
+
+        state = (minerals, supply_limit, total_supply, army_supply, workers, army)
+        print(state)
+
+        return
