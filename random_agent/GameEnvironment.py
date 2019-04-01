@@ -19,7 +19,6 @@ class GE:
                 if unit.unit_type == unit_type]
 
     def set_game_action(self, action, obs):
-        print("yeah boi")
         if len(self.ActionQueue) >= 1:
             return
         if action == 0:
@@ -93,7 +92,10 @@ class GE:
                                      actions.FUNCTIONS.select_army.id))
             self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("now", self.enemyPos),
                                      actions.FUNCTIONS.Attack_minimap.id))
-            self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("queued", self.enemyExp),
+        if action == 6:
+            self.ActionQueue.append((None, actions.FUNCTIONS.select_army("select"),
+                                     actions.FUNCTIONS.select_army.id))
+            self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("now", self.enemyExp),
                                      actions.FUNCTIONS.Attack_minimap.id))
 
     def get_game_action(self, obs):
