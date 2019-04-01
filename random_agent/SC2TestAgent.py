@@ -76,7 +76,7 @@ class SimpleAgent(base_agent.BaseAgent):
                 self.GE.overlordPlace = (63, 63)
                 self.GE.enemyExp = (41, 20)
 
-        if True: #true = controlled with console
+        if False: #true = controlled with console
             if len(self.GE.ActionQueue) == 0:
                 i_action = input()
                 if i_action in ("1", "2", "3", "4", "5", "6"):
@@ -133,6 +133,4 @@ class SimpleAgent(base_agent.BaseAgent):
         army = obs.observation.player[8]
 
         state = (minerals, supply_limit, total_supply, army_supply, workers, army)
-        print(state)
-
-        return
+        return state
