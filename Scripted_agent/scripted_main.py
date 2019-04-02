@@ -11,6 +11,7 @@ def main(unused_argv):
     agent = SimpleAgent()
     points = 0
     try:
+
         with sc2_env.SC2Env(
                 map_name="Simple64",
                 players=[sc2_env.Agent(sc2_env.Race.zerg),
