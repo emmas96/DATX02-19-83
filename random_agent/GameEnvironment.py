@@ -113,7 +113,7 @@ class GE:
                                          actions.FUNCTIONS.select_point.id))
                 self.ActionQueue.append((units.Zerg.Queen, actions.FUNCTIONS.Effect_InjectLarva_screen("now", (hatchery[0].x, hatchery[0].y)),
                                         actions.FUNCTIONS.Effect_InjectLarva_screen.id))
-#jag ska vara ändrad
+
     def get_game_action(self, obs):
         if len(self.ActionQueue) != 0:
             (t, a, i) = self.ActionQueue.popleft()
