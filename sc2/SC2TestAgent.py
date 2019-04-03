@@ -110,7 +110,7 @@ class SimpleAgent(base_agent.BaseAgent):
             #self.tmpmemory.append((self.oldState, self.oldAction,self.reward, state, False))
                 #print("spara")
 
-            if self.oldAction is not None:
+            if self.oldAction is not None and self.reward > 0:
                 if self.reward != self.oldScore:
                     self.memory.append((self.oldState, self.oldAction, 1, state, False))
                     self.oldScore = self.reward

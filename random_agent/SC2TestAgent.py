@@ -46,7 +46,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu'))
         self.model.add(layers.Dense(NUMSTATE,
                                     activation='linear'))
-        self.model.compile(optimizer=tf.train.AdamOptimizer(ALPHA),
+        self.model.compile(optimizer=tf.keras.optimizers.Adam(ALPHA),
                            loss='mse',
                            metrics=['accuracy'])
 
