@@ -1,7 +1,7 @@
 from absl import app
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features, units
-from SC2TestAgent import SimpleAgent
+from random_agent.SC2TestAgent import SimpleAgent
 
 EPOCHS = 100
 
@@ -28,10 +28,9 @@ def main(unused_argv):
                 agent.reset_game()
                 timesteps = env.reset()
                 agent.reset()
-
+                if agent.getMemoryLength() > agent.getBatchSize():
+                    agent.train()
                 while True:
-                    if agent.getMemoryLength() > agent.getBatchSize():
-                        agent.train()
                     step_actions = [agent.step(timesteps[0])]
                     if timesteps[0].last():
                         break

@@ -101,7 +101,7 @@ class GE:
     def get_game_action(self, obs):
         if len(self.ActionQueue) != 0:
             (t, a, i) = self.ActionQueue.popleft()
-            print(a)
+            #print(a)
             if i in obs.observation.available_actions:
                 if t is not None:
                     if self.unit_type_is_selected(obs, t):
