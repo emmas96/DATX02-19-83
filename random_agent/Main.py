@@ -30,14 +30,20 @@ def main(unused_argv):
                 agent.reset_game()
                 timesteps = env.reset()
                 agent.reset()
-                if agent.getMemoryLength() > agent.getBatchSize():
-                    agent.train()
+                i = 0
+
                 while True:
+                    if agent.getMemoryLength() > agent.getBatchSize() and i % 100 == 0:
+                        agent.train()
                     step_actions = [agent.step(timesteps[0])]
                     if timesteps[0].last():
                         break
                     timesteps = env.step(step_actions)
-
+                file = open("plot.txt", "a")
+                file.write(str(epoch + 1) + " , ")
+                file.write(str(agent.reward) + " , ")
+                file.write(str(timesteps[0].observation['score_cumulative'][0]) + "\n")
+                file.close()
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
             agent.model.save(f"model-test-{time.time()}.h5")
 

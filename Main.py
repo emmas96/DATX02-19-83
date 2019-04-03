@@ -66,7 +66,7 @@ def playFrozenLake():
     graph = live_graph()
     game = FrozenLake()
     agent = aa(game.getNumStates(), game.getNumActions())
-    agent.model = tf.keras.models.load_model("model-test-1554280339.6092622.h5")
+    #agent.model = tf.keras.models.load_model("model-test-1554280339.6092622.h5")
     num_wins = 0
     for epoch in range(EPOCHS):
         game.resetGame()
