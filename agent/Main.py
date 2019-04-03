@@ -38,7 +38,7 @@ def main(unused_argv):
                     if timesteps[0].last():
                         break
                     timesteps = env.step(step_actions)
-                file = open("plot.txt", "a")
+                file = open("plot20000epochsAlpha0.0005.txt", "a")
                 file.write(str(epoch + 1) + " , ")
                 file.write(str(agent.reward) + " , ")
                 file.write(str(timesteps[0].observation['score_cumulative'][0])  + "\n")

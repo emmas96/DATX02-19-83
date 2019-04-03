@@ -13,7 +13,7 @@ from keras.utils.generic_utils import get_custom_objects
 
 HIDDEN_LAYER_SIZE = 40*40
 GAMMA = 0
-ALPHA = 0.001
+ALPHA = 0.0005
 EPSILON_FROM = 1.0
 BOARD_SIZE_X = 40
 BOARD_SIZE_Y = 10
