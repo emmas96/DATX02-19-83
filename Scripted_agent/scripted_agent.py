@@ -7,18 +7,16 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.layers as layers
 import tensorflow.keras as keras
-import Scripted_agent.GameEnvironment as GameEnvironment
+import random_agent.GameEnvironment as GameEnvironment
 
-HIDDEN_LAYER_SIZE = 100
-GAMMA = 0.8
+HIDDEN_LAYER_SIZE = 16
+GAMMA = 0.9
 ALPHA = 0.001
 EPSILON_FROM = 1.0
-BOARD_SIZE_X = 20
-BOARD_SIZE_Y = 10
-EPSILON_TO = 0.0
-EPSILON_DECAY = 0.99
-BATCH_SIZE = 16
-NUMSTATE = 400
+EPSILON_TO = 0.2
+EPSILON_DECAY = 0.9999
+BATCH_SIZE = 128
+NUMSTATE = 6
 
 
 
@@ -86,11 +84,25 @@ class SimpleAgent(base_agent.BaseAgent):
                 self.GE.set_game_action(act,obs)
             return self.GE.get_game_action(obs)
 
-        action = random.randint(0, 6)
+        #action = random.randint(0, 6)
+
 
         if self.counter == 0:
             self.counter = 0
             if len(self.GE.ActionQueue) == 0:
+                action = self.get_action(self.get_state(obs))
+                state = self.get_state(obs)
+                #state = self.pre_processing(state)
+                if self.oldAction is not None:
+                    if self.reward != self.oldScore:
+                        self.memory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                        self.oldScore = self.reward
+                    else:
+                        self.memory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+
+                self.oldAction = action
+                self.oldState = state
+
                 self.GE.set_game_action(action, obs)
         return self.GE.get_game_action(obs)
 
