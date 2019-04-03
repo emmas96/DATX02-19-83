@@ -5,6 +5,7 @@ from TicTacToe import TicTacToe
 import tensorflow.keras as keras
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import time
 
 config = tf.ConfigProto(device_count={'GPU': 1, 'CPU': 4})
 sess = tf.Session(config=config)
@@ -65,6 +66,7 @@ def playFrozenLake():
     graph = live_graph()
     game = FrozenLake()
     agent = aa(game.getNumStates(), game.getNumActions())
+    agent.model = tf.keras.models.load_model("model-test-1554280339.6092622.h5")
     num_wins = 0
     for epoch in range(EPOCHS):
         game.resetGame()
@@ -85,6 +87,7 @@ def playFrozenLake():
                 break
 
     graph.keep_show()
+    agent.model.save(f"model-test-{time.time()}.h5")
     # print("Win rate: " + str((0.0+last_num_wins)/100.0))
 
 

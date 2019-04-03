@@ -2,13 +2,15 @@ from absl import app
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features, units
 from random_agent.SC2TestAgent import SimpleAgent
-
-EPOCHS = 100
+import tensorflow as tf
+import time
+EPOCHS = 1
 
 
 def main(unused_argv):
 
     agent = SimpleAgent()
+    agent.model = tf.keras.models.load_model("model-test-1554279092.6362414.h5")
     points = 0
     try:
 
@@ -37,6 +39,7 @@ def main(unused_argv):
                     timesteps = env.step(step_actions)
 
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
+            agent.model.save(f"model-test-{time.time()}.h5")
 
     except KeyboardInterrupt:
         pass

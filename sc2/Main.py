@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from multiprocessing import Process
+import time
 
 EPOCHS = 2000
 fig = plt.figure()
@@ -65,6 +66,7 @@ def main(unused_argv):
                 #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
                 #plt.show()
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
+            agent.model.save(f"model-test-{time.time()}.h5")
 
 
     except KeyboardInterrupt:
