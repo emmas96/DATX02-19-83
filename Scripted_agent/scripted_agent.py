@@ -52,10 +52,29 @@ class SimpleAgent(base_agent.BaseAgent):
 
 
     def get_action(self, state):
-        if np.random.rand() <= self.EPSILON:
-            return random.randrange(NUMSTATE)
-        action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
-        return np.argmax(action[0])
+        suply_limit = state[1]
+        total_suply = state[2]
+        minerals = state[0]
+        workers = state[4]
+        army = state[5]
+        nr_spawn_pools = state[6]
+
+        action = 0
+
+        #build overloard when supply is full
+        if suply_limit - total_suply <= 1:
+            action = 2
+        elif minerals > 200 and nr_spawn_pools < 1:
+            action = 3
+        elif workers < 16:
+            action = 1
+        elif army > 20:
+            action = 5
+        else:
+            action = 4
+
+        print(f"I made the action {action}")
+        return action
 
     def step(self, obs):
         super(SimpleAgent, self).step(obs)
@@ -143,6 +162,7 @@ class SimpleAgent(base_agent.BaseAgent):
         army_supply = obs.observation.player[5]
         workers = obs.observation.player[6]
         army = obs.observation.player[8]
+        nr_spawn_pools = len([unit for unit in obs.observation.feature_units if unit.unit_type == units.Zerg.SpawningPool])
 
-        state = (minerals, supply_limit, total_supply, army_supply, workers, army)
+        state = (minerals, supply_limit, total_supply, army_supply, workers, army, nr_spawn_pools)
         return state
