@@ -97,6 +97,22 @@ class GE:
                                      actions.FUNCTIONS.select_army.id))
             self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("now", self.enemyExp),
                                      actions.FUNCTIONS.Attack_minimap.id))
+        if action == 7:
+            hatchery = self.get_units_by_type(obs, units.Zerg.Hatchery)
+            spawning_pools = self.get_units_by_type(obs, units.Zerg.SpawningPool)
+            if len(spawning_pools) > 0:
+                self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (hatchery[0].x, hatchery[0].y)),
+                                     actions.FUNCTIONS.select_point.id))
+                self.ActionQueue.append((units.Zerg.Hatchery, actions.FUNCTIONS.Train_Queen_quick("now"),
+                                     actions.FUNCTIONS.Train_Queen_quick.id))
+        if action == 8:
+            queens = self.get_units_by_type(obs,units.Zerg.Queen)
+            hatchery = self.get_units_by_type(obs, units.Zerg.Hatchery)
+            if len(queens) > 0 and len(hatchery) > 0:
+                self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (queens[0].x, queens[0].y)),
+                                         actions.FUNCTIONS.select_point.id))
+                self.ActionQueue.append((units.Zerg.Queen, actions.FUNCTIONS.Effect_InjectLarva_screen("now", (hatchery[0].x, hatchery[0].y)),
+                                        actions.FUNCTIONS.Effect_InjectLarva_screen.id))
 
     def get_game_action(self, obs):
         if len(self.ActionQueue) != 0:
