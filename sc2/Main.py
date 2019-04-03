@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from multiprocessing import Process
+import time
 
 EPOCHS = 20000
 fig = plt.figure()
@@ -58,15 +59,16 @@ def main(unused_argv):
                     timesteps = env.step(step_actions)
                 # agent.save_plot_data(agent.reward / (epoch + 1))
                 #file.write("hej")
-                file = open("plot20000epochsAlpha0.0005.txt", "a")
+                file = open("plot.txt", "a")
                 file.write(str(epoch) + ", ")
                 file.write(str(agent.reward) + ", ")
-                file.write(str(timesteps[0].observation['score_cumulative'][0])+", ")
-                file.write(str(agent.reward / (epoch + 1))+"\n")
+                file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")
+                file.write(str(agent.reward / (epoch + 1)) + "\n")
                 file.close()
                 #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
                 #plt.show()
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
+            agent.model.save(f"model-test-{time.time()}.h5")
 
 
     except KeyboardInterrupt:

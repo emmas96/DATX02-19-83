@@ -1,14 +1,16 @@
 from absl import app
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features, units
-from SC2TestAgent import SimpleAgent
-
-EPOCHS = 100
+from random_agent.SC2TestAgent import SimpleAgent
+import tensorflow as tf
+import time
+EPOCHS = 1
 
 
 def main(unused_argv):
 
     agent = SimpleAgent()
+    agent.model = tf.keras.models.load_model("model-test-1554279092.6362414.h5")
     points = 0
     try:
 
@@ -28,16 +30,22 @@ def main(unused_argv):
                 agent.reset_game()
                 timesteps = env.reset()
                 agent.reset()
+                i = 0
 
                 while True:
-                    if agent.getMemoryLength() > agent.getBatchSize():
+                    if agent.getMemoryLength() > agent.getBatchSize() and i % 100 == 0:
                         agent.train()
                     step_actions = [agent.step(timesteps[0])]
                     if timesteps[0].last():
                         break
                     timesteps = env.step(step_actions)
-
+                file = open("plot.txt", "a")
+                file.write(str(epoch + 1) + " , ")
+                file.write(str(agent.reward) + " , ")
+                file.write(str(timesteps[0].observation['score_cumulative'][0]) + "\n")
+                file.close()
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
+            agent.model.save(f"model-test-{time.time()}.h5")
 
     except KeyboardInterrupt:
         pass

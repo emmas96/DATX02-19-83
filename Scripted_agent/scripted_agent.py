@@ -7,18 +7,16 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.layers as layers
 import tensorflow.keras as keras
-import Scripted_agent.GameEnvironment as GameEnvironment
+import random_agent.GameEnvironment as GameEnvironment
 
-HIDDEN_LAYER_SIZE = 100
-GAMMA = 0.8
+HIDDEN_LAYER_SIZE = 16
+GAMMA = 0.9
 ALPHA = 0.001
 EPSILON_FROM = 1.0
-BOARD_SIZE_X = 20
-BOARD_SIZE_Y = 10
-EPSILON_TO = 0.0
-EPSILON_DECAY = 0.99
-BATCH_SIZE = 16
-NUMSTATE = 400
+EPSILON_TO = 0.2
+EPSILON_DECAY = 0.9999
+BATCH_SIZE = 128
+NUMSTATE = 6
 
 
 
@@ -54,10 +52,29 @@ class SimpleAgent(base_agent.BaseAgent):
 
 
     def get_action(self, state):
-        if np.random.rand() <= self.EPSILON:
-            return random.randrange(NUMSTATE)
-        action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
-        return np.argmax(action[0])
+        suply_limit = state[1]
+        total_suply = state[2]
+        minerals = state[0]
+        workers = state[4]
+        army = state[5]
+        nr_spawn_pools = state[6]
+
+        action = 0
+
+        #build overloard when supply is full
+        if suply_limit - total_suply <= 1:
+            action = 2
+        elif minerals > 200 and nr_spawn_pools < 1:
+            action = 3
+        elif workers < 16:
+            action = 1
+        elif army > 20:
+            action = 5
+        else:
+            action = 4
+
+        print(f"I made the action {action}")
+        return action
 
     def step(self, obs):
         super(SimpleAgent, self).step(obs)
@@ -69,51 +86,48 @@ class SimpleAgent(base_agent.BaseAgent):
                 self.GE.enemyPos = (39, 44)
                 self.GE.ourPos = (22, 23)
                 self.GE.overlordPlace = (0, 0)
+                self.GE.enemyExp = (15, 48)
             else:
                 self.GE.enemyPos = (19, 21)
                 self.GE.ourPos = (36, 45)
                 self.GE.overlordPlace = (63, 63)
+                self.GE.enemyExp = (41, 20)
 
-        #larva = [unit for unit in obs.observation.feature_units
-        #   if unit.unit_type == units.Zerg.Larva]
-        #actions.FUNCTIONS.Train_Overlord_quick.id in obs.observation.available_actions
+        if False: #true = controlled with console
+            if len(self.GE.ActionQueue) == 0:
+                i_action = input()
+                if i_action in ("1", "2", "3", "4", "5", "6"):
+                    act = int(i_action)
+                else:
+                    act = 0
+                self.GE.set_game_action(act,obs)
+            return self.GE.get_game_action(obs)
 
-        #action = 0
-        #if action == "0" or action == "1" or action == "2" or action == "3" or action == "4" or action == "5":
-        #    action = int(action)
-        #else:
-        #    action = 0
+        #action = random.randint(0, 6)
 
-        action = random.randint(0, 5)
 
         if self.counter == 0:
-            self.GE.set_game_action(action, obs)
             self.counter = 0
+            if len(self.GE.ActionQueue) == 0:
+                action = self.get_action(self.get_state(obs))
+                state = self.get_state(obs)
+                #state = self.pre_processing(state)
+                if self.oldAction is not None:
+                    if self.reward != self.oldScore:
+                        self.memory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                        self.oldScore = self.reward
+                    else:
+                        self.memory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
 
-        #return self.GE.get_game_action()
-        #return actions.FUNCTIONS.move_camera()
+                self.oldAction = action
+                self.oldState = state
 
-        #if actions.FUNCTIONS.Train_Drone_quick.id in obs.observation.available_actions:
-        #    return actions.FUNCTIONS.Train_Drone_quick("now")
-
-        #if len(larva) != 0:
-        #    return actions.FUNCTIONS.select_point("select", (larva[0].x, larva[0].y))
-        #else:
-        #    return actions.FUNCTIONS.no_op()
-
+                self.GE.set_game_action(action, obs)
         return self.GE.get_game_action(obs)
-
-    @staticmethod
-    def move_to(pos):
-        return actions.FUNCTIONS.Move_screen("now", pos)
 
     def train(self):
         mini_batch = random.sample(self.memory, self.getMemoryLength())
         for state, action, reward, next_state, done in mini_batch:
-            #print(state)
-            #print(action)
-            #print(reward)
-            #print(next_state)
             target = reward
 
             if not done:
@@ -140,3 +154,15 @@ class SimpleAgent(base_agent.BaseAgent):
     def _xy_locs(self, mask):
         y, x = mask.nonzero()
         return list(zip(x, y))
+
+    def get_state(self, obs):
+        minerals = obs.observation.player[1]
+        supply_limit = obs.observation.player[4]
+        total_supply = obs.observation.player[3]
+        army_supply = obs.observation.player[5]
+        workers = obs.observation.player[6]
+        army = obs.observation.player[8]
+        nr_spawn_pools = len([unit for unit in obs.observation.feature_units if unit.unit_type == units.Zerg.SpawningPool])
+
+        state = (minerals, supply_limit, total_supply, army_supply, workers, army, nr_spawn_pools)
+        return state

@@ -14,7 +14,7 @@ keras.backend.set_session(sess)
 HIDDEN_LAYER_SIZE = 8
 GAMMA = 0.8
 ALPHA = 0.001
-EPSILON_FROM = 1.0
+EPSILON_FROM = 0
 
 EPSILON_TO = 0.0
 EPSILON_DECAY = 0.995
@@ -39,7 +39,7 @@ class Agent:
         # model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu'))
         self.model.add(layers.Dense(self.NUM_ACTIONS,
                                     activation='linear'))
-        self.model.compile(optimizer=tf.train.AdamOptimizer(ALPHA),
+        self.model.compile(optimizer=tf.keras.optimizers.Adam(ALPHA),
                            loss='mse',
                            metrics=['accuracy'])
 

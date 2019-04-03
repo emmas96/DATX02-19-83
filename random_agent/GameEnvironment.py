@@ -12,21 +12,13 @@ class GE:
         self.enemyPos = None
         self.ourPos = None
         self.overlordPlace = None
+        self.enemyExp = None
 
-    @staticmethod
-    def get_beacon_position(obs):
-        beacon = [unit for unit in obs.observation.feature_units
-                  if unit.unit_type == 317]
-        x = beacon[0].x
-        y = beacon[0].y
-        return x, y
-
-    @staticmethod
-    def move_to(pos):
-        return actions.FUNCTIONS.Move_screen("now", pos)
+    def get_units_by_type(self, obs, unit_type):
+        return [unit for unit in obs.observation.feature_units
+                if unit.unit_type == unit_type]
 
     def set_game_action(self, action, obs):
-        print("yeah boi")
         if len(self.ActionQueue) >= 1:
             return
         if action == 0:
@@ -35,10 +27,9 @@ class GE:
             self.ActionQueue.append((None, actions.FUNCTIONS.no_op(),
                                      actions.FUNCTIONS.no_op.id))
         if action == 1:
-            larva = [unit for unit in obs.observation.feature_units
-                     if unit.unit_type == units.Zerg.Larva]
-            hatchery = [unit for unit in obs.observation.feature_units
-                     if unit.unit_type == units.Zerg.Hatchery]
+            larva = self.get_units_by_type(obs, units.Zerg.Larva)
+            hatchery = self.get_units_by_type(obs, units.Zerg.Hatchery)
+
             if len(larva) == 0 or len(hatchery) == 0:
                 return
             self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (hatchery[0].x, hatchery[0].y)),
@@ -48,10 +39,9 @@ class GE:
             self.ActionQueue.append((units.Zerg.Larva, actions.FUNCTIONS.Train_Drone_quick("now"),
                                      actions.FUNCTIONS.Train_Drone_quick.id))
         if action == 2:
-            larva = [unit for unit in obs.observation.feature_units
-                     if unit.unit_type == units.Zerg.Larva]
-            hatchery = [unit for unit in obs.observation.feature_units
-                   if unit.unit_type == units.Zerg.Hatchery]
+            larva = self.get_units_by_type(obs, units.Zerg.Larva)
+            hatchery = self.get_units_by_type(obs, units.Zerg.Hatchery)
+
             if len(larva) == 0 or len(hatchery) == 0:
                 return
             self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (hatchery[0].x, hatchery[0].y)),
@@ -63,7 +53,9 @@ class GE:
             self.ActionQueue.append((None, actions.FUNCTIONS.Rally_Units_minimap("now", self.overlordPlace),
                                      actions.FUNCTIONS.Rally_Units_minimap.id))
         if action == 3:
-
+            spawning_pools = self.get_units_by_type(obs, units.Zerg.SpawningPool)
+            if len(spawning_pools) > 0:
+                return
             drones = [unit for unit in obs.observation.feature_units
                       if unit.unit_type == units.Zerg.Drone]
 
@@ -73,15 +65,18 @@ class GE:
                     return
                 self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (drone.x, drone.y)),
                                          actions.FUNCTIONS.select_point.id))
-                x = random.randint(0, 83)
-                y = random.randint(0, 83)
+                if self.ourPos == (22, 23):
+                    x = 65
+                    y = 50
+                else:
+                    x = 20
+                    y = 20
                 self.ActionQueue.append((units.Zerg.Drone, actions.FUNCTIONS.Build_SpawningPool_screen("now", (x, y)),
                                          actions.FUNCTIONS.Build_SpawningPool_screen.id))
         if action == 4:
-            larva = [unit for unit in obs.observation.feature_units
-                     if unit.unit_type == units.Zerg.Larva]
-            hatchery = [unit for unit in obs.observation.feature_units
-                        if unit.unit_type == units.Zerg.Hatchery]
+            larva = self.get_units_by_type(obs, units.Zerg.Larva)
+            hatchery = self.get_units_by_type(obs, units.Zerg.Hatchery)
+
             if len(larva) == 0 or len(hatchery) == 0:
                 return
             self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (hatchery[0].x, hatchery[0].y)),
@@ -97,11 +92,16 @@ class GE:
                                      actions.FUNCTIONS.select_army.id))
             self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("now", self.enemyPos),
                                      actions.FUNCTIONS.Attack_minimap.id))
+        if action == 6:
+            self.ActionQueue.append((None, actions.FUNCTIONS.select_army("select"),
+                                     actions.FUNCTIONS.select_army.id))
+            self.ActionQueue.append((units.Zerg.Zergling, actions.FUNCTIONS.Attack_minimap("now", self.enemyExp),
+                                     actions.FUNCTIONS.Attack_minimap.id))
 
     def get_game_action(self, obs):
         if len(self.ActionQueue) != 0:
             (t, a, i) = self.ActionQueue.popleft()
-            print(a)
+            #print(a)
             if i in obs.observation.available_actions:
                 if t is not None:
                     if self.unit_type_is_selected(obs, t):
