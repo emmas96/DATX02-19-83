@@ -4,13 +4,13 @@ from pysc2.lib import actions, features, units
 from random_agent.SC2TestAgent import SimpleAgent
 import tensorflow as tf
 import time
-EPOCHS = 1
+EPOCHS = 2000
 
 
 def main(unused_argv):
 
     agent = SimpleAgent()
-    agent.model = tf.keras.models.load_model("model-test-1554279092.6362414.h5")
+    #agent.model = tf.keras.models.load_model("model-test-1554279092.6362414.h5")
     points = 0
     try:
 
@@ -21,7 +21,7 @@ def main(unused_argv):
                 agent_interface_format=features.AgentInterfaceFormat(
                     feature_dimensions=features.Dimensions(screen=84, minimap=64),
                     use_feature_units=True),
-                step_mul=8,
+                step_mul=64,
                 game_steps_per_episode=0,
                 visualize=True) as env:
 
@@ -31,15 +31,15 @@ def main(unused_argv):
                 timesteps = env.reset()
                 agent.reset()
                 i = 0
-
+                print(str(agent.getMemoryLength()))
+                if agent.getMemoryLength() > agent.getBatchSize():
+                    agent.train()
                 while True:
-                    if agent.getMemoryLength() > agent.getBatchSize() and i % 100 == 0:
-                        agent.train()
                     step_actions = [agent.step(timesteps[0])]
                     if timesteps[0].last():
                         break
                     timesteps = env.step(step_actions)
-                file = open("plot.txt", "a")
+                file = open("plot230 epochs first test.txt", "a")
                 file.write(str(epoch + 1) + " , ")
                 file.write(str(agent.reward) + " , ")
                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + "\n")
