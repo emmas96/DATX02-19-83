@@ -10,12 +10,12 @@ import tensorflow.keras as keras
 import random_agent.GameEnvironment as GameEnvironment
 
 HIDDEN_LAYER_SIZE = 16
-GAMMA = 0.99
+GAMMA = 0.9
 ALPHA = 0.001
 EPSILON_FROM = 1.0
 EPSILON_TO = 0.2
 EPSILON_DECAY = 0.99
-BATCH_SIZE = 128
+BATCH_SIZE = 256
 NUMSTATE = 6
 
 
@@ -33,6 +33,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.NUM_ACTIONS = NUMSTATE
         self.EPSILON = EPSILON_FROM
         self.memory = deque(maxlen=5000)
+        self.tmpMemory = deque(maxlen=500)
         self.counter = 0
         self.score = 0
         self.c = 0
@@ -93,14 +94,13 @@ class SimpleAgent(base_agent.BaseAgent):
                 action = self.get_action(self.get_state(obs))
                 state = self.get_state(obs)
                 #state = self.pre_processing(state)
-                if np.random.rand() <= 0.5:
-                    if self.oldAction is not None:
-                        if self.reward != self.oldScore:
-                            self.memory.append((self.oldState, self.oldAction, obs.observation['score_cumulative'][0] - self.oldScore, state, False))
+                if self.oldAction is not None:
+                    if self.reward != self.oldScore:
+                        self.tmpMemory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                        self.oldScore = self.reward
+                    else:
+                        self.tmpMemory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
 
-                        else:
-                            self.memory.append((self.oldState, self.oldAction, obs.observation['score_cumulative'][0] - self.oldScore, state, False))
-                self.oldScore = obs.observation['score_cumulative'][0]
                 self.oldAction = action
                 self.oldState = state
 
