@@ -9,7 +9,7 @@ import matplotlib.animation as animation
 from multiprocessing import Process
 import time
 
-EPOCHS = 2000
+EPOCHS = 20000
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
 
@@ -22,7 +22,7 @@ def main(unused_argv):
     lol = agent.model.get_weights()
     x = agent.model.get_weights()
     points = 0
-    file = open("plot.txt", "w")
+    file = open("plot20000epochsAlpha0.0005.txt", "w")
     file.close()
     try:
         with sc2_env.SC2Env(
@@ -59,12 +59,13 @@ def main(unused_argv):
                     timesteps = env.step(step_actions)
                 # agent.save_plot_data(agent.reward / (epoch + 1))
                 #file.write("hej")
-                file = open("plot.txt", "a")
+                file = open("plot230 epochs first test.txt", "a")
                 file.write(str(epoch) + ", ")
                 file.write(str(agent.reward) + ", ")
                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")
                 file.write(str(agent.reward / (epoch + 1)) + "\n")
                 file.close()
+                print(str(agent.getMemoryLength()))
                 #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
                 #plt.show()
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))

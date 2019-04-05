@@ -13,12 +13,12 @@ from keras.utils.generic_utils import get_custom_objects
 
 HIDDEN_LAYER_SIZE = 40*40
 GAMMA = 0
-ALPHA = 0.001
+ALPHA = 0.0005
 EPSILON_FROM = 1.0
 BOARD_SIZE_X = 40
 BOARD_SIZE_Y = 10
-EPSILON_TO = 0.1
-EPSILON_DECAY = 0.999
+EPSILON_TO = 0.2
+EPSILON_DECAY = 0.9995
 BATCH_SIZE = 128
 NUMSTATE = 40*40
 
@@ -99,7 +99,7 @@ class SimpleAgent(base_agent.BaseAgent):
             state = np.array(obs.observation.feature_screen.unit_type)
             state = self.pre_processing(state)
 
-            if(self.c <5000):
+            if(self.c < 000):
 
                 action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1

@@ -95,10 +95,10 @@ class SimpleAgent(base_agent.BaseAgent):
                 #state = self.pre_processing(state)
                 if self.oldAction is not None:
                     if self.reward != self.oldScore:
-                        self.tmpmemory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                        self.memory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
                         self.oldScore = self.reward
                     else:
-                        self.tmpmemory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                        self.memory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
 
                 self.oldAction = action
                 self.oldState = state

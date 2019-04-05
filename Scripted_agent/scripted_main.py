@@ -30,8 +30,6 @@ def main(unused_argv):
                 agent.reset()
 
                 while True:
-                    if agent.getMemoryLength() > agent.getBatchSize():
-                        agent.train()
                     step_actions = [agent.step(timesteps[0])]
                     if timesteps[0].last():
                         break
