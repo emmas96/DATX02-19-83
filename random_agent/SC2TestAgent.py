@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.layers as layers
 import tensorflow.keras as keras
-import random_agent.GameEnvironment as GameEnvironment
+import GameEnvironment as GameEnvironment
 
 HIDDEN_LAYER_SIZE = 16
 GAMMA = 0.9
@@ -17,7 +17,7 @@ EPSILON_TO = 0.2
 EPSILON_DECAY = 0.999
 BATCH_SIZE = 128
 NUMSTATE = 6
-
+NUMACTION = 11
 
 
 class SimpleAgent(base_agent.BaseAgent):
@@ -30,7 +30,7 @@ class SimpleAgent(base_agent.BaseAgent):
         base_agent.BaseAgent.__init__(self)
         # Learning parameters
         self.NUM_STATES = NUMSTATE
-        self.NUM_ACTIONS = NUMSTATE
+        self.NUM_ACTIONS = NUMACTION
         self.EPSILON = EPSILON_FROM
         self.memory = deque(maxlen=2000)
         self.tmpMemory = deque(maxlen=500)
@@ -69,23 +69,23 @@ class SimpleAgent(base_agent.BaseAgent):
                 self.GE.ourPos = (22, 23)
                 self.GE.overlordPlace = (0, 0)
                 self.GE.enemyExp = (15, 48)
+                self.GE.NatExp = (41, 20)
             else:
                 self.GE.enemyPos = (19, 21)
                 self.GE.ourPos = (36, 45)
                 self.GE.overlordPlace = (63, 63)
                 self.GE.enemyExp = (41, 20)
+                self.GE.NatExp = (15, 48)
 
         if False: #true = controlled with console
             if len(self.GE.ActionQueue) == 0:
                 i_action = input()
-                if i_action in ("1", "2", "3", "4", "5", "6"):
+                if i_action in ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"):
                     act = int(i_action)
                 else:
                     act = 0
                 self.GE.set_game_action(act,obs)
             return self.GE.get_game_action(obs)
-
-        #action = random.randint(0, 6)
 
 
         if self.counter == 0:
