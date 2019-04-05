@@ -10,7 +10,7 @@ import tensorflow.keras as keras
 import random_agent.GameEnvironment as GameEnvironment
 
 HIDDEN_LAYER_SIZE = 16
-GAMMA = 0.9
+GAMMA = 0.99
 ALPHA = 0.001
 EPSILON_FROM = 1.0
 EPSILON_TO = 0.2
@@ -95,7 +95,7 @@ class SimpleAgent(base_agent.BaseAgent):
                 #state = self.pre_processing(state)
                 if np.random.rand() <= 0.5:
                     if self.oldAction is not None:
-                        if obs.observation['score_cumulative'][0] != self.oldScore:
+                        if self.reward != self.oldScore:
                             self.memory.append((self.oldState, self.oldAction, obs.observation['score_cumulative'][0] - self.oldScore, state, False))
 
                         else:
