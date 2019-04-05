@@ -39,12 +39,22 @@ def main(unused_argv):
                     if timesteps[0].last():
                         break
                     timesteps = env.step(step_actions)
-                file = open("plot230 epochs first test.txt", "a")
+                file = open("plot.txt", "a")
                 file.write(str(epoch + 1) + " , ")
                 file.write(str(agent.reward) + " , ")
                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + "\n")
                 file.close()
                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
+                for state, action, reward, next_state, done in agent.tmpMemory:
+                    if(i > agent.reward):
+                        agent.memory.append(
+                            (state, action, reward * 2, next_state, False))
+                    else:
+                        agent.memory.append(
+                            (state, action, reward, next_state, False))
+                i = agent.reward
+
+
             agent.model.save(f"model-test-{time.time()}.h5")
 
     except KeyboardInterrupt:

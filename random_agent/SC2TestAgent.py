@@ -32,7 +32,8 @@ class SimpleAgent(base_agent.BaseAgent):
         self.NUM_STATES = NUMSTATE
         self.NUM_ACTIONS = NUMSTATE
         self.EPSILON = EPSILON_FROM
-        self.memory = deque(maxlen=500)
+        self.memory = deque(maxlen=2000)
+        self.tmpMemory = deque(maxlen=500)
         self.counter = 0
         self.score = 0
         self.c = 0
@@ -95,10 +96,10 @@ class SimpleAgent(base_agent.BaseAgent):
                 #state = self.pre_processing(state)
                 if self.oldAction is not None:
                     if self.reward != self.oldScore:
-                        self.memory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                        self.tmpMemory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
                         self.oldScore = self.reward
                     else:
-                        self.memory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                        self.tmpMemory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
 
                 self.oldAction = action
                 self.oldState = state
