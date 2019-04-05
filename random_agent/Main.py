@@ -10,7 +10,7 @@ EPOCHS = 1
 def main(unused_argv):
 
     agent = SimpleAgent()
-    agent.model = tf.keras.models.load_model("model-test-1554279092.6362414.h5")
+    #agent.model = tf.keras.models.load_model("model-test-1554279092.6362414.h5")
     points = 0
     try:
 
