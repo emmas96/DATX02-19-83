@@ -52,7 +52,6 @@ class SimpleAgent(base_agent.BaseAgent):
                            loss='mse',
                            metrics=['accuracy'])
 
-
     def get_action(self, state):
         if np.random.rand() <= self.EPSILON:
             return random.randrange(NUMSTATE)
@@ -70,23 +69,25 @@ class SimpleAgent(base_agent.BaseAgent):
                 self.GE.ourPos = (22, 23)
                 self.GE.overlordPlace = (0, 0)
                 self.GE.enemyExp = (15, 48)
+                self.GE.NatExp = (41, 20)
             else:
                 self.GE.enemyPos = (19, 21)
                 self.GE.ourPos = (36, 45)
                 self.GE.overlordPlace = (63, 63)
                 self.GE.enemyExp = (41, 20)
+                self.GE.NatExp = (15, 48)
 
         if False: #true = controlled with console
             if len(self.GE.ActionQueue) == 0:
                 i_action = input()
-                if i_action in ("1", "2", "3", "4", "5", "6", "7", "8"):
+                if i_action in ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"):
                     act = int(i_action)
                 else:
                     act = 0
                 self.GE.set_game_action(act,obs)
             return self.GE.get_game_action(obs)
 
-        action = random.randint(0, 8)
+        action = random.randint(0, 10)
 
         if self.counter == 0:
             self.counter = 0
