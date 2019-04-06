@@ -1,7 +1,7 @@
 from absl import app
 from pysc2.env import sc2_env
 from pysc2.lib import actions, features, units
-from random_agent.SC2TestAgent import SimpleAgent
+from SC2TestAgent import SimpleAgent
 import tensorflow as tf
 import time
 EPOCHS = 2000
@@ -53,7 +53,6 @@ def main(unused_argv):
                         agent.memory.append(
                             (state, action, -1, next_state, False))
                 i = agent.reward
-
 
             agent.model.save(f"model-test-{time.time()}.h5")
 
