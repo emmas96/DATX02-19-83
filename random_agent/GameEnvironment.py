@@ -33,6 +33,8 @@ class GE:
 
             if len(larva) == 0 or len(hatchery) == 0:
                 return
+            if hatchery[0].x < 0 or hatchery[0].x > 83 or hatchery[0].y < 0 or hatchery[0].y > 83:
+                return
             self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (hatchery[0].x, hatchery[0].y)),
                                      actions.FUNCTIONS.select_point.id))
             self.ActionQueue.append((units.Zerg.Hatchery, actions.FUNCTIONS.select_larva(),
@@ -44,6 +46,8 @@ class GE:
             hatchery = self.get_units_by_type(obs, units.Zerg.Hatchery)
 
             if len(larva) == 0 or len(hatchery) == 0:
+                return
+            if hatchery[0].x < 0 or hatchery[0].x > 83 or hatchery[0].y < 0 or hatchery[0].y > 83:
                 return
             self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (hatchery[0].x, hatchery[0].y)),
                                      actions.FUNCTIONS.select_point.id))
@@ -80,6 +84,8 @@ class GE:
 
             if len(larva) == 0 or len(hatchery) == 0:
                 return
+            if hatchery[0].x < 0 or hatchery[0].x > 83 or hatchery[0].y < 0 or hatchery[0].y > 83:
+                return
             self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (hatchery[0].x, hatchery[0].y)),
                                      actions.FUNCTIONS.select_point.id))
             self.ActionQueue.append((units.Zerg.Hatchery, actions.FUNCTIONS.select_larva(),
@@ -112,6 +118,8 @@ class GE:
             hatchery = self.get_units_by_type(obs, units.Zerg.Hatchery)
             spawning_pools = self.get_units_by_type(obs, units.Zerg.SpawningPool)
             if len(spawning_pools) > 0 and len(hatchery) > 0:
+                if hatchery[0].x < 0 or hatchery[0].x > 83 or hatchery[0].y < 0 or hatchery[0].y > 83:
+                    return
                 self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (hatchery[0].x, hatchery[0].y)),
                                      actions.FUNCTIONS.select_point.id))
                 self.ActionQueue.append((units.Zerg.Hatchery, actions.FUNCTIONS.Train_Queen_quick("now"),
@@ -120,6 +128,10 @@ class GE:
             queens = self.get_units_by_type(obs, units.Zerg.Queen)
             hatchery = self.get_units_by_type(obs, units.Zerg.Hatchery)
             if len(queens) > 0 and len(hatchery) > 0:
+                if queens[0].x < 0 or queens[0].x > 83 or queens[0].y < 0 or queens[0].y > 83:
+                    return
+                if hatchery[0].x < 0 or hatchery[0].x > 83 or hatchery[0].y < 0 or hatchery[0].y > 83:
+                    return
                 self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (queens[0].x, queens[0].y)),
                                          actions.FUNCTIONS.select_point.id))
                 self.ActionQueue.append((units.Zerg.Queen, actions.FUNCTIONS.Effect_InjectLarva_screen("now", (hatchery[0].x, hatchery[0].y)),
