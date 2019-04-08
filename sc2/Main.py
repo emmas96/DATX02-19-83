@@ -9,7 +9,7 @@ import matplotlib.animation as animation
 from multiprocessing import Process
 import time
 
-EPOCHS = 20000
+EPOCHS = 200000
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
 
@@ -59,7 +59,7 @@ def main(unused_argv):
                     timesteps = env.step(step_actions)
                 # agent.save_plot_data(agent.reward / (epoch + 1))
                 #file.write("hej")
-                file = open("plot230 epochs first test.txt", "a")
+                file = open("plot200000.txt", "a")
                 file.write(str(epoch) + ", ")
                 file.write(str(agent.reward) + ", ")
                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")

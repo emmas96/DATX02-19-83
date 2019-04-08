@@ -21,7 +21,7 @@ def main(unused_argv):
                 agent_interface_format=features.AgentInterfaceFormat(
                     feature_dimensions=features.Dimensions(screen=84, minimap=64),
                     use_feature_units=True),
-                step_mul=64,
+                step_mul=32,
                 game_steps_per_episode=0,
                 visualize=True) as env:
 
@@ -36,6 +36,8 @@ def main(unused_argv):
                     agent.train()
                 while True:
                     step_actions = [agent.step(timesteps[0])]
+                    if(step_actions == None):
+                        print("fel")
                     if timesteps[0].last():
                         break
                     timesteps = env.step(step_actions)
@@ -48,10 +50,10 @@ def main(unused_argv):
                 for state, action, reward, next_state, done in agent.tmpMemory:
                     if(i < agent.reward):
                         agent.memory.append(
-                            (state, action, 1, next_state, False))
+                            (state, action, timesteps[0].reward, next_state, False))
                     else:
                         agent.memory.append(
-                            (state, action, -1, next_state, False))
+                            (state, action, timesteps[0].reward, next_state, False))
                 i = agent.reward
 
             agent.model.save(f"model-test-{time.time()}.h5")

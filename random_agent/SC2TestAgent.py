@@ -33,7 +33,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.NUM_ACTIONS = NUMACTION
         self.EPSILON = EPSILON_FROM
         self.memory = deque(maxlen=5000)
-        self.tmpMemory = deque(maxlen=500)
+        self.tmpMemory = deque(maxlen=5000)
         self.counter = 0
         self.score = 0
         self.c = 0
@@ -45,7 +45,7 @@ class SimpleAgent(base_agent.BaseAgent):
                                     input_dim=NUMSTATE,
                                     activation='relu'))
         self.model.add(layers.Dense(HIDDEN_LAYER_SIZE, activation='relu'))
-        self.model.add(layers.Dense(NUMSTATE,
+        self.model.add(layers.Dense(NUMACTION,
                                     activation='linear'))
         self.model.compile(optimizer=tf.keras.optimizers.Adam(ALPHA),
                            loss='mse',
@@ -54,7 +54,8 @@ class SimpleAgent(base_agent.BaseAgent):
 
     def get_action(self, state):
         if np.random.rand() <= self.EPSILON:
-            return random.randrange(NUMSTATE)
+            return random.randrange(NUMACTION)
+        print("ditt problem")
         action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
         return np.argmax(action[0])
 
@@ -92,6 +93,7 @@ class SimpleAgent(base_agent.BaseAgent):
             self.counter = 0
             if len(self.GE.ActionQueue) == 0:
                 action = self.get_action(self.get_state(obs))
+                print(str(action))
                 state = self.get_state(obs)
                 #state = self.pre_processing(state)
                 if self.oldAction is not None:
