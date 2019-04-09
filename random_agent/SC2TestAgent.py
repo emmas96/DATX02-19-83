@@ -55,7 +55,7 @@ class SimpleAgent(base_agent.BaseAgent):
     def get_action(self, state):
         if np.random.rand() <= self.EPSILON:
             return random.randrange(NUMACTION)
-        print("ditt problem")
+        #print("ditt problem")
         action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
         return np.argmax(action[0])
 
@@ -93,15 +93,15 @@ class SimpleAgent(base_agent.BaseAgent):
             self.counter = 0
             if len(self.GE.ActionQueue) == 0:
                 action = self.get_action(self.get_state(obs))
-                print(str(action))
+                #print(str(action))
                 state = self.get_state(obs)
                 #state = self.pre_processing(state)
                 if self.oldAction is not None:
-                    if self.reward != self.oldScore:
-                        self.tmpMemory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                    if self.reward > self.oldScore:
+                        self.tmpMemory.append((self.oldState, self.oldAction, 1, state, False))
                         self.oldScore = self.reward
                     else:
-                        self.tmpMemory.append((self.oldState, self.oldAction, self.reward - self.oldScore, state, False))
+                        self.tmpMemory.append((self.oldState, self.oldAction, 0, state, False))
 
                 self.oldAction = action
                 self.oldState = state

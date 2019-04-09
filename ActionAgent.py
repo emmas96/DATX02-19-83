@@ -14,19 +14,24 @@ keras.backend.set_session(sess)
 HIDDEN_LAYER_SIZE = 8
 GAMMA = 0.8
 ALPHA = 0.001
-EPSILON_FROM = 0
+EPSILON_FROM = 1.0
 
 EPSILON_TO = 0.0
 EPSILON_DECAY = 0.995
 BATCH_SIZE = 32
+IMITATION = 0
 replays = [2, 2, 1, 2, 1, 1]
 
 
 class Agent:
-    def __init__(self, num_states, num_actions):
+    def __init__(self, num_states, num_actions, Gamma, Et, Mb, imi):
         # Learning parameters
         self.NUM_STATES = num_states
         self.NUM_ACTIONS = num_actions
+        EPSILON_TO = Et
+        GAMMA = Gamma
+        BATCH_SIZE = Mb
+        IMITATION = imi
         self.EPSILON = EPSILON_FROM
         self.memory = deque(maxlen=1000)
         self.counter = 0
@@ -66,7 +71,7 @@ class Agent:
     # Get next action to preform, using Q-values
     # and the epsilon-greedy policy
     def getAction(self, state):
-        if self.counter < 32:
+        if self.counter < IMITATION:
             self.counter += 1
             return replays[(self.counter-1) % 6]
         if np.random.rand() <= self.EPSILON:
