@@ -132,7 +132,7 @@ class GE:
                     return
                 if hatchery[0].x < 0 or hatchery[0].x > 83 or hatchery[0].y < 0 or hatchery[0].y > 83:
                     return
-                self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select", (queens[0].x, queens[0].y)),
+                self.ActionQueue.append((None, actions.FUNCTIONS.select_point("select_all_type", (queens[0].x, queens[0].y)),
                                          actions.FUNCTIONS.select_point.id))
                 self.ActionQueue.append((units.Zerg.Queen, actions.FUNCTIONS.Effect_InjectLarva_screen("now", (hatchery[0].x, hatchery[0].y)),
                                         actions.FUNCTIONS.Effect_InjectLarva_screen.id))

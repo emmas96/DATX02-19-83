@@ -58,19 +58,33 @@ class SimpleAgent(base_agent.BaseAgent):
         workers = state[4]
         army = state[5]
         nr_spawn_pools = state[6]
+        nr_queens = state[7]
 
         action = 0
 
+        print(f"NR Queens:{nr_queens}, NR Pools:{nr_spawn_pools}")
+
         #build overloard when supply is full
         if suply_limit - total_suply <= 1:
+            #Build overloard
             action = 2
         elif minerals > 200 and nr_spawn_pools < 1:
+            #Spawnpool
             action = 3
         elif workers < 16:
+            #Build drone
             action = 1
+        elif minerals > 150 and nr_spawn_pools >= 1 and nr_queens < 1:
+            #Build queen
+            action = 9
+        elif nr_queens > 0 :
+            #spawn larva
+            action = 0
         elif army > 20:
+            #Attack
             action = 5
         else:
+            #Build zergling
             action = 4
 
         print(f"I made the action {action}")
@@ -155,6 +169,10 @@ class SimpleAgent(base_agent.BaseAgent):
         y, x = mask.nonzero()
         return list(zip(x, y))
 
+    def get_units_by_type(self, obs, unit_type):
+        return [unit for unit in obs.observation.feature_units
+                if unit.unit_type == unit_type]
+
     def get_state(self, obs):
         minerals = obs.observation.player[1]
         supply_limit = obs.observation.player[4]
@@ -162,7 +180,8 @@ class SimpleAgent(base_agent.BaseAgent):
         army_supply = obs.observation.player[5]
         workers = obs.observation.player[6]
         army = obs.observation.player[8]
-        nr_spawn_pools = len([unit for unit in obs.observation.feature_units if unit.unit_type == units.Zerg.SpawningPool])
+        nr_spawn_pools = len(self.get_units_by_type(obs, units.Zerg.SpawningPool))
+        queens = len(self.get_units_by_type(obs, units.Zerg.Queen))
 
-        state = (minerals, supply_limit, total_supply, army_supply, workers, army, nr_spawn_pools)
+        state = (minerals, supply_limit, total_supply, army_supply, workers, army, nr_spawn_pools, queens)
         return state
