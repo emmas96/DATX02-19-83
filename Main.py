@@ -1,3 +1,5 @@
+import _thread as thread
+
 from ActionAgent import Agent as aa
 from PositionAgent import Agent as pa
 from FrozenLake import FrozenLake
@@ -63,9 +65,8 @@ class live_graph():
     def keep_show(self):
         plt.show()
 
-def playFrozenLake(Gamma, Et, Mb, imi):
-
-
+def playFrozenLake(Gamma, Et, Mb, imi, index):
+    games = []
     #graph = live_graph()
     game = FrozenLake()
     agent = aa(game.getNumStates(), game.getNumActions(), Gamma, Et, Mb, imi)
@@ -82,11 +83,13 @@ def playFrozenLake(Gamma, Et, Mb, imi):
             if agent.getMemoryLength() > agent.getBatchSize():
                 agent.train()
             if done:
-                file = open("Data/plot_Train_FROZEN_G" + str(Gamma) + "_Et" + str(Et)+"_Mb" + str(Mb) +"_imi" + str(imi) +".txt", "a")
+                file = open(f"Data/Frozen/plot_Train_FROZEN_G{Gamma}_Et{Et}_Mb{Mb}_imi{imi}_I_{index}.txt", "a")
                 file.write(str(epoch + 1) + " , ")
                 file.write(str(reward) + " , ")
-                file.write(str(num_wins) + "\n")
+                file.write(str(num_wins) + ", ")
+                file.write(str(agent.EPSILON) + "\n")
                 file.close()
+                games.append((epoch + 1, reward, num_wins))
                 #print("epoch: {}/{}, reward: {}".format(epoch, EPOCHS, reward))
                 #print("number of wins: " + str(num_wins) + ", number of moves: " + str(move + 1) + " Epsilon: " + str(agent.EPSILON))
 
@@ -94,32 +97,34 @@ def playFrozenLake(Gamma, Et, Mb, imi):
                 # print(str(epoch) + "," + str(num_wins))
                 break
     num_wins = 0
+    print("valid " + str(index))
     for epoch in range(10):
+        #print("valid " + str(epoch))
         game.resetGame()
         for move in range(MOVES):
             state = game.getState()
             action = agent.getAction(state)
             agent.EPSILON = 0
             next_state, reward, done = game.play(action)
-
             num_wins += reward
             if done:
-                file = open("Data/plot_Valid_FROZEN_G" + str(Gamma) + "_Et" + str(Et) + "_Mb" + str(Mb) + "_imi" + str(
-                    imi) + ".txt", "a")
-                file.write(str(epoch + 1) + " , ")
-                file.write(str(reward) + " , ")
-                file.write(str(num_wins) + "\n")
-                file.close()
                 #graph.update_graph(epoch, num_wins, agent.get_epsilon())
                 # print(str(epoch) + "," + str(num_wins))
                 break
+        file = open(f"Data/Frozen/plot_Valid_FROZEN_G{Gamma}_Et{Et}_Mb{Mb}_imi{imi}_I_{index}.txt", "a")
+        file.write(str(epoch + 1) + " , ")
+        file.write(str(reward) + " , ")
+        file.write(str(num_wins) + "\n")
+        file.close()
 
     #graph.keep_show()
-    agent.model.save(f"model-test-{time.time()}.h5")
+    #agent.model.save(f"model-test-{time.time()}.h5")
+
     # print("Win rate: " + str((0.0+last_num_wins)/100.0))
 
 
 def playTicTacToe():
+
     game = TicTacToe()
     agentX = pa(game.getNumStates(), game.getNumActions())
     agentO = pa(game.getNumStates(), game.getNumActions())
@@ -186,9 +191,17 @@ def main():
     EPOCHS = 200
     VALIDATE = 10
     #playFrozenLake(0.8,0,32,0)
-    for g in np.arange(0.5, 1.1, 0.1):
+    for g in [0.5,0.6,0.7,0.8,0.9,1]:
             for mb in [2,8,16,32,64]:
-                playFrozenLake(g, 0, mb, 0)
+                playFrozenLake(g, 0, mb, 0, 0)
+                playFrozenLake(g, 0, mb, 0, 1)
+                playFrozenLake(g, 0, mb, 0, 2)
+                playFrozenLake(g, 0, mb, 0, 3)
+                playFrozenLake(g, 0, mb, 0, 4)
+
+
+
+
 
 
 
