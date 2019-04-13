@@ -59,10 +59,11 @@ class SimpleAgent(base_agent.BaseAgent):
         army = state[5]
         nr_spawn_pools = state[6]
         nr_queens = state[7]
+        amount_energy = state[8]
 
         action = 0
 
-        print(f"NR Queens:{nr_queens}, NR Pools:{nr_spawn_pools}")
+        print(f"\nNR Queens:{nr_queens}, NR Pools:{nr_spawn_pools}, Energy:{amount_energy}")
 
         #build overloard when supply is full
         if suply_limit - total_suply <= 1:
@@ -77,9 +78,9 @@ class SimpleAgent(base_agent.BaseAgent):
         elif minerals > 150 and nr_spawn_pools >= 1 and nr_queens < 1:
             #Build queen
             action = 9
-        elif nr_queens > 0 :
+        elif nr_queens > 0 and amount_energy > 25:
             #spawn larva
-            action = 0
+            action = 10
         elif army > 20:
             #Attack
             action = 5
@@ -102,7 +103,7 @@ class SimpleAgent(base_agent.BaseAgent):
                 self.GE.overlordPlace = (0, 0)
                 self.GE.enemyExp = (15, 48)
             else:
-                self.GE.enemyPos = (19, 21)
+                self.GE.enemyPos = (16, 22)
                 self.GE.ourPos = (36, 45)
                 self.GE.overlordPlace = (63, 63)
                 self.GE.enemyExp = (41, 20)
@@ -181,7 +182,11 @@ class SimpleAgent(base_agent.BaseAgent):
         workers = obs.observation.player[6]
         army = obs.observation.player[8]
         nr_spawn_pools = len(self.get_units_by_type(obs, units.Zerg.SpawningPool))
-        queens = len(self.get_units_by_type(obs, units.Zerg.Queen))
+        queens = self.get_units_by_type(obs, units.Zerg.Queen)
+        if len(queens) > 0:
+            amount_energy = max([q.energy for q in queens])
+        else:
+            amount_energy = 0
 
-        state = (minerals, supply_limit, total_supply, army_supply, workers, army, nr_spawn_pools, queens)
+        state = (minerals, supply_limit, total_supply, army_supply, workers, army, nr_spawn_pools, len(queens), amount_energy)
         return state
