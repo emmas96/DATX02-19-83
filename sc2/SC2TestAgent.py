@@ -12,14 +12,11 @@ import matplotlib.pyplot as plt
 from keras.utils.generic_utils import get_custom_objects
 
 HIDDEN_LAYER_SIZE = 40*40
-GAMMA = 0
-ALPHA = 0.0005
+ALPHA = 0.001
 EPSILON_FROM = 1.0
 BOARD_SIZE_X = 40
 BOARD_SIZE_Y = 10
-EPSILON_TO = 0.2
-EPSILON_DECAY = 0.9995
-BATCH_SIZE = 128
+
 NUMSTATE = 40*40
 
 config = tf.ConfigProto(device_count={'GPU': 1, 'CPU': 8})
@@ -41,6 +38,10 @@ class SimpleAgent(base_agent.BaseAgent):
         # Learning parameters
         self.NUM_STATES = NUMSTATE
         self.NUM_ACTIONS = NUMSTATE
+        self.GAMMA = 0
+        self.EPSILON_TO = 0.2
+        self.EPSILON_DECAY = 0.9995
+        self.BATCH_SIZE = 128
         self.EPSILON = EPSILON_FROM
         self.memory = deque(maxlen=200)
         self.tmpmemory = deque(maxlen=50)
@@ -148,7 +149,7 @@ class SimpleAgent(base_agent.BaseAgent):
 
 
     def train(self):
-        mini_batch = random.sample(self.memory, BATCH_SIZE)
+        mini_batch = random.sample(self.memory, self.BATCH_SIZE)
         s = []
         t = []
 
@@ -162,7 +163,7 @@ class SimpleAgent(base_agent.BaseAgent):
             a = np.expand_dims(next_state, axis=0)
             #print(str(state.shape))
             if not done:
-                target = reward + GAMMA * np.amax(self.model.predict(np.reshape(next_state, [1, NUMSTATE])))
+                target = reward + self.GAMMA * np.amax(self.model.predict(np.reshape(next_state, [1, NUMSTATE])))
 
                 #target = reward + GAMMA * np.amax(self.model.predict(np.copy(np.expand_dims(a, axis=3))))
             target_f = self.model.predict(np.reshape(state, [1, NUMSTATE]))
@@ -178,17 +179,17 @@ class SimpleAgent(base_agent.BaseAgent):
             #b = np.expand_dims(state, axis=0)
             #self.model.fit(np.expand_dims(b, axis=3), target_f, epochs=1, verbose=0)
 
-        if self.EPSILON > EPSILON_TO:
-            self.EPSILON *= EPSILON_DECAY
+        if self.EPSILON > self.EPSILON_TO:
+            self.EPSILON *= self.EPSILON_DECAY
 
     def get_batch_size(self):
-        return BATCH_SIZE
+        return self.BATCH_SIZE
 
     def getMemoryLength(self):
         return len(self.memory)
 
     def getBatchSize(self):
-        return BATCH_SIZE
+        return self.BATCH_SIZE
 
     def reset_game(self):
         self.oldScore = 0
