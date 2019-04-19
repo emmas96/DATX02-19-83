@@ -9,71 +9,118 @@ import matplotlib.animation as animation
 from multiprocessing import Process
 import time
 
-EPOCHS = 200000
+EPOCHS = 50
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
 
 
 
 def main(unused_argv):
-    print("Jag lovar du är en duktig agent")
-    agent = SimpleAgent()
-    #agent = ConvAgent()
-    lol = agent.model.get_weights()
-    x = agent.model.get_weights()
-    points = 0
-    file = open("plot20000epochsAlpha0.0005.txt", "w")
-    file.close()
-    try:
-        with sc2_env.SC2Env(
-                map_name="MoveToBeacon",
-                players=[sc2_env.Agent(sc2_env.Race.terran)],
-                agent_interface_format=features.AgentInterfaceFormat(
-                    feature_dimensions=features.Dimensions(screen=40, minimap=10),
-                    use_feature_units=True),
-                step_mul=220,
-                game_steps_per_episode=0,
-                visualize=True) as env:
+    for gamma in [0,0.2,0.4,0.6,0.8,1]:
+        for Mb in [4,8,32,64,128]:
+            for Et in [0.1,0.2,0.3]:
+                for index in [0,1,2,3,4]:
+                    print("Jag lovar du är en duktig agent")
+                    agent = None
+                    agent = SimpleAgent()
 
-            agent.setup(env.observation_spec(), env.action_spec())
-            for epoch in range(EPOCHS):
-                agent.reset_game()
-                timesteps = env.reset()
-                agent.reset()
-                if agent.getMemoryLength() > agent.getBatchSize():
-                    agent.train()
-                    print(str(agent.getMemoryLength()))
-                while True:
-                    step_actions = [agent.step(timesteps[0])]
-                    if timesteps[0].last():
-                        for state, action, reward, next_state, done in agent.tmpmemory:
-                            if next_state is not None and state is not None:
-                                bla = timesteps[0].observation['score_cumulative'][0]
-                                # TEMP VÄRDE 0.2
-                                bla *= 0.2
-                                if bla > 0:
-                                    agent.memory.append((state, action, reward, next_state, done))
-                        agent.tmpmemory.clear()
-                        print("Egna action: " + str(agent.oa))
-                        break
-                    timesteps = env.step(step_actions)
-                # agent.save_plot_data(agent.reward / (epoch + 1))
-                #file.write("hej")
-                file = open("plot200000.txt", "a")
-                file.write(str(epoch) + ", ")
-                file.write(str(agent.reward) + ", ")
-                file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")
-                file.write(str(agent.reward / (epoch + 1)) + "\n")
-                file.close()
-                print(str(agent.getMemoryLength()))
-                #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
-                #plt.show()
-                print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
-            agent.model.save(f"model-test-{time.time()}.h5")
+                    agent.BATCH_SIZE = Mb
+                    agent.EPSILON_TO = Et
+                    agent.GAMMA = gamma
+                    #agent = ConvAgent()
+                    #lol = agent.model.get_weights()
+                    #x = agent.model.get_weights()
+                    points = 0
+
+                    try:
+                        with sc2_env.SC2Env(
+                                map_name="MoveToBeacon",
+                                players=[sc2_env.Agent(sc2_env.Race.terran)],
+                                agent_interface_format=features.AgentInterfaceFormat(
+                                    feature_dimensions=features.Dimensions(screen=40, minimap=10),
+                                    use_feature_units=True),
+                                step_mul=220,
+                                game_steps_per_episode=0,
+                                visualize=True) as env:
+
+                            agent.setup(env.observation_spec(), env.action_spec())
+                            for epoch in range(EPOCHS):
+                                agent.reset_game()
+                                timesteps = env.reset()
+                                agent.reset()
+                                if agent.getMemoryLength() > agent.getBatchSize():
+                                    agent.train()
+                                while True:
+                                    step_actions = [agent.step(timesteps[0])]
+                                    if timesteps[0].last():
+                                        for state, action, reward, next_state, done in agent.tmpmemory:
+                                            if next_state is not None and state is not None:
+                                                bla = timesteps[0].observation['score_cumulative'][0]
+                                                # TEMP VÄRDE 0.2
+                                                bla *= 0.2
+                                                if bla > 0:
+                                                    agent.memory.append((state, action, reward, next_state, done))
+                                        agent.tmpmemory.clear()
+                                        print("Egna action: " + str(agent.oa))
+                                        break
+                                    timesteps = env.step(step_actions)
+                                # agent.save_plot_data(agent.reward / (epoch + 1))
+                                #file.write("hej")
+                                file = open(f"Data/MTB/plot_Train_FROZEN_G{gamma}_Et{Et}_Mb{Mb}_imi{0}_I_{index}.txt", "a")
+                                file.write(str(epoch) + ", ")
+                                file.write(str(agent.reward) + ", ")
+                                file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")
+                                file.write(str(agent.reward / (epoch + 1)) + ", ")
+                                file.write(str(agent.EPSILON) + "\n")
+                                file.close()
+                                print(str(agent.getMemoryLength()))
+                                #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
+                                #plt.show()
+                                print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, 100, agent.reward, agent.EPSILON))
+                            #agent.model.save(f"model-test-{time.time()}.h5")
+                            #Validate
+                            for epoch in range(100):
+                                agent.reset_game()
+                                agent.BATCH_SIZE = Mb
+                                agent.EPSILON = Et
+                                agent.EPSILON_TO = Et
+                                agent.GAMMA = gamma
+                                agent.reward = 0
+                                timesteps = env.reset()
+                                agent.reset()
+
+                                while True:
+                                    step_actions = [agent.step(timesteps[0])]
+                                    if timesteps[0].last():
+                                        for state, action, reward, next_state, done in agent.tmpmemory:
+                                            if next_state is not None and state is not None:
+                                                bla = timesteps[0].observation['score_cumulative'][0]
+                                                # TEMP VÄRDE 0.2
+                                                bla *= 0.2
+                                                if bla > 0:
+                                                    agent.memory.append((state, action, reward, next_state, done))
+                                        agent.tmpmemory.clear()
+                                        print("Egna action: " + str(agent.oa))
+                                        break
+                                    timesteps = env.step(step_actions)
+                                # agent.save_plot_data(agent.reward / (epoch + 1))
+                                #file.write("hej")
+                                file = open(f"Data/MTB/plot_Valid_FROZEN_G{gamma}_Et{Et}_Mb{Mb}_imi{0}_I_{index}.txt", "a")
+                                file.write(str(epoch) + ", ")
+                                file.write(str(agent.reward) + ", ")
+                                file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")
+                                file.write(str(agent.reward / (epoch + 1)) + ", ")
+                                file.write(str(agent.EPSILON) + "\n")
+                                file.close()
+                                #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
+                                #plt.show()
+                                print("VALID: epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, EPOCHS, agent.reward, agent.EPSILON))
 
 
-    except KeyboardInterrupt:
-        pass
+
+
+                    except KeyboardInterrupt:
+                        pass
 
 
 def plotdata(i):
