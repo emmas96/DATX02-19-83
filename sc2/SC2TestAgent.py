@@ -40,7 +40,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.NUM_ACTIONS = NUMSTATE
         self.GAMMA = 0
         self.EPSILON_TO = 0.2
-        self.EPSILON_DECAY = 0.9995
+        self.EPSILON_DECAY = 0.9985
         self.BATCH_SIZE = 128
         self.EPSILON = EPSILON_FROM
         self.memory = deque(maxlen=200)

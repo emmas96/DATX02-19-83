@@ -9,17 +9,17 @@ import matplotlib.animation as animation
 from multiprocessing import Process
 import time
 
-EPOCHS = 50
+EPOCHS = 2000
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
 
 
 
 def main(unused_argv):
-    for gamma in [0,0.2,0.4,0.6,0.8,1]:
-        for Mb in [4,8,32,64,128]:
-            for Et in [0.1,0.2,0.3]:
-                for index in [0,1,2,3,4]:
+    for gamma in [0,0.25,0.5,0.75,1]:
+        for Mb in [32,64,128]:
+            for Et in [0,0.1,0.2]:
+                for index in [0]:
                     print("Jag lovar du är en duktig agent")
                     agent = None
                     agent = SimpleAgent()
@@ -76,7 +76,7 @@ def main(unused_argv):
                                 print(str(agent.getMemoryLength()))
                                 #ani = animation.FuncAnimation(fig, plotdata, interval=1000)
                                 #plt.show()
-                                print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, 100, agent.reward, agent.EPSILON))
+                                print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, 1000, agent.reward, agent.EPSILON))
                             #agent.model.save(f"model-test-{time.time()}.h5")
                             #Validate
                             for epoch in range(100):
