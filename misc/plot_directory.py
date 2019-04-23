@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import csv
 import os
 
-#Will add all files from a dir into the plot
+
+# Will add all files from a dir into the plot
 def plot_dir(dir):
     if not os.path.isdir(dir):
         print(f"\"{dir}\" is not a dir")
