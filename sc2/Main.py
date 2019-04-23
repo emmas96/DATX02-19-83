@@ -19,7 +19,7 @@ def main(unused_argv):
     for gamma in [0,0.25,0.5,0.75,1]:
         for Mb in [32,64,128]:
             for Et in [0,0.1,0.2]:
-                for index in [0]:
+                for index in [1]:
                     print("Jag lovar du är en duktig agent")
                     agent = None
                     agent = SimpleAgent()
