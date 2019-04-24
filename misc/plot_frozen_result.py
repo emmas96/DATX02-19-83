@@ -2,10 +2,13 @@ import matplotlib.pyplot as plt
 import csv
 from os import listdir, makedirs
 from os.path import isfile, join, isdir
+import pandas as pd
+import seaborn as sns
 import pprint
 
 
-def __group_by_run(files):
+def __group_by_run(dir):
+    files = [f for f in listdir(dir) if isfile(join(dir, f))]
     temp = {}
     for f in files:
         group_name = f[:-8]
@@ -31,7 +34,7 @@ def create_axis():
 # Plot one plot per run
 def plot_frozen_res(dir):
     # Read files from dir and group them
-    all_runs = __group_by_run([f for f in listdir(dir) if isfile(join(dir, f))])
+    all_runs = __group_by_run(dir)
 
     for run_params, files in all_runs.items():
         print(run_params)
@@ -127,8 +130,11 @@ def plot_frozen_res_avg(dir):
     color = ['b', 'g', 'r', 'c', 'm']
     path_to_res = "../result/frozen/"
 
+    translations = {}
+    test_nr = 1
+
     # Read files from dir and group them
-    all_runs = __group_by_run([f for f in listdir(dir) if isfile(join(dir, f))])
+    all_runs = __group_by_run(dir)
     best_runs = {}
 
     # Loop through all files one time to find the best result
@@ -152,9 +158,14 @@ def plot_frozen_res_avg(dir):
         epochs, avg_win = calc_avg_win(dir, files)
 
         if run_params in best_runs.keys():
-            plt.plot(epochs, avg_win, label=run_params, color=color.pop())
+            label = f"Test {test_nr}"
+            test_nr += 1
+            translations[label] = run_params
+            plt.plot(epochs, avg_win, label=label, color=color.pop())
         else:
-            plt.plot(epochs, avg_win, alpha=.2)
+            plt.plot(epochs, avg_win, alpha=0)
+
+    pprint.pprint(translations)
 
     plt.title("All runs")
     plt.xlabel('epoch')
@@ -169,5 +180,83 @@ def plot_frozen_res_avg(dir):
     plt.show()
 
 
+def plot_frozen_heatmap(dir):
+    # Constants
+    track_parmas = ['Mb', 'G']  # First x, Second y
+    track_as_float = ['G', 'Et']
+    nr_chars_in_name = 18  # How many chars before parmas start
+
+    all_runs = __group_by_run(dir)
+
+    all_values = {}
+
+    for run_params, files in all_runs.items():
+        run_params = run_params[nr_chars_in_name:]
+        print(f"Run params: {run_params}")
+
+        params = run_params.split('_')
+
+        not_tracked = []
+        axis_values = [0, 0]
+
+        for param in params:
+            # Clear all digits
+            param_type = ''.join([str(i) for i in param if not i.isdigit() and i != '.'])
+
+            if param_type not in track_parmas:
+                not_tracked.append(str(param))
+            else:
+                index = track_parmas.index(param_type)
+
+                # Remove type
+                axis_values[index] = param[len(param_type):]
+
+                if param_type in track_as_float:
+                    axis_values[index] = float(axis_values[index])
+                else:
+                    axis_values[index] = int(axis_values[index])
+
+        print(f"Axis_values {axis_values}")
+
+        not_tracked_key = "_".join(not_tracked)
+        print(f'Not tracked key: {not_tracked_key}')
+
+        _, avg_win = calc_avg_win(dir, files)
+
+        if not_tracked_key in all_values:
+            values = all_values[not_tracked_key]
+
+            if axis_values[0] in values:
+                values[axis_values[0]][axis_values[1]] = avg_win[-1]
+            else:
+                values[axis_values[0]] = {axis_values[1]: avg_win[-1]}
+            print(f"Got here axis_values {axis_values} avg_win {avg_win[-1]}")
+            pprint.pprint(values)
+        else:
+            values = {axis_values[0]: {axis_values[-1]: avg_win[-1]}}
+            print(f"axis_values {axis_values} avg_win {avg_win[-1]}")
+            pprint.pprint(values)
+
+            # values[][axis_values[1]] = avg_win[-1]
+
+        all_values[not_tracked_key] = values
+        print()
+
+    print("Created data")
+    for not_tracked, values in all_values.items():
+        frame = pd.DataFrame.from_dict(values)
+        frame.sort_index(axis=1, inplace=True)
+        frame.sort_index(axis=0, ascending=False, inplace=True)
+        # frame = frame.reindex(sorted(frame.columns), axis=1)
+        pprint.pprint(values)
+        print(frame)
+        sns.heatmap(frame, annot=True, vmax=85)
+        plt.title(not_tracked)
+        plt.xlabel(track_parmas[0])
+        plt.ylabel(track_parmas[1])
+        plt.show()
+
+
 plot_frozen_res_avg("../Data/Frozen/train")
 # plot_frozen_res("../Data/Frozen/train")
+# plot_frozen_heatmap("../Data/Frozen/train")
