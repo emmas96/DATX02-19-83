@@ -6,6 +6,7 @@ import pandas as pd
 import seaborn as sns
 import pprint
 
+
 def save_fig(name):
     path_to_res = "../result/frozen/"
 
@@ -87,7 +88,7 @@ def plot_frozen_res(dir):
                     curr_epochs.append(epoch)
 
             first_file = False
-            ax_win.plot(curr_epochs, curr_wins, alpha=0.2, label=f"run: {file[-5:-4]}")
+            ax_win.plot(curr_epochs, curr_wins, alpha=0.2) # , label=f"run: {file[-5:-4]}")
 
         print(f"Len tot_win: {len(tot_win)}, len epochs: {len(epochs)}\n")
 
@@ -106,7 +107,6 @@ def plot_frozen_res(dir):
         ax_win.legend(lines_win + lines_epsi, labels_win + labels_epsi, loc='center left')
 
         plt.show()
-        break
 
 
 def calc_avg_win(dir, files):
@@ -251,19 +251,20 @@ def plot_frozen_heatmap(dir):
         # Sort fame to like
         frame.sort_index(axis=1, inplace=True)
         frame.sort_index(axis=0, ascending=False, inplace=True)
-        sns.heatmap(frame, annot=True, vmax=85, linewidths=.5)
+        sns.heatmap(frame, annot=True, vmax=85)
 
         print(f"Not tracked {not_tracked}")
         epsilon_val = ''.join([str(i) for i in not_tracked[:-5] if i.isdigit() or i == '.'])
-        titel = f"$\epsilon = {epsilon_val}$"
+        titel = f"$\\varepsilon = {epsilon_val}$"
 
         # Setup figure
         plt.title(titel, fontsize=16)
         plt.ylabel("$\gamma$")
         plt.xlabel("Mini Batch Size")
+        save_fig(f"heatmap_mb_G_{not_tracked}.png")
         plt.show()
 
 
 # plot_frozen_res_avg("../Data/Frozen/train")
 # plot_frozen_res("../Data/Frozen/train")
-plot_frozen_heatmap("../Data/Frozen/train")
+# plot_frozen_heatmap("../Data/Frozen/train")
