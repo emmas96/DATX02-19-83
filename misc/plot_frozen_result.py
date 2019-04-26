@@ -2,10 +2,28 @@ import matplotlib.pyplot as plt
 import csv
 from os import listdir, makedirs
 from os.path import isfile, join, isdir
+import pandas as pd
+import seaborn as sns
 import pprint
 
 
-def __group_by_run(files):
+def save_fig(name):
+    path_to_res = "../result/frozen/"
+
+    # Save fig to disk
+    if not isdir(path_to_res):
+        makedirs(path_to_res)
+    plt.savefig(join(path_to_res, name))
+
+
+def use_tex():
+    # Set up for use of tex in plt
+    plt.rc('text', usetex=True)
+    plt.rc('font', family='serif')
+
+
+def __group_by_run(dir):
+    files = [f for f in listdir(dir) if isfile(join(dir, f))]
     temp = {}
     for f in files:
         group_name = f[:-8]
@@ -31,7 +49,7 @@ def create_axis():
 # Plot one plot per run
 def plot_frozen_res(dir):
     # Read files from dir and group them
-    all_runs = __group_by_run([f for f in listdir(dir) if isfile(join(dir, f))])
+    all_runs = __group_by_run(dir)
 
     for run_params, files in all_runs.items():
         print(run_params)
@@ -70,7 +88,7 @@ def plot_frozen_res(dir):
                     curr_epochs.append(epoch)
 
             first_file = False
-            ax_win.plot(curr_epochs, curr_wins, alpha=0.2, label=f"run: {file[-5:-4]}")
+            ax_win.plot(curr_epochs, curr_wins, alpha=0.2) # , label=f"run: {file[-5:-4]}")
 
         print(f"Len tot_win: {len(tot_win)}, len epochs: {len(epochs)}\n")
 
@@ -89,7 +107,6 @@ def plot_frozen_res(dir):
         ax_win.legend(lines_win + lines_epsi, labels_win + labels_epsi, loc='center left')
 
         plt.show()
-        break
 
 
 def calc_avg_win(dir, files):
@@ -119,16 +136,17 @@ def calc_avg_win(dir, files):
     avg_win = list(map(lambda x: float(x) / len(files), tot_win))
     return epochs, avg_win
 
-
 # Plot one plot with all runs avg
 def plot_frozen_res_avg(dir):
     # Constants
     nr_to_highlight = 5
     color = ['b', 'g', 'r', 'c', 'm']
-    path_to_res = "../result/frozen/"
+
+    translations = {}
+    test_nr = 1
 
     # Read files from dir and group them
-    all_runs = __group_by_run([f for f in listdir(dir) if isfile(join(dir, f))])
+    all_runs = __group_by_run(dir)
     best_runs = {}
 
     # Loop through all files one time to find the best result
@@ -152,22 +170,101 @@ def plot_frozen_res_avg(dir):
         epochs, avg_win = calc_avg_win(dir, files)
 
         if run_params in best_runs.keys():
-            plt.plot(epochs, avg_win, label=run_params, color=color.pop())
+            label = f"Test {test_nr}"
+            test_nr += 1
+            translations[label] = run_params
+            plt.plot(epochs, avg_win, label=label, color=color.pop())
         else:
-            plt.plot(epochs, avg_win, alpha=.2)
+            plt.plot(epochs, avg_win, alpha=0)
 
-    plt.title("All runs")
-    plt.xlabel('epoch')
-    plt.ylabel('tot win')
+    print("Translations:")
+    pprint.pprint(translations)
+
+    # plt.title("All runs")
+    plt.xlabel('Number of epochs')
+    plt.ylabel('Total times reached goal')
     plt.legend()
 
-    # Save fig to disk
-    if not isdir(path_to_res):
-        makedirs(path_to_res)
-    plt.savefig(join(path_to_res, "All-runs.png"))
+    save_fig("All_runs.png")
 
     plt.show()
 
 
-plot_frozen_res_avg("../Data/Frozen/train")
+def plot_frozen_heatmap(dir):
+    use_tex()
+
+    # Constants
+    track_parmas = ['Mb', 'G']  # First x, Second y
+    track_as_float = ['G', 'Et']
+    nr_chars_in_name = 18  # How many chars before parmas start
+
+    all_runs = __group_by_run(dir)
+
+    all_values = {}
+
+    # Read and group data
+    for run_params, files in all_runs.items():
+        run_params = run_params[nr_chars_in_name:]
+
+        params = run_params.split('_')
+
+        not_tracked = []
+        axis_values = [0, 0]
+
+        for param in params:
+            # Clear all digits
+            param_type = ''.join([str(i) for i in param if not i.isdigit() and i != '.'])
+
+            if param_type not in track_parmas:
+                not_tracked.append(str(param))
+            else:
+                index = track_parmas.index(param_type)
+
+                # Remove type
+                axis_values[index] = param[len(param_type):]
+
+                if param_type in track_as_float:
+                    axis_values[index] = float(axis_values[index])
+                else:
+                    axis_values[index] = int(axis_values[index])
+
+        not_tracked_key = "_".join(not_tracked)
+
+        _, avg_win = calc_avg_win(dir, files)
+
+        if not_tracked_key in all_values:
+            values = all_values[not_tracked_key]
+
+            if axis_values[0] in values:
+                values[axis_values[0]][axis_values[1]] = avg_win[-1]
+            else:
+                values[axis_values[0]] = {axis_values[1]: avg_win[-1]}
+        else:
+            values = {axis_values[0]: {axis_values[-1]: avg_win[-1]}}
+
+        all_values[not_tracked_key] = values
+
+    print("Created data")
+    for not_tracked, values in all_values.items():
+        frame = pd.DataFrame.from_dict(values)
+
+        # Sort fame to like
+        frame.sort_index(axis=1, inplace=True)
+        frame.sort_index(axis=0, ascending=False, inplace=True)
+        sns.heatmap(frame, annot=True, vmax=85)
+
+        print(f"Not tracked {not_tracked}")
+        epsilon_val = ''.join([str(i) for i in not_tracked[:-5] if i.isdigit() or i == '.'])
+        titel = f"$\\varepsilon = {epsilon_val}$"
+
+        # Setup figure
+        plt.title(titel, fontsize=16)
+        plt.ylabel("$\gamma$")
+        plt.xlabel("Mini Batch Size")
+        save_fig(f"heatmap_mb_G_{not_tracked}.png")
+        plt.show()
+
+
+# plot_frozen_res_avg("../Data/Frozen/train")
 # plot_frozen_res("../Data/Frozen/train")
+# plot_frozen_heatmap("../Data/Frozen/train")
