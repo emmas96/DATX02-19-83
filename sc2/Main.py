@@ -79,13 +79,13 @@ def main(unused_argv):
                                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, 1000, agent.reward, agent.EPSILON))
                             #agent.model.save(f"model-test-{time.time()}.h5")
                             #Validate
+                            agent.reward = 0
                             for epoch in range(100):
                                 agent.reset_game()
                                 agent.BATCH_SIZE = Mb
                                 agent.EPSILON = Et
                                 agent.EPSILON_TO = Et
                                 agent.GAMMA = gamma
-                                agent.reward = 0
                                 timesteps = env.reset()
                                 agent.reset()
 
