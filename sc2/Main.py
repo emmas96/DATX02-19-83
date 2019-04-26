@@ -19,7 +19,7 @@ def main(unused_argv):
     for gamma in [0,0.25,0.5,0.75,1]:
         for Mb in [32,64,128]:
             for Et in [0,0.1,0.2]:
-                for index in [1]:
+                for index in [3]:
                     print("Jag lovar du är en duktig agent")
                     agent = None
                     agent = SimpleAgent()
@@ -79,13 +79,13 @@ def main(unused_argv):
                                 print("epoch: {}/{}, reward: {} Epsilon: {}".format(epoch, 1000, agent.reward, agent.EPSILON))
                             #agent.model.save(f"model-test-{time.time()}.h5")
                             #Validate
+                            agent.reward = 0
                             for epoch in range(100):
                                 agent.reset_game()
                                 agent.BATCH_SIZE = Mb
                                 agent.EPSILON = Et
                                 agent.EPSILON_TO = Et
                                 agent.GAMMA = gamma
-                                agent.reward = 0
                                 timesteps = env.reset()
                                 agent.reset()
 

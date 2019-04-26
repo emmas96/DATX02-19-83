@@ -7,15 +7,13 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.layers as layers
 import tensorflow.keras as keras
-import GameEnvironment as GameEnvironment
+import random_agent.GameEnvironment as GameEnvironment
 
 HIDDEN_LAYER_SIZE = 16
-GAMMA = 0.9
+
 ALPHA = 0.001
 EPSILON_FROM = 1.0
-EPSILON_TO = 0.2
 EPSILON_DECAY = 0.99
-BATCH_SIZE = 256
 NUMSTATE = 6
 NUMACTION = 11
 
@@ -37,6 +35,9 @@ class SimpleAgent(base_agent.BaseAgent):
         self.counter = 0
         self.score = 0
         self.c = 0
+        self.BATCH_SIZE = 256
+        self.GAMMA = 0.9
+        self.EPSILON_TO = 0.2
 
         # Initialize model
         self.model = keras.Sequential()
@@ -115,21 +116,21 @@ class SimpleAgent(base_agent.BaseAgent):
             target = reward
 
             if not done:
-                target = reward + GAMMA * np.amax(self.model.predict(np.reshape(next_state, [1,NUMSTATE])))
+                target = reward + self.GAMMA * np.amax(self.model.predict(np.reshape(next_state, [1,NUMSTATE])))
             target_f = self.model.predict(np.reshape(state,[1,NUMSTATE]))
             target_f[0][action] = target
             self.model.fit(np.reshape(state,[1,NUMSTATE]), target_f, epochs=1, verbose=0)
-        if self.EPSILON > EPSILON_TO:
+        if self.EPSILON > self.EPSILON_TO:
             self.EPSILON *= EPSILON_DECAY
 
     def get_batch_size(self):
-        return BATCH_SIZE
+        return self.BATCH_SIZE
 
     def getMemoryLength(self):
         return len(self.memory)
 
     def getBatchSize(self):
-        return BATCH_SIZE
+        return self.BATCH_SIZE
 
     def reset_game(self):
         self.oldScore = 0
