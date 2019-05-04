@@ -85,7 +85,7 @@ def playFrozenLake(Gamma, Et, Mb, imi, index):
                 agent.train()
             if done:
                 break
-        file = open(f"Data/Frozen/plot_Train_FROZEN_G{Gamma}_Et{Et}_Mb{Mb}_imi{imi}_I_{index}.txt", "a")
+        file = open(f"Data/Frozen/imi/plot_Train_FROZEN_G{Gamma}_Et{Et}_Mb{Mb}_imi{imi}_I_{index}.txt", "a")
         file.write(str(epoch + 1) + " , ")
         file.write(str(reward) + " , ")
         file.write(str(num_wins) + ", ")
@@ -106,7 +106,7 @@ def playFrozenLake(Gamma, Et, Mb, imi, index):
                 #graph.update_graph(epoch, num_wins, agent.get_epsilon())
                 # print(str(epoch) + "," + str(num_wins))
                 break
-        file = open(f"Data/Frozen/plot_Valid_FROZEN_G{Gamma}_Et{Et}_Mb{Mb}_imi{imi}_I_{index}.txt", "a")
+        file = open(f"Data/Frozen/imi/plot_Valid_FROZEN_G{Gamma}_Et{Et}_Mb{Mb}_imi{imi}_I_{index}.txt", "a")
         file.write(str(epoch + 1) + " , ")
         file.write(str(reward) + " , ")
         file.write(str(num_wins) + "\n")
@@ -186,19 +186,68 @@ def main():
     EPOCHS = 200
     VALIDATE = 10
     #playFrozenLake(0.8,0,32,0)
-    for g in [0.5,0.6,0.7,0.8,0.9,1]:
-            for mb in [2,8,16,32,64]:
-                for Et in [0,0.1,0.2,0.3]:
+    #for g in [0.5,0.6,0.7,0.8,0.9,1]:
+     #       for mb in [2,8,16,32,64]:
+      #          for Et in [0,0.1,0.2,0.3]:
 
-                    playFrozenLake(g, Et, mb, 0, 0)
-                    playFrozenLake(g, Et, mb, 0, 1)
-                    playFrozenLake(g, Et, mb, 0, 2)
-                    playFrozenLake(g, Et, mb, 0, 3)
-                    playFrozenLake(g, Et, mb, 0, 4)
+                    #playFrozenLake(g, Et, mb, 0, 0)
+                    #playFrozenLake(g, Et, mb, 0, 1)
+                    #playFrozenLake(g, Et, mb, 0, 2)
+                    #playFrozenLake(g, Et, mb, 0, 3)
+                    #playFrozenLake(g, Et, mb, 0, 4)
+
+    g = 0.7
+    Et = 0
+    mb = 16
+    for imi in [4*6, 8*6, 16*6, 32*6]:
+
+        playFrozenLake(g, Et, mb, imi, 0)
+        playFrozenLake(g, Et, mb, imi, 1)
+        playFrozenLake(g, Et, mb, imi, 2)
+        playFrozenLake(g, Et, mb, imi, 3)
+        playFrozenLake(g, Et, mb, imi, 4)
+
+    g = 0.7
+    Et = 0
+    mb = 32
+    for imi in [4 * 6, 8 * 6, 16 * 6, 32 * 6]:
+        playFrozenLake(g, Et, mb, imi, 0)
+        playFrozenLake(g, Et, mb, imi, 1)
+        playFrozenLake(g, Et, mb, imi, 2)
+        playFrozenLake(g, Et, mb, imi, 3)
+        playFrozenLake(g, Et, mb, imi, 4)
+
+    g = 0.8
+    Et = 0.1
+    mb = 64
+    for imi in [4 * 6, 8 * 6, 16 * 6, 32 * 6]:
+        playFrozenLake(g, Et, mb, imi, 0)
+        playFrozenLake(g, Et, mb, imi, 1)
+        playFrozenLake(g, Et, mb, imi, 2)
+        playFrozenLake(g, Et, mb, imi, 3)
+        playFrozenLake(g, Et, mb, imi, 4)
+
+    g = 0.8
+    Et = 0
+    mb = 32
+    for imi in [4 * 6, 8 * 6, 16 * 6, 32 * 6]:
+        playFrozenLake(g, Et, mb, imi, 0)
+        playFrozenLake(g, Et, mb, imi, 1)
+        playFrozenLake(g, Et, mb, imi, 2)
+        playFrozenLake(g, Et, mb, imi, 3)
+        playFrozenLake(g, Et, mb, imi, 4)
 
 
+    g = 0.9
+    Et = 0
+    mb = 32
+    for imi in [4*6, 8*6, 16*6, 32*6]:
 
-
+        playFrozenLake(g, Et, mb, imi, 0)
+        playFrozenLake(g, Et, mb, imi, 1)
+        playFrozenLake(g, Et, mb, imi, 2)
+        playFrozenLake(g, Et, mb, imi, 3)
+        playFrozenLake(g, Et, mb, imi, 4)
 
 
 
