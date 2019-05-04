@@ -21,8 +21,8 @@ class Agent:
         self.NUM_ACTIONS = num_actions
         self.HIDDEN_LAYER_SIZE = 8
         self.ALPHA = 0.001
-        self.EPSILON_FROM = 1.0
-        self.EPSILON_DECAY = 0.995
+        self.EPSILON_FROM = Et
+        self.EPSILON_DECAY = 0.
         self.IMITATION = 0
         self.EPSILON_TO = Et
         self.GAMMA = Gamma
