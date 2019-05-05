@@ -107,6 +107,7 @@ def plot_frozen_res(dir):
         ax_win.legend(lines_win + lines_epsi, labels_win + labels_epsi, loc='center left')
 
         plt.show()
+        break
 
 
 def calc_avg_win(dir, files):
@@ -170,7 +171,7 @@ def plot_frozen_res_avg(dir):
         epochs, avg_win = calc_avg_win(dir, files)
 
         if run_params in best_runs.keys():
-            label = f"Test {test_nr}"
+            label = f"Sample {test_nr}"
             test_nr += 1
             translations[label] = run_params
             plt.plot(epochs, avg_win, label=label, color=color.pop())
@@ -182,10 +183,10 @@ def plot_frozen_res_avg(dir):
 
     # plt.title("All runs")
     plt.xlabel('Number of epochs')
-    plt.ylabel('Total times reached goal')
+    plt.ylabel('Accumulated wins')
     plt.legend()
 
-    save_fig("All_runs.png", "")
+    save_fig("score_per_epoch.png", "")
 
     plt.show()
 
@@ -251,7 +252,7 @@ def plot_frozen_heatmap(dir):
         # Sort fame to like
         frame.sort_index(axis=1, inplace=True)
         frame.sort_index(axis=0, ascending=False, inplace=True)
-        sns.heatmap(frame, annot=True, vmax=1)
+        sns.heatmap(frame, annot=True, vmax=10)
 
         print(f"Not tracked {not_tracked}")
         epsilon_val = ''.join([str(i) for i in not_tracked[:-5] if i.isdigit() or i == '.'])

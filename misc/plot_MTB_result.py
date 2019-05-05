@@ -8,7 +8,7 @@ import pprint
 
 
 def save_fig(name, folder):
-    path_to_res = join("../result/frozen/", folder)
+    path_to_res = join("../result/mtb/", folder)
 
     # Save fig to disk
     if not isdir(path_to_res):
@@ -109,12 +109,16 @@ def plot_frozen_res(dir):
         plt.show()
 
 
-def calc_avg_win(dir, files):
+def calc_avg_win_per_epoch(dir, files):
     tot_win = []
     epochs = []
     first_file = True
 
+    max_wins_per_round = 8
+
     for file in files:
+
+        accumulator = 0
 
         print(f"File: {file}")
 
@@ -125,13 +129,7 @@ def calc_avg_win(dir, files):
                 # Parse data
                 epoch = int(row[0])
 
-                print(f"Epoch {epoch} len {len(tot_win)} tot_win {tot_win}")
-
-                if len(tot_win) != 0:
-                    win = tot_win[epoch-1] + float(row[1])
-                else:
-                    print(f"File {file}, was here")
-                    win = float(row[1])
+                win = float(row[2])/max_wins_per_round
 
                 if first_file:
                     epochs.append(epoch)
@@ -141,16 +139,54 @@ def calc_avg_win(dir, files):
 
         first_file = False
 
+    # Calc avg
+    avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
+
+    #Calc rolling mean
+    N = 100
+    avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
+    return epochs[:len(avg_win)], avg_win
+
+
+def calc_avg_win(dir, files):
+    tot_win = []
+    epochs = []
+    first_file = True
+
+    for file in files:
+
+        accumulator = 0
+
+        print(f"File: {file}")
+
+        with open(join(dir, file), 'r') as csv_file:
+            data = csv.reader(csv_file, delimiter=',')
+
+            for row in data:
+                # Parse data
+                epoch = int(row[0])
+
+                win = float(row[2])
+                accumulator += win
+                win_per_round = float(row[3])
+
+                if first_file:
+                    epochs.append(epoch)
+                    tot_win.append(accumulator)
+                else:
+                    tot_win[epoch] += accumulator
+
+        first_file = False
 
     # Calc avg
     avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
-    print(f"avg_win {avg_win}\n")
     return epochs, avg_win
+
 
 # Plot one plot with all runs avg
 def plot_frozen_res_avg(dir):
     # Constants
-    nr_to_highlight = 6
+    nr_to_highlight = 5
     color = ['b', 'g', 'r', 'c', 'm', 'k']
 
     translations = {}
@@ -162,7 +198,7 @@ def plot_frozen_res_avg(dir):
 
     # Loop through all files one time to find the best result
     for run_params, files in all_runs.items():
-        epochs, avg_win = calc_avg_win(dir, files)
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files)
         final_score = avg_win[-1]
 
         # Find the best results
@@ -178,10 +214,10 @@ def plot_frozen_res_avg(dir):
 
     # Plot the results
     for run_params, files in all_runs.items():
-        epochs, avg_win = calc_avg_win(dir, files)
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files)
 
         if run_params in best_runs.keys():
-            label = f"Test {test_nr}"
+            label = f"Sample {test_nr}"
             test_nr += 1
             translations[label] = run_params
             plt.plot(epochs, avg_win, label=label, color=color.pop())
@@ -193,10 +229,10 @@ def plot_frozen_res_avg(dir):
 
     # plt.title("All runs")
     plt.xlabel('Number of epochs')
-    plt.ylabel('Total times reached goal')
+    plt.ylabel('Rolling mean of score per epoch [% of max]')
     plt.legend()
 
-    save_fig("All_runs.png", "")
+    save_fig("score_per_epoch_mv_avg_100.png", "")
 
     plt.show()
 
@@ -262,7 +298,7 @@ def plot_frozen_heatmap(dir):
         # Sort fame to like
         frame.sort_index(axis=1, inplace=True)
         frame.sort_index(axis=0, ascending=False, inplace=True)
-        sns.heatmap(frame, annot=True, vmax=1)
+        sns.heatmap(frame, annot=True)
 
         print(f"Not tracked {not_tracked}")
         epsilon_val = ''.join([str(i) for i in not_tracked[:-5] if i.isdigit() or i == '.'])
@@ -276,6 +312,6 @@ def plot_frozen_heatmap(dir):
         plt.show()
 
 
-plot_frozen_res_avg("../Data/MTB/valid")
+# plot_frozen_res_avg("../Data/MTB/train")
 # plot_frozen_res("../Data/Frozen/train")
-# plot_frozen_heatmap("../Data/Frozen/valid")
+plot_frozen_heatmap("../Data/MTB/valid")
