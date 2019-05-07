@@ -46,6 +46,98 @@ def create_axis():
     return fig, ax_win, ax_epsi
 
 
+# Returns how many epochs of imi the run used
+def how_much_imi(file_name):
+    nr_chars_in_name = 18  # How many chars before parmas start
+    divide_by = 8
+
+    cut_name = file_name[nr_chars_in_name:]
+    split = cut_name.split('_')
+    imi = split[3]
+
+    nr_imi = int(imi[3:])
+
+    return int(nr_imi / divide_by)
+
+
+def calc_avg_win_per_epoch(dir, files):
+    tot_win = []
+    epochs = []
+    first_file = True
+
+    max_wins_per_round = 8
+
+    for file in files:
+
+        skipp_epochs = 0 # how_much_imi(file)
+
+        print(f"imi {how_much_imi(file)}")
+
+        with open(join(dir, file), 'r') as csv_file:
+            data = csv.reader(csv_file, delimiter=',')
+
+            for row in data:
+                # Parse data
+                epoch = int(row[0]) - skipp_epochs
+                win = float(row[2]) #/max_wins_per_round
+
+                if epoch < 0:
+                    continue
+
+                if first_file:
+                    epochs.append(epoch)
+                    tot_win.append(win)
+                else:
+                    tot_win[epoch] += win
+
+        first_file = False
+
+    print(tot_win)
+
+    # Calc avg
+    avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
+
+    print(len(avg_win))
+
+    #Calc rolling mean
+    N = 100
+    avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
+    return epochs[:len(avg_win)], avg_win
+
+
+def calc_avg_win(dir, files):
+    tot_win = []
+    epochs = []
+    first_file = True
+
+    for file in files:
+
+        accumulator = 0
+
+        with open(join(dir, file), 'r') as csv_file:
+            data = csv.reader(csv_file, delimiter=',')
+
+            for row in data:
+                # Parse data
+                epoch = int(row[0])
+
+                win = float(row[2])
+                accumulator += win
+                win_per_round = float(row[3])
+
+                if first_file:
+                    epochs.append(epoch)
+                    tot_win.append(accumulator)
+                else:
+                    tot_win[epoch] += accumulator
+
+        first_file = False
+
+    # Calc avg
+    avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
+    return epochs, avg_win
+
+
 # Plot one plot per run
 def plot_mtb_res(dir):
     # Read files from dir and group them
@@ -72,7 +164,7 @@ def plot_mtb_res(dir):
                     # Parse data
                     epoch = int(row[0])
                     win = int(row[2])
-                    epsilon = float(row[3])
+                    epsilon = 0
 
                     if first_file:
                         epochs.append(epoch)
@@ -88,7 +180,10 @@ def plot_mtb_res(dir):
                     curr_epochs.append(epoch)
 
             first_file = False
-            ax_win.plot(curr_epochs, curr_wins, alpha=0.2) # , label=f"run: {file[-5:-4]}")
+
+            N = 100
+            curr_wins = pd.Series(curr_wins).rolling(window=N).mean().iloc[N - 1:].values
+            ax_win.plot(curr_epochs[:len(curr_wins)], curr_wins, alpha=0.1)  # , label=f"run: {file[-5:-4]}")
 
         print(f"Len tot_win: {len(tot_win)}, len epochs: {len(epochs)}\n")
 
@@ -96,9 +191,15 @@ def plot_mtb_res(dir):
         avg_win = list(map(lambda x: float(x)/len(files), tot_win))
         avg_epsilon = list(map(lambda x: float(x)/len(files), tot_epsilon))
 
+        # Calc rolling mean
+        N = 100
+        avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
+        avg_epsilon = pd.Series(avg_epsilon).rolling(window=N).mean().iloc[N - 1:].values
+
+
         # Plot avg graph
-        ax_win.plot(epochs, avg_win, label="avg")
-        ax_epsi.plot(epochs, avg_epsilon, label="epsilon")
+        ax_win.plot(epochs[:len(avg_win)], avg_win, label="avg")
+        ax_epsi.plot(epochs[:len(avg_epsilon)], avg_epsilon, label="epsilon")
         plt.title(run_params)
 
         # Add one common legend
@@ -109,130 +210,44 @@ def plot_mtb_res(dir):
         plt.show()
 
 
-def calc_avg_win_per_epoch(dir, files):
-    tot_win = []
-    epochs = []
-    first_file = True
-
-    max_wins_per_round = 8
-
-    for file in files:
-
-        accumulator = 0
-
-        print(f"File: {file}")
-
-        with open(join(dir, file), 'r') as csv_file:
-            data = csv.reader(csv_file, delimiter=',')
-
-            for row in data:
-                # Parse data
-                epoch = int(row[0])
-
-                win = float(row[2])/max_wins_per_round
-
-                if first_file:
-                    epochs.append(epoch)
-                    tot_win.append(win)
-                else:
-                    tot_win[epoch] += win
-
-        first_file = False
-
-    # Calc avg
-    avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
-
-    #Calc rolling mean
-    N = 100
-    avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
-    return epochs[:len(avg_win)], avg_win
-
-
-def calc_avg_win(dir, files):
-    tot_win = []
-    epochs = []
-    first_file = True
-
-    for file in files:
-
-        accumulator = 0
-
-        print(f"File: {file}")
-
-        with open(join(dir, file), 'r') as csv_file:
-            data = csv.reader(csv_file, delimiter=',')
-
-            for row in data:
-                # Parse data
-                epoch = int(row[0])
-
-                win = float(row[2])
-                accumulator += win
-                win_per_round = float(row[3])
-
-                if first_file:
-                    epochs.append(epoch)
-                    tot_win.append(accumulator)
-                else:
-                    tot_win[epoch] += accumulator
-
-        first_file = False
-
-    # Calc avg
-    avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
-    return epochs, avg_win
-
-
 # Plot one plot with all runs avg
 def plot_mtb_res_avg(dir):
     # Constants
-    nr_to_highlight = 5
     color = ['b', 'g', 'r', 'c', 'm', 'k']
-
-    translations = {}
-    test_nr = 1
 
     # Read files from dir and group them
     all_runs = __group_by_run(dir)
-    best_runs = {}
+    ordered_runs = []
 
-    # Loop through all files one time to find the best result
+    # Order by run
     for run_params, files in all_runs.items():
-        epochs, avg_win = calc_avg_win_per_epoch(dir, files)
-        final_score = avg_win[-1]
+        ordered_runs.append([run_params, files, how_much_imi(run_params)])
 
-        # Find the best results
-        if len(best_runs) < nr_to_highlight:
-            best_runs[run_params] = final_score
-        else:
-            min_run = min(best_runs, key=best_runs.get)
-            min_value = best_runs[min_run]
-
-            if min_value < final_score:
-                best_runs.pop(min_run)
-                best_runs[run_params] = final_score
+    ordered_runs.sort(key=lambda x: x[2])
 
     # Plot the results
-    for run_params, files in all_runs.items():
+    for params in ordered_runs:
+        run_params = params[0]
+        files = params[1]
+
+        print(run_params)
+
         epochs, avg_win = calc_avg_win_per_epoch(dir, files)
 
-        if run_params in best_runs.keys():
-            label = f"Sample {test_nr}"
-            test_nr += 1
-            translations[label] = run_params
-            plt.plot(epochs, avg_win, label=label, color=color.pop())
+        imi_epochs = how_much_imi(run_params)
+        if imi_epochs == 0:
+            label = "No imitation learning"
         else:
-            plt.plot(epochs, avg_win, alpha=.1)
+            label = f"{imi_epochs} epochs of prior imitation learning"
 
-    print("Translations:")
-    pprint.pprint(translations)
+        plt.plot(epochs, avg_win, label=label, color=color.pop())
 
     # plt.title("All runs")
     plt.xlabel('Number of epochs')
     plt.ylabel('Rolling mean of score per epoch [% of max]')
     plt.legend()
 
-    save_fig("score_per_epoch_mv_avg_100.png", "")
+    save_fig("score_per_epoch_mv_avg_100.png", "imi")
 
     plt.show()
 
@@ -316,6 +331,6 @@ def plot_mtb_heatmap(dir):
         plt.show()
 
 
-plot_mtb_res_avg("../Data/MTB/no_imi/train")
-# plot_mtb_res("../Data/Frozen/train")
+# plot_mtb_res_avg("../Data/MTB/not_best_param/train")
+plot_mtb_res("../Data/MTB/not_best_param/train")
 # plot_mtb_heatmap("../Data/MTB/valid")
