@@ -169,8 +169,7 @@ def calc_avg_win(dir, files):
 # Plot one plot with all runs avg
 def plot_frozen_imi_res_avg(dir):
     # Constants
-    nr_to_highlight = 5
-    color = ['b', 'g', 'r', 'c', 'm']
+    color = ['k', 'c', 'm', 'g', 'r']
 
     # Read files from dir and group them
     all_runs = __group_by_run(dir)
