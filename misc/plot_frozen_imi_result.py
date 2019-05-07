@@ -110,6 +110,7 @@ def plot_frozen_imi_res(dir):
         break
 
 
+# Returns how many epochs of imi the run used
 def how_much_imi(file_name):
     nr_chars_in_name = 18  # How many chars before parmas start
     divide_by = 6
@@ -120,9 +121,8 @@ def how_much_imi(file_name):
 
     nr_imi = int(imi[3:])
 
-    print(f"name {file_name} \n Cut name: {cut_name} \n split {split} \n imi {imi} \n nr_imi {nr_imi}")
-
     return int(nr_imi / divide_by)
+
 
 def calc_avg_win(dir, files):
     tot_win = []
@@ -172,52 +172,40 @@ def plot_frozen_imi_res_avg(dir):
     nr_to_highlight = 5
     color = ['b', 'g', 'r', 'c', 'm']
 
-    translations = {}
-    test_nr = 1
-
     # Read files from dir and group them
     all_runs = __group_by_run(dir)
-    best_runs = {}
 
-    # Loop through all files one time to find the best result
+    ordered_runs = []
+
+    # Order by run
     for run_params, files in all_runs.items():
-        epochs, avg_win = calc_avg_win(dir, files)
-        final_score = avg_win[-1]
+        ordered_runs.append([run_params, files, how_much_imi(run_params)])
 
-        # Find the best results
-        if len(best_runs) < nr_to_highlight:
-            best_runs[run_params] = final_score
-        else:
-            min_run = min(best_runs, key=best_runs.get)
-            min_value = best_runs[min_run]
-
-            if min_value < final_score:
-                best_runs.pop(min_run)
-                best_runs[run_params] = final_score
+    ordered_runs.sort(key=lambda x: x[2])
 
     # Plot the results
-    for run_params, files in all_runs.items():
+    for params in ordered_runs:
+        run_params = params[0]
+        files = params[1]
+
         print(run_params)
 
         epochs, avg_win = calc_avg_win(dir, files)
 
-        if run_params in best_runs.keys():
-            label = f"Sample {test_nr}"
-            test_nr += 1
-            translations[label] = run_params
-            plt.plot(epochs, avg_win, label=label, color=color.pop())
+        imi_epochs = how_much_imi(run_params)
+        if imi_epochs == 0:
+            label = "No imitation"
         else:
-            plt.plot(epochs, avg_win, alpha=.1)
+            label = f"{imi_epochs} epochs of prior imitation learning"
 
-    print("Translations:")
-    pprint.pprint(translations)
+        plt.plot(epochs, avg_win, label=label, color=color.pop())
 
     # plt.title("All runs")
     plt.xlabel('Number of epochs')
     plt.ylabel('Accumulated wins')
     plt.legend()
 
-    save_fig("score_per_epoch_best_param.png", "imi")
+    save_fig("imi_best_param.png", "imi")
 
     plt.show()
 
