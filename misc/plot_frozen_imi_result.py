@@ -47,7 +47,7 @@ def create_axis():
 
 
 # Plot one plot per run
-def plot_frozen_res(dir):
+def plot_frozen_imi_res(dir):
     # Read files from dir and group them
     all_runs = __group_by_run(dir)
 
@@ -138,7 +138,7 @@ def calc_avg_win(dir, files):
     return epochs, avg_win
 
 # Plot one plot with all runs avg
-def plot_frozen_res_avg(dir):
+def plot_frozen_imi_res_avg(dir):
     # Constants
     nr_to_highlight = 5
     color = ['b', 'g', 'r', 'c', 'm']
@@ -168,6 +168,8 @@ def plot_frozen_res_avg(dir):
 
     # Plot the results
     for run_params, files in all_runs.items():
+        print(run_params)
+
         epochs, avg_win = calc_avg_win(dir, files)
 
         if run_params in best_runs.keys():
@@ -186,12 +188,12 @@ def plot_frozen_res_avg(dir):
     plt.ylabel('Accumulated wins')
     plt.legend()
 
-    save_fig("score_per_epoch.png", "")
+    save_fig("score_per_epoch_best_param.png", "imi")
 
     plt.show()
 
 
-def plot_frozen_heatmap(dir):
+def plot_frozen_imi_heatmap(dir):
     use_tex()
 
     # Constants
@@ -266,6 +268,6 @@ def plot_frozen_heatmap(dir):
         plt.show()
 
 
-plot_frozen_res_avg("../Data/Frozen/train")
-# plot_frozen_res("../Data/Frozen/train")
-# plot_frozen_heatmap("../Data/Frozen/valid")
+plot_frozen_imi_res_avg("../Data/Frozen/test")
+# plot_frozen_imi_res("../Data/Frozen/train")
+# plot_frozen_imi_heatmap("../Data/Frozen/valid")
