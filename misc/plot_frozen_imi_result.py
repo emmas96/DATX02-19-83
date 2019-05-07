@@ -193,7 +193,7 @@ def plot_frozen_imi_res_avg(dir):
 
         imi_epochs = how_much_imi(run_params)
         if imi_epochs == 0:
-            label = "No imitation"
+            label = "No imitation learning"
         else:
             label = f"{imi_epochs} epochs of prior imitation learning"
 
@@ -284,6 +284,6 @@ def plot_frozen_imi_heatmap(dir):
         plt.show()
 
 
-plot_frozen_imi_res_avg("../Data/Frozen/test")
+plot_frozen_imi_res_avg("../Data/Frozen/best_params_imi")
 # plot_frozen_imi_res("../Data/Frozen/train")
 # plot_frozen_imi_heatmap("../Data/Frozen/valid")
