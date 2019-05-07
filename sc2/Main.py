@@ -16,16 +16,24 @@ ax1 = fig.add_subplot(1, 1, 1)
 
 
 def main(unused_argv):
-    for gamma in [0,0.25,0.5,0.75,1]:
-        for Mb in [32,64,128]:
-            for Et in [0,0.1,0.2]:
-                for index in [3]:
+    #for gamma in [0,0.25,0.5,0.75,1]:
+        #for Mb in [32,64,128]:
+            #for Et in [0,0.1,0.2]:[0.25,0.1,128],[0.25,0.2,128],[0.25,0.2,64],
+        for r in [[0,0.1,64],[0.5,0.1,128],[0.5,0,128]]:
+            for imi in [128*8,256*8, 1024*8, 512*8]:
+                for index in [0,1,2,3,4]:
                     print("Jag lovar du är en duktig agent")
                     agent = None
                     agent = SimpleAgent()
 
+                    gamma = r[0]
+                    Et = r[1]
+                    Mb = r[2]
+
+                    agent.imi = imi
                     agent.BATCH_SIZE = Mb
                     agent.EPSILON_TO = Et
+                    agent.EPSILON = Et
                     agent.GAMMA = gamma
                     #agent = ConvAgent()
                     #lol = agent.model.get_weights()
@@ -66,7 +74,7 @@ def main(unused_argv):
                                     timesteps = env.step(step_actions)
                                 # agent.save_plot_data(agent.reward / (epoch + 1))
                                 #file.write("hej")
-                                file = open(f"Data/MTB/plot_Train_FROZEN_G{gamma}_Et{Et}_Mb{Mb}_imi{0}_I_{index}.txt", "a")
+                                file = open(f"Data/MTB/imi/plot_Train_FROZEN_G{gamma}_Et{Et}_Mb{Mb}_imi{imi}_I_{index}.txt", "a")
                                 file.write(str(epoch) + ", ")
                                 file.write(str(agent.reward) + ", ")
                                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")
@@ -105,7 +113,7 @@ def main(unused_argv):
                                     timesteps = env.step(step_actions)
                                 # agent.save_plot_data(agent.reward / (epoch + 1))
                                 #file.write("hej")
-                                file = open(f"Data/MTB/plot_Valid_FROZEN_G{gamma}_Et{Et}_Mb{Mb}_imi{0}_I_{index}.txt", "a")
+                                file = open(f"Data/MTB/imi/plot_Valid_FROZEN_G{gamma}_Et{Et}_Mb{Mb}_imi{imi}_I_{index}.txt", "a")
                                 file.write(str(epoch) + ", ")
                                 file.write(str(agent.reward) + ", ")
                                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")

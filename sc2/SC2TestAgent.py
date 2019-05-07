@@ -50,6 +50,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.score = 0
         self.c = 0
         self.oa = 0
+        self.imi = 0
 
         get_custom_objects().update({'test': layers.Activation(test)})
         # Initialize model
@@ -100,7 +101,7 @@ class SimpleAgent(base_agent.BaseAgent):
             state = np.array(obs.observation.feature_screen.unit_type)
             state = self.pre_processing(state)
 
-            if(self.c < 000):
+            if(self.c < self.imi):
 
                 action = beacon[0].x + BOARD_SIZE_X * beacon[0].y
                 self.c += 1
