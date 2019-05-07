@@ -110,20 +110,43 @@ def plot_frozen_imi_res(dir):
         break
 
 
+def how_much_imi(file_name):
+    nr_chars_in_name = 18  # How many chars before parmas start
+    divide_by = 6
+
+    cut_name = file_name[nr_chars_in_name:]
+    split = cut_name.split('_')
+    imi = split[3]
+
+    nr_imi = int(imi[3:])
+
+    print(f"name {file_name} \n Cut name: {cut_name} \n split {split} \n imi {imi} \n nr_imi {nr_imi}")
+
+    return int(nr_imi / divide_by)
+
 def calc_avg_win(dir, files):
     tot_win = []
     epochs = []
     first_file = True
 
     for file in files:
+        skipp_epochs = how_much_imi(file)
+        score_when_skipped = 0
 
         with open(join(dir, file), 'r') as csv_file:
             data = csv.reader(csv_file, delimiter=',')
 
             for row in data:
                 # Parse data
-                epoch = int(row[0])
+                epoch = int(row[0]) - skipp_epochs
                 win = int(row[2])
+
+                if epoch <= 0:
+                    score_when_skipped = win
+                    continue
+
+                # Compensate for skipped score
+                win = win - score_when_skipped
 
                 if first_file:
                     epochs.append(epoch)
@@ -133,9 +156,15 @@ def calc_avg_win(dir, files):
 
         first_file = False
 
+    # Padd with wins
+    while len(tot_win) != 200:
+        tot_win.append(tot_win[-1] + len(files))
+        epochs.append(epochs[-1] + 1)
+
     # Calc avg
     avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
     return epochs, avg_win
+
 
 # Plot one plot with all runs avg
 def plot_frozen_imi_res_avg(dir):

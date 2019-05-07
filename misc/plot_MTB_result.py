@@ -279,6 +279,10 @@ def plot_mtb_heatmap(dir):
 
         _, avg_win = calc_avg_win(dir, files)
 
+        print(f"avg_win {avg_win[-1]}")
+        avg_win[-1] = avg_win[-1] / 800
+        print(f"avg_win {avg_win[-1]}")
+
         if not_tracked_key in all_values:
             values = all_values[not_tracked_key]
 
@@ -298,7 +302,7 @@ def plot_mtb_heatmap(dir):
         # Sort fame to like
         frame.sort_index(axis=1, inplace=True)
         frame.sort_index(axis=0, ascending=False, inplace=True)
-        sns.heatmap(frame, annot=True, fmt='.0f', vmax=210)
+        sns.heatmap(frame, annot=True, vmax=0.25)
 
         print(f"Not tracked {not_tracked}")
         epsilon_val = ''.join([str(i) for i in not_tracked[:-5] if i.isdigit() or i == '.'])
@@ -314,4 +318,4 @@ def plot_mtb_heatmap(dir):
 
 # plot_mtb_res_avg("../Data/MTB/train")
 # plot_mtb_res("../Data/Frozen/train")
-# plot_mtb_heatmap("../Data/MTB/valid")
+plot_mtb_heatmap("../Data/MTB/valid")
