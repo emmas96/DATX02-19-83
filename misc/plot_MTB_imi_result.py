@@ -48,7 +48,7 @@ def create_axis():
 
 # Returns how many epochs of imi the run used
 def how_much_imi(file_name):
-    nr_chars_in_name = 18  # How many chars before parmas start
+    nr_chars_in_name = 23 # 18 # 23  # How many chars before parmas start
     divide_by = 8
 
     cut_name = file_name[nr_chars_in_name:]
@@ -69,7 +69,7 @@ def calc_avg_win_per_epoch(dir, files):
 
     for file in files:
 
-        skipp_epochs = 0 # how_much_imi(file)
+        skipp_epochs = how_much_imi(file)
 
         print(f"imi {how_much_imi(file)}")
 
@@ -79,7 +79,7 @@ def calc_avg_win_per_epoch(dir, files):
             for row in data:
                 # Parse data
                 epoch = int(row[0]) - skipp_epochs
-                win = float(row[2]) #/max_wins_per_round
+                win = float(row[2]) /max_wins_per_round
 
                 if epoch < 0:
                     continue
@@ -331,6 +331,6 @@ def plot_mtb_heatmap(dir):
         plt.show()
 
 
-# plot_mtb_res_avg("../Data/MTB/not_best_param/train")
-plot_mtb_res("../Data/MTB/not_best_param/train")
+plot_mtb_res_avg("../Data/MTB/long_run/train")
+# plot_mtb_res("../Data/MTB/not_best_param/train")
 # plot_mtb_heatmap("../Data/MTB/valid")

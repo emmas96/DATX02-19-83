@@ -233,6 +233,8 @@ def plot_frozen_heatmap(dir):
 
         _, avg_win = calc_avg_win(dir, files)
 
+        avg_win[-1] = avg_win[-1]/10
+
         if not_tracked_key in all_values:
             values = all_values[not_tracked_key]
 
@@ -252,11 +254,11 @@ def plot_frozen_heatmap(dir):
         # Sort fame to like
         frame.sort_index(axis=1, inplace=True)
         frame.sort_index(axis=0, ascending=False, inplace=True)
-        sns.heatmap(frame, annot=True, vmax=10)
+        sns.heatmap(frame, annot=True, vmax=1)
 
         print(f"Not tracked {not_tracked}")
         epsilon_val = ''.join([str(i) for i in not_tracked[:-5] if i.isdigit() or i == '.'])
-        titel = f"Mini batch size: {epsilon_val}" #"$\\varepsilon = {epsilon_val}$"
+        titel = f"Mini-batch size: {epsilon_val}" #"$\\varepsilon = {epsilon_val}$"
 
         # Setup figure
         plt.title(titel, fontsize=16)
@@ -266,6 +268,6 @@ def plot_frozen_heatmap(dir):
         plt.show()
 
 
-plot_frozen_res_avg("../Data/Frozen/train")
+# plot_frozen_res_avg("../Data/Frozen/train")
 # plot_frozen_res("../Data/Frozen/train")
-# plot_frozen_heatmap("../Data/Frozen/valid")
+plot_frozen_heatmap("../Data/Frozen/no_imi/valid")
