@@ -97,13 +97,16 @@ class SimpleAgent(base_agent.BaseAgent):
                 #print(str(action))
                 state = self.get_state(obs)
                 #state = self.pre_processing(state)
-                if self.oldAction is not None:
-                    if self.reward > self.oldScore:
-                        self.tmpMemory.append((self.oldState, self.oldAction, 1, state, False))
-                        self.oldScore = self.reward
-                    else:
-                        self.tmpMemory.append((self.oldState, self.oldAction, 0, state, False))
+                if np.random.rand() <= 0.5:
+                    if self.oldAction is not None:
+                        if obs.observation['score_cumulative'][0] != self.oldScore:
+                            self.memory.append((self.oldState, self.oldAction,
+                                                obs.observation['score_cumulative'][0] - self.oldScore, state, False))
 
+                        else:
+                            self.memory.append((self.oldState, self.oldAction,
+                                                obs.observation['score_cumulative'][0] - self.oldScore, state, False))
+                self.oldScore = obs.observation['score_cumulative'][0]
                 self.oldAction = action
                 self.oldState = state
 

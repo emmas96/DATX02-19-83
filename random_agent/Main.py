@@ -4,13 +4,13 @@ from pysc2.lib import actions, features, units
 from random_agent.SC2TestAgent import SimpleAgent
 import tensorflow as tf
 import time
-EPOCHS = 200
+EPOCHS = 300
 
 
 def main(unused_argv):
-    for gamma in [0,0.25,0.5,0.75,1]:
-        for Mb in [256,512,1024]:
-            for Et in [0,0.1,0.2]:
+    for gamma in [0.9]:
+        for Mb in [512]:
+            for Et in [0.2]:
                 for index in [0]:
                     i = 0
                     agent = SimpleAgent()
@@ -30,7 +30,7 @@ def main(unused_argv):
                                 agent_interface_format=features.AgentInterfaceFormat(
                                     feature_dimensions=features.Dimensions(screen=84, minimap=64),
                                     use_feature_units=True),
-                                step_mul=32,
+                                step_mul=22,
                                 game_steps_per_episode=0,
                                 visualize=True) as env:
 
