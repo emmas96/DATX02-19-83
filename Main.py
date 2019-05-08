@@ -10,16 +10,19 @@ import matplotlib.pyplot as plt
 import threading
 import time
 import numpy as np
+import random
 
-config = tf.ConfigProto(device_count={'GPU': 1, 'CPU': 4})
-sess = tf.Session(config=config)
-keras.backend.set_session(sess)
+
+
+# config = tf.ConfigProto(device_count={'GPU': 1, 'CPU': 4})
+# sess = tf.Session(config=config)
+# keras.backend.set_session(sess)
 
 # Constants
 EPOCHS = 200
 MOVES = 20
 
-##clas
+
 class live_graph():
 
     def __init__(self):
@@ -65,6 +68,7 @@ class live_graph():
 
     def keep_show(self):
         plt.show()
+
 
 def playFrozenLake(Gamma, Et, Mb, imi, index):
     games = []
@@ -116,6 +120,33 @@ def playFrozenLake(Gamma, Et, Mb, imi, index):
     #agent.model.save(f"model-test-{time.time()}.h5")
 
     # print("Win rate: " + str((0.0+last_num_wins)/100.0))
+
+
+def playFrozenLake_random(index):
+
+    # graph = live_graph()
+    game = FrozenLake()
+    # agent.model = tf.keras.models.load_model("model-test-1554280339.6092622.h5")
+    num_wins = 0
+    for epoch in range(EPOCHS):
+        if epoch % 50 == 0:
+            print(f"On epoch {epoch} for interation {index} ")
+        game.resetGame()
+        for move in range(MOVES):
+            state = game.getState()
+            action = random.randint(0, 3)
+            next_state, reward, done = game.play(action)
+
+            num_wins += reward
+
+            if done:
+                break
+
+        file = open(f"Data/Frozen/imi/plot_Train_FROZEN_random_I_{index}.txt", "a")
+        file.write(str(epoch + 1) + " , ")
+        file.write(str(reward) + " , ")
+        file.write(str(num_wins) + "\n")
+        file.close()
 
 
 def playTicTacToe():
@@ -175,8 +206,6 @@ def playTicTacToe():
                 print(game.getState())
                 print("Player Win")
                 break
-
-
 
 
 
@@ -250,9 +279,15 @@ def main():
         playFrozenLake(g, Et, mb, imi, 4)
 
 
+def main_random():
+    for i in range(5):
+        print(f"Index: {i}")
+        playFrozenLake_random(i)
+
 
 if __name__ == "__main__":
-    main()
+    print("starting")
+    main_random()
 
 
 
