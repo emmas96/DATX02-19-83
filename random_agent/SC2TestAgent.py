@@ -13,7 +13,7 @@ HIDDEN_LAYER_SIZE = 16
 
 ALPHA = 0.001
 EPSILON_FROM = 1.0
-EPSILON_DECAY = 0.99
+EPSILON_DECAY = 1
 NUMSTATE = 9
 NUMACTION = 11
 
@@ -38,7 +38,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.BATCH_SIZE = 256
         self.GAMMA = 0.9
         self.EPSILON_TO = 0.2
-        self.imi = 20000
+        self.imi = 0
 
         # Initialize model
         self.model = keras.Sequential()
