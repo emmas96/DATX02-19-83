@@ -147,6 +147,15 @@ def calc_avg_win_per_epoch(dir, files):
     avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
     return epochs[:len(avg_win)], avg_win
 
+def add_random_data(dir):
+    # Plot random data
+    # "../Data/frozen/random"
+    random_runs = __group_by_run(dir)
+
+    for run_params, files in random_runs.items():
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files)
+        plt.plot(epochs, avg_win, label="Random", color="k")
+
 
 def calc_avg_win(dir, files):
     tot_win = []
@@ -187,7 +196,7 @@ def calc_avg_win(dir, files):
 def plot_mtb_res_avg(dir):
     # Constants
     nr_to_highlight = 5
-    color = ['b', 'g', 'r', 'c', 'm', 'k']
+    color = ['b', 'g', 'r', 'c', 'm']
 
     translations = {}
     test_nr = 1
@@ -223,6 +232,8 @@ def plot_mtb_res_avg(dir):
             plt.plot(epochs, avg_win, label=label, color=color.pop())
         else:
             plt.plot(epochs, avg_win, alpha=.1)
+
+    add_random_data("../Data/mtb/random")
 
     print("Translations:")
     pprint.pprint(translations)
@@ -316,6 +327,6 @@ def plot_mtb_heatmap(dir):
         plt.show()
 
 
-# plot_mtb_res_avg("../Data/MTB/no_imi/train")
+plot_mtb_res_avg("../Data/MTB/no_imi/train")
 # plot_mtb_res("../Data/Frozen/train")
 # plot_mtb_heatmap("../Data/MTB/valid")
