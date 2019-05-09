@@ -171,12 +171,20 @@ def plot_frozen_res_avg(dir):
         epochs, avg_win = calc_avg_win(dir, files)
 
         if run_params in best_runs.keys():
-            label = f"Sample {test_nr}"
+            label = f"Agent {test_nr}"
             test_nr += 1
             translations[label] = run_params
             plt.plot(epochs, avg_win, label=label, color=color.pop())
         else:
             plt.plot(epochs, avg_win, alpha=.1)
+
+    # Plot random data
+    random_dir = "../Data/frozen/random"
+    random_runs = __group_by_run(random_dir)
+
+    for run_params, files in random_runs.items():
+        epochs, avg_win = calc_avg_win(random_dir, files)
+        plt.plot(epochs, avg_win, label="Random Action-Policy", color="k")
 
     print("Translations:")
     pprint.pprint(translations)
@@ -268,6 +276,6 @@ def plot_frozen_heatmap(dir):
         plt.show()
 
 
-# plot_frozen_res_avg("../Data/Frozen/train")
+plot_frozen_res_avg("../Data/Frozen/no_imi/train")
 # plot_frozen_res("../Data/Frozen/train")
-plot_frozen_heatmap("../Data/Frozen/no_imi/valid")
+# plot_frozen_heatmap("../Data/Frozen/no_imi/valid")

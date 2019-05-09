@@ -60,7 +60,17 @@ def how_much_imi(file_name):
     return int(nr_imi / divide_by)
 
 
-def calc_avg_win_per_epoch(dir, files):
+def add_random_data(dir):
+    # Plot random data
+    # "../Data/frozen/random"
+    random_runs = __group_by_run(dir)
+
+    for run_params, files in random_runs.items():
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files, no_imi=True)
+        plt.plot(epochs, avg_win, label="Random", color="k")
+
+
+def calc_avg_win_per_epoch(dir, files, no_imi=False):
     tot_win = []
     epochs = []
     first_file = True
@@ -69,9 +79,10 @@ def calc_avg_win_per_epoch(dir, files):
 
     for file in files:
 
-        skipp_epochs = how_much_imi(file)
-
-        print(f"imi {how_much_imi(file)}")
+        if no_imi:
+            skipp_epochs = 0
+        else:
+            skipp_epochs = how_much_imi(file)
 
         with open(join(dir, file), 'r') as csv_file:
             data = csv.reader(csv_file, delimiter=',')
@@ -79,7 +90,7 @@ def calc_avg_win_per_epoch(dir, files):
             for row in data:
                 # Parse data
                 epoch = int(row[0]) - skipp_epochs
-                win = float(row[2]) /max_wins_per_round
+                win = float(row[2]) / max_wins_per_round
 
                 if epoch < 0:
                     continue
@@ -213,7 +224,7 @@ def plot_mtb_res(dir):
 # Plot one plot with all runs avg
 def plot_mtb_res_avg(dir):
     # Constants
-    color = ['b', 'g', 'r', 'c', 'm', 'k']
+    color = ['b', 'g', 'r', 'c', 'm']
 
     # Read files from dir and group them
     all_runs = __group_by_run(dir)
@@ -241,6 +252,8 @@ def plot_mtb_res_avg(dir):
             label = f"{imi_epochs} epochs of prior imitation learning"
 
         plt.plot(epochs, avg_win, label=label, color=color.pop())
+
+    add_random_data("../Data/MTB/random")
 
     # plt.title("All runs")
     plt.xlabel('Number of epochs')
