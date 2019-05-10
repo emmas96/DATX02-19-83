@@ -52,6 +52,9 @@ class SimpleAgent(base_agent.BaseAgent):
         self.c = 0
         self.oa = 0
         self.imi = 0
+        self.obs = None
+        self.epoch = 0
+        self.turn = 0
 
         get_custom_objects().update({'test': layers.Activation(test)})
         # Initialize model
@@ -83,6 +86,7 @@ class SimpleAgent(base_agent.BaseAgent):
         #plt.imshow(plot, cmap='hot', interpolation='nearest')
         #plt.show()
         self.oa += 1
+        self.SaveState(state, np.reshape(action[0],[40,40]))
         #action = self.model.predict(np.expand_dims(np.expand_dims(state, axis=0),axis=3))
         return np.argmax(action[0])
 
@@ -108,6 +112,7 @@ class SimpleAgent(base_agent.BaseAgent):
                 self.c += 1
                 print(str(self.c))
             else:
+                self.obs = obs
                 action = self.get_action(state)
 
             #self.tmpmemory.append((self.oldState, self.oldAction,self.reward, state, False))
@@ -205,4 +210,20 @@ class SimpleAgent(base_agent.BaseAgent):
 
     def save_plot_data(self, x):
         self.plot_data.append(x)
+
+    def SaveState(self, state, q):
+        file1 = open(
+            f"Data/MTB/state/plot_state_Epoch{self.epoch}_GAME_G{self.GAMMA}_Et{self.EPSILON_TO}_Mb{self.BATCH_SIZE}_imi{self.imi}_turn_{self.turn}.txt",
+            "a")
+        file2 = open(
+            f"Data/MTB/state/plot_Q_Epoch{self.epoch}_GAME_G{self.GAMMA}_Et{self.EPSILON_TO}_Mb{self.BATCH_SIZE}_imi{self.imi}_turn_{self.turn}.txt",
+            "a")
+        np.savetxt(file1, state)
+
+        np.savetxt(file2, q)
+        #file.write(np.array2string(state) + ", ")
+        #file.write(np.array2string(q) +  ", ")
+        file1.close()
+        file2.close()
+        self.turn += 1
 
