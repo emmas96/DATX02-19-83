@@ -259,7 +259,7 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of epochs'):
 
 
 # Acc wins
-plot_game_res("../Data/game/sc2_score/train", ylabel='Accumulated wins', name='accumulated_wins')
+# plot_game_res("../Data/game/sc2_score/train", ylabel='Accumulated wins', name='accumulated_wins')
 
 # Sc2 score
 plot_game_res("../Data/game/sc2_score/train", ylabel='Rolling mean of score per epoch', name='sc2_score_window_100')
