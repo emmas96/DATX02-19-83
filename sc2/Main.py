@@ -21,8 +21,8 @@ def main(unused_argv):
             #for Et in [0,0.1,0.2]:[0.25,0.1,128],[0.25,0.2,128],[0.25,0.2,64],[0,0.1,64],[0.5,0.1,128],
         for r in [[0.5,0,128]]:
             #512*8 128*8,256*8,
-            for imi in [1024*8]:
-                for index in [0,1,2,3,4]:
+            for imi in [0]:
+                for index in [0]:
                     print("Jag lovar du är en duktig agent")
                     agent = None
                     agent = SimpleAgent()
@@ -34,7 +34,7 @@ def main(unused_argv):
                     agent.imi = imi
                     agent.BATCH_SIZE = Mb
                     agent.EPSILON_TO = Et
-                    agent.EPSILON = Et
+                    #agent.EPSILON = Et
                     agent.GAMMA = gamma
                     #agent = ConvAgent()
                     #lol = agent.model.get_weights()
@@ -55,6 +55,8 @@ def main(unused_argv):
                             agent.setup(env.observation_spec(), env.action_spec())
                             for epoch in range(EPOCHS):
                                 agent.reset_game()
+                                agent.epoch = epoch
+                                agent.turn = 0
                                 timesteps = env.reset()
                                 agent.reset()
                                 if agent.getMemoryLength() > agent.getBatchSize():

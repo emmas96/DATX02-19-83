@@ -13,7 +13,7 @@ HIDDEN_LAYER_SIZE = 16
 
 ALPHA = 0.001
 EPSILON_FROM = 1.0
-EPSILON_DECAY = 1
+EPSILON_DECAY = 0.99
 NUMSTATE = 9
 NUMACTION = 11
 
@@ -39,6 +39,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.GAMMA = 0.9
         self.EPSILON_TO = 0.2
         self.imi = 0
+        self.turn = 0
 
         # Initialize model
         self.model = keras.Sequential()
@@ -136,22 +137,30 @@ class SimpleAgent(base_agent.BaseAgent):
             if len(self.GE.ActionQueue) == 0:
                 if(self.c < self.imi):
                     action = self.get_imi_action(self.get_state(obs))
-                    self.c += 1
+                    #self.c += 1
                 else:
                     action = self.get_action(self.get_state(obs))
                 #print(str(action))
                 state = self.get_state(obs)
                 #state = self.pre_processing(state)
                 if np.random.rand() <= 0.5:
-                    if self.oldAction is not None:
-                        if obs.observation['score_cumulative'][0] != self.oldScore:
-                            self.memory.append((self.oldState, self.oldAction,
-                                                obs.observation['score_cumulative'][0] - self.oldScore, state, False))
+                    if False:
+                        if self.oldAction is not None:
+                            if obs.observation['score_cumulative'][0] != self.oldScore:
+                                self.memory.append((self.oldState, self.oldAction,
+                                                    obs.observation['score_cumulative'][0] - self.oldScore, state, False))
 
-                        else:
-                            self.memory.append((self.oldState, self.oldAction,
-                                                obs.observation['score_cumulative'][0] - self.oldScore, state, False))
-                self.oldScore = obs.observation['score_cumulative'][0]
+                            else:
+                                self.memory.append((self.oldState, self.oldAction,
+                                                    obs.observation['score_cumulative'][0] - self.oldScore, state, False))
+                        self.oldScore = obs.observation['score_cumulative'][0]
+                    else:
+                        if self.oldAction is not None:
+                            if self.reward > self.oldScore:
+                                self.tmpMemory.append((self.oldState, self.oldAction, obs.observation['score_cumulative'][0] - self.oldScore, state, False))
+                                self.oldScore = self.reward
+                            else:
+                                self.tmpMemory.append((self.oldState, self.oldAction, obs.observation['score_cumulative'][0] - self.oldScore, state, False))
                 self.oldAction = action
                 self.oldState = state
 
