@@ -79,8 +79,9 @@ def was_round_a_win(last_round, curr_round):
 
 
 def mark_won_epochs(won_epochs, avg_win):
-    for epoch in won_epochs:
-        plt.plot(epoch, avg_win[epoch], 'ro', color='g', alpha=.7)
+    return True
+    #for epoch in won_epochs:
+       #plt.plot(epoch, avg_win[epoch], 'ro', color='g', alpha=.7)
 
 
 def add_random_data(dir):
@@ -90,7 +91,7 @@ def add_random_data(dir):
     random_runs = __group_by_run(dir)
 
     for run_params, files in random_runs.items():
-        epochs, avg_win = calc_avg_win_per_epoch(dir, files)
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=10)
         plt.plot(epochs, avg_win, label="Random", color="k")
 
         print(f"Len epoch {len(epochs)} len avg win {len(avg_win)}")
@@ -125,7 +126,7 @@ def calc_won_epochs(dir, files):
     return won_epochs
 
 
-def calc_avg_win_per_epoch(dir, files):
+def calc_avg_win_per_epoch(dir, files, window=1):
     tot_win = []
     epochs = []
     first_file = True
@@ -162,7 +163,7 @@ def calc_avg_win_per_epoch(dir, files):
     print(len(avg_win))
 
     # Calc rolling mean
-    N = 10
+    N = window
     avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
     return epochs[:len(avg_win)], avg_win
 
@@ -181,12 +182,24 @@ def plot_game_res(dir):
 
     # Plot the results
     for run_params, files in all_runs.items():
-        epochs, avg_win = calc_avg_win_per_epoch(dir, files)
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=10)
 
         won_epochs = calc_won_epochs(dir, files)
         mark_won_epochs(won_epochs, avg_win)
 
-        label = f"Agent {test_nr}"
+        label = f"Agent {test_nr} 10"
+        test_nr += 1
+        translations[label] = run_params
+        plt.plot(epochs, avg_win, label=label, color=color.pop())
+
+    # Plot the results
+    for run_params, files in all_runs.items():
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=100)
+
+        won_epochs = calc_won_epochs(dir, files)
+        mark_won_epochs(won_epochs, avg_win)
+
+        label = f"Agent {test_nr} 100"
         test_nr += 1
         translations[label] = run_params
         plt.plot(epochs, avg_win, label=label, color=color.pop())
@@ -203,4 +216,4 @@ def plot_game_res(dir):
     plt.show()
 
 
-plot_game_res("../Data/game/sc2_score/imi")
+plot_game_res("../Data/game/sc2_score/train")
