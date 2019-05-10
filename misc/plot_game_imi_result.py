@@ -34,6 +34,21 @@ def __group_by_run(dir):
 
     return temp
 
+
+# Returns how many epochs of imi the run used
+def how_much_imi(file_name):
+    nr_chars_in_name = 23 # 18 # 23  # How many chars before parmas start
+    divide_by = 8
+
+    cut_name = file_name[nr_chars_in_name:]
+    split = cut_name.split('_')
+    imi = split[3]
+
+    # nr_imi = int(imi[3:])
+
+    return 64 # int(nr_imi / divide_by)
+
+
 def calc_avg_win(dir, files):
     tot_win = []
     epochs = []
@@ -90,7 +105,7 @@ def add_random_data(dir):
     random_runs = __group_by_run(dir)
 
     for run_params, files in random_runs.items():
-        epochs, avg_win = calc_avg_win_per_epoch(dir, files)
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files, no_imi=True)
         plt.plot(epochs, avg_win, label="Random", color="k")
 
         print(f"Len epoch {len(epochs)} len avg win {len(avg_win)}")
@@ -99,9 +114,14 @@ def add_random_data(dir):
         mark_won_epochs(won_epochs, avg_win)
 
 
-def calc_won_epochs(dir, files):
+def calc_won_epochs(dir, files, no_imi=False):
 
     for file in files:
+
+        if no_imi:
+            skipp_epochs = 0
+        else:
+            skipp_epochs = how_much_imi(file)
 
         with open(join(dir, file), 'r') as csv_file:
             data = csv.reader(csv_file, delimiter=',')
@@ -117,20 +137,25 @@ def calc_won_epochs(dir, files):
 
                 is_win, last_round = was_round_a_win(last_round, curr_round)
 
-                if is_win:
-                    won_epochs.append(epoch)
+                if is_win and epoch > skipp_epochs:
+                    won_epochs.append(epoch - skipp_epochs)
 
     print(f"Won {len(won_epochs)} epochs: {won_epochs} ")
 
     return won_epochs
 
 
-def calc_avg_win_per_epoch(dir, files):
+def calc_avg_win_per_epoch(dir, files, no_imi=False):
     tot_win = []
     epochs = []
     first_file = True
 
     for file in files:
+
+        if no_imi:
+            skipp_epochs = 0
+        else:
+            skipp_epochs = how_much_imi(file)
 
         with open(join(dir, file), 'r') as csv_file:
             data = csv.reader(csv_file, delimiter=',')
@@ -140,9 +165,12 @@ def calc_avg_win_per_epoch(dir, files):
 
             for row in data:
                 # Parse data
-                epoch = int(row[0])
+                epoch = int(row[0]) - skipp_epochs
 
                 win = float(row[2])
+
+                if epoch < 0:
+                    continue
 
                 # To plot acc score
                 # accumulator, last_round = parse_score_per_round(last_round, float(row[1]), accumulator)
