@@ -53,7 +53,7 @@ def main(unused_argv):
                                     timesteps = env.step(step_actions)
                                 # agent.save_plot_data(agent.reward / (epoch + 1))
                                 # file.write("hej")
-                                file = open(f"Data/GAME/plot_Train_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{0}_I_{index}.txt",
+                                file = open(f"Data/GAME/plot_Train_GAME_RAND_G{gamma}_Et{Et}_Mb{Mb}_imi{0}_I_{index}.txt",
                                             "a")
                                 file.write(str(epoch) + ", ")
                                 file.write(str(agent.reward) + ", ")
@@ -85,7 +85,7 @@ def main(unused_argv):
                                     timesteps = env.step(step_actions)
                                 # agent.save_plot_data(agent.reward / (epoch + 1))
                                 # file.write("hej")
-                                file = open(f"Data/Game/plot_Valid_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{0}_I_{index}.txt","a")
+                                file = open(f"Data/Game/plot_Valid_GAME_RAND_G{gamma}_Et{Et}_Mb{Mb}_imi{0}_I_{index}.txt","a")
                                 file.write(str(epoch) + ", ")
                                 file.write(str(agent.reward) + ", ")
                                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")

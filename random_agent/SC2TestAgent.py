@@ -13,8 +13,8 @@ HIDDEN_LAYER_SIZE = 16
 
 ALPHA = 0.001
 EPSILON_FROM = 1.0
-EPSILON_DECAY = 0.99
-NUMSTATE = 6
+EPSILON_DECAY = 1
+NUMSTATE = 9
 NUMACTION = 11
 
 
@@ -38,6 +38,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.BATCH_SIZE = 256
         self.GAMMA = 0.9
         self.EPSILON_TO = 0.2
+        self.imi = 0
 
         # Initialize model
         self.model = keras.Sequential()
@@ -59,6 +60,46 @@ class SimpleAgent(base_agent.BaseAgent):
         #print("ditt problem")
         action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
         return np.argmax(action[0])
+
+    def get_imi_action(self, state):
+        suply_limit = state[1]
+        total_suply = state[2]
+        minerals = state[0]
+        workers = state[4]
+        army = state[5]
+        nr_spawn_pools = state[6]
+        nr_queens = state[7]
+        amount_energy = state[8]
+
+        action = 0
+
+        print(f"\nNR Queens:{nr_queens}, NR Pools:{nr_spawn_pools}, Energy:{amount_energy}")
+
+        #build overloard when supply is full
+        if suply_limit - total_suply <= 1:
+            #Build overloard
+            action = 2
+        elif minerals > 200 and nr_spawn_pools < 1:
+            #Spawnpool
+            action = 3
+        elif workers < 16:
+            #Build drone
+            action = 1
+        elif minerals > 150 and nr_spawn_pools >= 1 and nr_queens < 1:
+            #Build queen
+            action = 9
+        elif nr_queens > 0 and amount_energy > 25:
+            #spawn larva
+            action = 10
+        elif army > 20:
+            #Attack
+            action = 5
+        else:
+            #Build zergling
+            action = 4
+
+        print(f"I made the action {action}")
+        return action
 
     def step(self, obs):
         super(SimpleAgent, self).step(obs)
@@ -93,7 +134,11 @@ class SimpleAgent(base_agent.BaseAgent):
         if self.counter == 0:
             self.counter = 0
             if len(self.GE.ActionQueue) == 0:
-                action = self.get_action(self.get_state(obs))
+                if(self.c < self.imi):
+                    action = self.get_imi_action(self.get_state(obs))
+                    self.c += 1
+                else:
+                    action = self.get_action(self.get_state(obs))
                 #print(str(action))
                 state = self.get_state(obs)
                 #state = self.pre_processing(state)
@@ -143,6 +188,10 @@ class SimpleAgent(base_agent.BaseAgent):
         y, x = mask.nonzero()
         return list(zip(x, y))
 
+    def get_units_by_type(self, obs, unit_type):
+        return [unit for unit in obs.observation.feature_units
+                if unit.unit_type == unit_type]
+
     def get_state(self, obs):
         minerals = obs.observation.player[1]
         supply_limit = obs.observation.player[4]
@@ -150,6 +199,13 @@ class SimpleAgent(base_agent.BaseAgent):
         army_supply = obs.observation.player[5]
         workers = obs.observation.player[6]
         army = obs.observation.player[8]
+        nr_spawn_pools = len(self.get_units_by_type(obs, units.Zerg.SpawningPool))
+        queens = self.get_units_by_type(obs, units.Zerg.Queen)
+        if len(queens) > 0:
+            amount_energy = max([q.energy for q in queens])
+        else:
+            amount_energy = 0
 
-        state = (minerals, supply_limit, total_supply, army_supply, workers, army)
+        state = (
+        minerals, supply_limit, total_supply, army_supply, workers, army, nr_spawn_pools, len(queens), amount_energy)
         return state
