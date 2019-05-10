@@ -154,7 +154,7 @@ def add_random_data(dir):
 
     for run_params, files in random_runs.items():
         epochs, avg_win = calc_avg_win_per_epoch(dir, files)
-        plt.plot(epochs, avg_win, label="Random", color="k")
+        plt.plot(epochs, avg_win, label="Random Action-Policy", color="k")
 
 
 def calc_avg_win(dir, files):
@@ -226,7 +226,7 @@ def plot_mtb_res_avg(dir):
         epochs, avg_win = calc_avg_win_per_epoch(dir, files)
 
         if run_params in best_runs.keys():
-            label = f"Sample {test_nr}"
+            label = f"Agent {test_nr}"
             test_nr += 1
             translations[label] = run_params
             plt.plot(epochs, avg_win, label=label, color=color.pop())
@@ -317,7 +317,7 @@ def plot_mtb_heatmap(dir):
 
         print(f"Not tracked {not_tracked}")
         epsilon_val = ''.join([str(i) for i in not_tracked[:-5] if i.isdigit() or i == '.'])
-        titel = f"Mini batch size: {epsilon_val}" #"$\\varepsilon = {epsilon_val}$"
+        titel = f"Mini-batch size: {epsilon_val}" #"$\\varepsilon = {epsilon_val}$"
 
         # Setup figure
         plt.title(titel, fontsize=16)
@@ -327,6 +327,6 @@ def plot_mtb_heatmap(dir):
         plt.show()
 
 
-plot_mtb_res_avg("../Data/MTB/no_imi/train")
+# plot_mtb_res_avg("../Data/MTB/no_imi/train")
 # plot_mtb_res("../Data/Frozen/train")
-# plot_mtb_heatmap("../Data/MTB/valid")
+plot_mtb_heatmap("../Data/MTB/no_imi/valid")
