@@ -12,7 +12,7 @@ state = 'state'
 
 
 def save_fig(name, folder):
-    path_to_res = join("../result/game/", folder)
+    path_to_res = join("../result/mtb/", folder)
 
     # Save fig to disk
     if not isdir(path_to_res):
@@ -50,7 +50,7 @@ def parse_data(dir, file):
 
         df = pd.DataFrame(matrix)
         df.sort_index(axis=1, inplace=True)
-        df.sort_index(axis=0, ascending=False, inplace=True)
+        df.sort_index(axis=0, ascending=True, inplace=True)
 
     return df, matrix
 
@@ -61,7 +61,7 @@ def get_xy_coordinates(matrix):
     for y, row in enumerate(matrix):
         for x, value in enumerate(row):
             if value == 1:
-                highlighted.append((x, 39 - y))
+                highlighted.append((x, y))
 
     return highlighted
 
@@ -80,13 +80,15 @@ def plot_q_matrix(dir):
         q_df, _ = parse_data(dir, files[Q])
         state_df, state_matrix = parse_data(dir, files[state])
 
-        ax = sns.heatmap(q_df)
+        ax = sns.heatmap(q_df, xticklabels=2, yticklabels=2)
         beacon_cords = get_xy_coordinates(state_matrix)
+
         mark_cords(ax, beacon_cords)
+
+        save_fig(id[:-4] + ".png", "q_matrix")
         plt.show()
 
-        sns.heatmap(state_df, linewidths=.01)
-        plt.show()
+
 
 
 
