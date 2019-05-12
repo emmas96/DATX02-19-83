@@ -14,11 +14,11 @@ def main(unused_argv):
                 for index in [0]:
                     i = 0
                     agent = SimpleAgent()
-                    agent.imi = 100
+                    agent.imi = 0
                     agent.GAMMA = gamma
                     agent.BATCH_SIZE = Mb
                     agent.EPSILON_TO = Et
-                    agent.EPSILON = Et
+                    agent.EPSILON = 1
 
                     #agent.model = tf.keras.models.load_model("model-test-1554279092.6362414.h5")
                     points = 0
@@ -43,6 +43,7 @@ def main(unused_argv):
                             agent.setup(env.observation_spec(), env.action_spec())
                             for epoch in range(EPOCHS):
                                 agent.reset_game()
+                                agent.epoch = epoch
                                 agent.c = epoch
                                 timesteps = env.reset()
                                 agent.reset()
@@ -58,12 +59,12 @@ def main(unused_argv):
                                 for state, action, reward, next_state, done in agent.tmpMemory:
                                     if (i > agent.reward):
                                         agent.memory.append(
-                                            (state, action, abs(reward) * 100, next_state, False))
+                                            (state, action, reward, next_state, False))
                                     else:
                                         agent.memory.append(
                                             (state, action, reward, next_state, False))
                                 i = agent.reward
-                                file = open(f"Data/GAME/plot_Train_Special_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{agent.imi}_I_{index}.txt",
+                                file = open(f"Data/GAME/plot_Train_addR_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{agent.imi}_I_{index}.txt",
                                             "a")
                                 file.write(str(epoch) + ", ")
                                 file.write(str(agent.reward) + ", ")
@@ -95,7 +96,7 @@ def main(unused_argv):
                                     timesteps = env.step(step_actions)
                                 # agent.save_plot_data(agent.reward / (epoch + 1))
                                 # file.write("hej")
-                                file = open(f"Data/Game/plot_Valid_special_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{agent.imi}_I_{index}.txt","a")
+                                file = open(f"Data/Game/plot_Valid_addR_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{agent.imi}_I_{index}.txt","a")
                                 file.write(str(epoch) + ", ")
                                 file.write(str(agent.reward) + ", ")
                                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")
