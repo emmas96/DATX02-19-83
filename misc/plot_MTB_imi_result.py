@@ -67,7 +67,7 @@ def add_random_data(dir):
 
     for run_params, files in random_runs.items():
         epochs, avg_win = calc_avg_win_per_epoch(dir, files, no_imi=True)
-        plt.plot(epochs, avg_win, label="Random", color="k")
+        plt.plot(epochs, avg_win, label="Random Action-Policy", color="k")
 
 
 def calc_avg_win_per_epoch(dir, files, no_imi=False):

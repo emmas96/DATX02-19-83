@@ -46,7 +46,7 @@ def how_much_imi(file_name):
 
     # nr_imi = int(imi[3:])
 
-    return 64 # int(nr_imi / divide_by)
+    return 67 # int(nr_imi / divide_by)
 
 
 def calc_avg_win(dir, files):

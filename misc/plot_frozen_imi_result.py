@@ -124,13 +124,18 @@ def how_much_imi(file_name):
     return int(nr_imi / divide_by)
 
 
-def calc_avg_win(dir, files):
+def calc_avg_win(dir, files, no_imi=False):
     tot_win = []
     epochs = []
     first_file = True
 
     for file in files:
-        skipp_epochs = how_much_imi(file)
+
+        if no_imi:
+            skipp_epochs = 0
+        else:
+            skipp_epochs = how_much_imi(file)
+
         score_when_skipped = 0
 
         with open(join(dir, file), 'r') as csv_file:
@@ -166,6 +171,15 @@ def calc_avg_win(dir, files):
     return epochs, avg_win
 
 
+def add_random_data(dir):
+    # Plot random data
+    random_runs = __group_by_run(dir)
+
+    for run_params, files in random_runs.items():
+        epochs, avg_win = calc_avg_win(dir, files, no_imi=True)
+        plt.plot(epochs, avg_win, label="Random Action-Policy", color="k")
+
+
 # Plot one plot with all runs avg
 def plot_frozen_imi_res_avg(dir):
     # Constants
@@ -198,6 +212,8 @@ def plot_frozen_imi_res_avg(dir):
             label = f"{imi_epochs} epochs of prior imitation learning"
 
         plt.plot(epochs, avg_win, label=label, color=color.pop())
+
+    add_random_data("../Data/frozen/random")
 
     # plt.title("All runs")
     plt.xlabel('Number of epochs')
