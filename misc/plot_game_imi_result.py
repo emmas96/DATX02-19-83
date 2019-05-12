@@ -231,4 +231,4 @@ def plot_game_res(dir):
     plt.show()
 
 
-plot_game_res("../Data/game/sc2_score/imi")
+plot_game_res("../Data/game/win_reward")

@@ -276,6 +276,6 @@ def plot_frozen_heatmap(dir):
         plt.show()
 
 
-plot_frozen_res_avg("../Data/Frozen/no_imi/train")
+# plot_frozen_res_avg("../Data/Frozen/no_imi/train")
 # plot_frozen_res("../Data/Frozen/train")
-# plot_frozen_heatmap("../Data/Frozen/no_imi/valid")
+plot_frozen_heatmap("../Data/Frozen/no_imi/valid")

@@ -183,7 +183,7 @@ def add_random_data(dir):
 # Plot one plot with all runs avg
 def plot_frozen_imi_res_avg(dir):
     # Constants
-    color = ['k', 'c', 'm', 'g', 'r']
+    color = ['#ff9d00', 'c', 'm', 'g', '#ff0000']
 
     # Read files from dir and group them
     all_runs = __group_by_run(dir)

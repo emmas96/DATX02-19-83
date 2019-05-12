@@ -327,6 +327,6 @@ def plot_mtb_heatmap(dir):
         plt.show()
 
 
-# plot_mtb_res_avg("../Data/MTB/no_imi/train")
+plot_mtb_res_avg("../Data/MTB/no_imi/train")
 # plot_mtb_res("../Data/Frozen/train")
-plot_mtb_heatmap("../Data/MTB/no_imi/valid")
+# plot_mtb_heatmap("../Data/MTB/no_imi/valid")

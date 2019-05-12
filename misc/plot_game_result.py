@@ -249,8 +249,6 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of epochs'):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
-    plt.ylim(5000, 9500)
-
     plt.legend()
 
     save_fig(name + ".png", "")
@@ -262,4 +260,4 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of epochs'):
 # plot_game_res("../Data/game/sc2_score/train", ylabel='Accumulated wins', name='accumulated_wins')
 
 # Sc2 score
-plot_game_res("../Data/game/sc2_score/train", ylabel='Rolling mean of score per epoch', name='sc2_score_window_100')
+plot_game_res("../Data/game/win_reward", ylabel='Rolling mean of score per epoch', name='sc2_score_window_100')
