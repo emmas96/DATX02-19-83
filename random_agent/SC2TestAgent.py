@@ -40,6 +40,7 @@ class SimpleAgent(base_agent.BaseAgent):
         self.EPSILON_TO = 0.2
         self.imi = 0
         self.turn = 0
+        self.epoch = 0
 
         # Initialize model
         self.model = keras.Sequential()
@@ -56,10 +57,13 @@ class SimpleAgent(base_agent.BaseAgent):
 
 
     def get_action(self, state):
+        action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
+        self.SaveState(state, action)
         if np.random.rand() <= self.EPSILON:
             return random.randrange(NUMACTION)
         #print("ditt problem")
-        action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
+
+
         return np.argmax(action[0])
 
     def get_imi_action(self, state):
@@ -218,3 +222,19 @@ class SimpleAgent(base_agent.BaseAgent):
         state = (
         minerals, supply_limit, total_supply, army_supply, workers, army, nr_spawn_pools, len(queens), amount_energy)
         return state
+
+    def SaveState(self, state, q):
+        file1 = open(
+            f"Data/GAME/state/plot_state_Epoch{self.epoch}_GAME_G{self.GAMMA}_Et{self.EPSILON_TO}_Mb{self.BATCH_SIZE}_imi{self.imi}_turn_{self.turn}.txt",
+            "a")
+        file2 = open(
+            f"Data/GAME/state/plot_Q_Epoch{self.epoch}_GAME_G{self.GAMMA}_Et{self.EPSILON_TO}_Mb{self.BATCH_SIZE}_imi{self.imi}_turn_{self.turn}.txt",
+            "a")
+        np.savetxt(file1, state)
+
+        np.savetxt(file2, q)
+        #file.write(np.array2string(state) + ", ")
+        #file.write(np.array2string(q) +  ", ")
+        file1.close()
+        file2.close()
+        self.turn += 1
