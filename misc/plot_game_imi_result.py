@@ -46,7 +46,7 @@ def how_much_imi(file_name):
 
     # nr_imi = int(imi[3:])
 
-    return 67 # int(nr_imi / divide_by)
+    return 0 # 67 # int(nr_imi / divide_by)
 
 
 def calc_avg_win(dir, files):
@@ -231,4 +231,4 @@ def plot_game_res(dir):
     plt.show()
 
 
-plot_game_res("../Data/game/sc2_score/imi")
+plot_game_res("../Data/game/win_reward")

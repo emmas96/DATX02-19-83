@@ -13,6 +13,8 @@ def save_fig(name, folder):
     # Save fig to disk
     if not isdir(path_to_res):
         makedirs(path_to_res)
+
+    print(f"Saveing to {join(path_to_res, name)}")
     plt.savefig(join(path_to_res, name))
 
 
@@ -150,7 +152,7 @@ def calc_drawn_epochs(dir, files):
                 if diff == 0:
                     drawn_epochs.append(epoch)
 
-    print(f"Won {len(drawn_epochs)} epochs: {drawn_epochs} ")
+    print(f"Drawn {len(drawn_epochs)} epochs: {drawn_epochs} ")
 
     return drawn_epochs
 
@@ -249,10 +251,9 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of epochs'):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
-    plt.ylim(5000, 9500)
-
-    plt.legend()
-
+    plt.axvline(x=67, label="End of imitation learning", linestyle='--')
+    plt.ylim(4800, 11100)
+    plt.legend(loc="upper right")
     save_fig(name + ".png", "")
 
     plt.show()
@@ -262,4 +263,4 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of epochs'):
 # plot_game_res("../Data/game/sc2_score/train", ylabel='Accumulated wins', name='accumulated_wins')
 
 # Sc2 score
-plot_game_res("../Data/game/sc2_score/train", ylabel='Rolling mean of score per epoch', name='sc2_score_window_100')
+plot_game_res("../Data/game/sc2_score/imi", ylabel='Rolling mean of score per epoch', name='imi_sc2_score_window_100')
