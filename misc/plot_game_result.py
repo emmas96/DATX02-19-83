@@ -251,9 +251,10 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of epochs'):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
-    plt.axvline(x=67, label="End of imitation learning", linestyle='--')
-    plt.ylim(4800, 11100)
-    plt.legend(loc="upper right")
+    # plt.axvline(x=67, label="End of imitation learning", linestyle='--')
+    plt.ylim(4800, 11300)
+    plt.legend()
+    # plt.figlegend()
     save_fig(name + ".png", "")
 
     plt.show()
@@ -263,4 +264,5 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of epochs'):
 # plot_game_res("../Data/game/sc2_score/train", ylabel='Accumulated wins', name='accumulated_wins')
 
 # Sc2 score
-plot_game_res("../Data/game/sc2_score/imi", ylabel='Rolling mean of score per epoch', name='imi_sc2_score_window_100')
+plot_game_res("../Data/game/sc2_score/imi", ylabel='Rolling mean of score per epoch',
+              name='sc2_score_window_100_long_axis')
