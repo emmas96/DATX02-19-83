@@ -48,6 +48,7 @@ def create_axis():
 
 # Returns how many epochs of imi the run used
 def how_much_imi(file_name):
+    return 0
     nr_chars_in_name = 23 # 18 # 23  # How many chars before parmas start
     divide_by = 8
 
@@ -108,24 +109,15 @@ def calc_avg_win_per_epoch(dir, files, no_imi=False):
     # Calc avg
     avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
 
-    if len(avg_win) > 2000:
-        avg_win = avg_win[:2000]
+    #if len(avg_win) > 2000:
+        #avg_win = avg_win[:2000]
 
     print(len(avg_win))
 
     #Calc rolling mean
-    N = 100
+    N = 2000
     avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
     return epochs[:len(avg_win)], avg_win
-
-def mark_first_and_last_epoch(epochs, avg_win, labels):
-    x = [epochs[0], epochs[-1]]
-    y = [avg_win[0], avg_win[-1]]
-    y_annot = [avg_win[0] * 1.3, avg_win[-1] * 1.07]
-    plt.scatter(x, y, facecolors='none', edgecolors='b')
-
-    for i, label in enumerate(labels):
-        plt.annotate(label, (x[i], y_annot[i]))
 
 
 def calc_avg_win(dir, files):
@@ -260,20 +252,19 @@ def plot_mtb_res_avg(dir):
         imi_epochs = how_much_imi(run_params)
         if imi_epochs == 0:
             label = "No Prior Imitation Learning"
-            mark_first_and_last_epoch(epochs, avg_win, ["(a)", "(b)"])
         else:
             label = f"{imi_epochs} Epochs of Prior Imitation Learning"
 
         plt.plot(epochs, avg_win, label=label, color=color.pop())
 
-    add_random_data("../Data/MTB/random")
+    #add_random_data("../Data/MTB/random")
 
     # plt.title("All runs")
     plt.xlabel('Number of Epochs')
     plt.ylabel('Rolling Mean of Score per Epoch [ratio of max]')
     plt.legend()
 
-    save_fig("name.png", "imi")
+    save_fig("very_longrun_window_2000.png", "")
 
     plt.show()
 
@@ -357,6 +348,6 @@ def plot_mtb_heatmap(dir):
         plt.show()
 
 
-plot_mtb_res_avg("../Data/MTB/long_run/train")
+plot_mtb_res_avg("../Data/MTB/test")
 # plot_mtb_res("../Data/MTB/not_best_param/train")
 # plot_mtb_heatmap("../Data/MTB/valid")
