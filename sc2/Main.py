@@ -21,7 +21,7 @@ def main(unused_argv):
             #for Et in [0,0.1,0.2]:[0.25,0.1,128],[0.25,0.2,128],[0.25,0.2,64],[0,0.1,64],[0.5,0.1,128],
         for r in [[0.5,0,128]]:
             #512*8 128*8,256*8,
-            for imi in [32*8]:
+            for imi in [256*8]:
                 for index in [0,1,2,3,4]:
                     print("Jag lovar du är en duktig agent")
                     agent = None
