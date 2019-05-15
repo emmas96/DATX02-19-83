@@ -58,7 +58,7 @@ class SimpleAgent(base_agent.BaseAgent):
 
     def get_action(self, state):
         action = self.model.predict(np.reshape(state, [1, NUMSTATE]))
-        self.SaveState(state, action)
+        #self.SaveState(state, action)
         if np.random.rand() <= self.EPSILON:
             return random.randrange(NUMACTION)
         #print("ditt problem")

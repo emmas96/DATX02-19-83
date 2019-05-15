@@ -14,7 +14,7 @@ def main(unused_argv):
                 for index in [0]:
                     i = 0
                     agent = SimpleAgent()
-                    agent.imi = 0
+                    agent.imi = 100
                     agent.GAMMA = gamma
                     agent.BATCH_SIZE = Mb
                     agent.EPSILON_TO = Et
@@ -64,7 +64,7 @@ def main(unused_argv):
                                         agent.memory.append(
                                             (state, action, reward, next_state, False))
                                 i = agent.reward
-                                file = open(f"Data/GAME/plot_Train_QSPlot_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{agent.imi}_I_{index}.txt",
+                                file = open(f"Data/GAME/plot_Train_addR_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{agent.imi}_I_{index}.txt",
                                             "a")
                                 file.write(str(epoch) + ", ")
                                 file.write(str(agent.reward) + ", ")
@@ -96,7 +96,7 @@ def main(unused_argv):
                                     timesteps = env.step(step_actions)
                                 # agent.save_plot_data(agent.reward / (epoch + 1))
                                 # file.write("hej")
-                                file = open(f"Data/Game/plot_Valid_QSPlot_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{agent.imi}_I_{index}.txt","a")
+                                file = open(f"Data/Game/plot_Valid_addR_GAME_G{gamma}_Et{Et}_Mb{Mb}_imi{agent.imi}_I_{index}.txt","a")
                                 file.write(str(epoch) + ", ")
                                 file.write(str(agent.reward) + ", ")
                                 file.write(str(timesteps[0].observation['score_cumulative'][0]) + ", ")
