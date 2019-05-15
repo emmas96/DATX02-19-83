@@ -86,8 +86,8 @@ class SimpleAgent(base_agent.BaseAgent):
         #plt.imshow(plot, cmap='hot', interpolation='nearest')
         #plt.show()
         self.oa += 1
-        if self.epoch == 2000:
-            self.SaveState(state, np.reshape(action[0],[40,40]))
+        #if self.epoch == 2000:
+            #self.SaveState(state, np.reshape(action[0],[40,40]))
         #action = self.model.predict(np.expand_dims(np.expand_dims(state, axis=0),axis=3))
         return np.argmax(action[0])
 
