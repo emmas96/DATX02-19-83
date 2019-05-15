@@ -207,17 +207,17 @@ def plot_frozen_imi_res_avg(dir):
 
         imi_epochs = how_much_imi(run_params)
         if imi_epochs == 0:
-            label = "No imitation learning"
+            label = "No Prior Imitation Learning"
         else:
-            label = f"{imi_epochs} epochs of prior imitation learning"
+            label = f"{imi_epochs} Epochs of Prior Imitation Learning"
 
         plt.plot(epochs, avg_win, label=label, color=color.pop())
 
     add_random_data("../Data/frozen/random")
 
     # plt.title("All runs")
-    plt.xlabel('Number of epochs')
-    plt.ylabel('Accumulated wins')
+    plt.xlabel('Number of Epochs')
+    plt.ylabel('Accumulated Wins')
     plt.legend()
 
     save_fig("imi_best_param.png", "imi")

@@ -171,7 +171,7 @@ def plot_frozen_res_avg(dir):
         epochs, avg_win = calc_avg_win(dir, files)
 
         if run_params in best_runs.keys():
-            label = f"Agent {test_nr}"
+            label = f"DQN Agent {test_nr}"
             test_nr += 1
             translations[label] = run_params
             plt.plot(epochs, avg_win, label=label, color=color.pop())
@@ -190,8 +190,8 @@ def plot_frozen_res_avg(dir):
     pprint.pprint(translations)
 
     # plt.title("All runs")
-    plt.xlabel('Number of epochs')
-    plt.ylabel('Accumulated wins')
+    plt.xlabel('Number of Epochs')
+    plt.ylabel('Accumulated Wins')
     plt.legend()
 
     save_fig("score_per_epoch.png", "")
@@ -262,20 +262,20 @@ def plot_frozen_heatmap(dir):
         # Sort fame to like
         frame.sort_index(axis=1, inplace=True)
         frame.sort_index(axis=0, ascending=False, inplace=True)
-        sns.heatmap(frame, annot=True, vmax=1)
+        sns.heatmap(frame, annot=True, vmax=1, cbar_kws={'label': 'Win Rate'})
 
         print(f"Not tracked {not_tracked}")
         epsilon_val = ''.join([str(i) for i in not_tracked[:-5] if i.isdigit() or i == '.'])
-        titel = f"Mini-batch size: {epsilon_val}" #"$\\varepsilon = {epsilon_val}$"
+        titel = f"Mini-Batch Size {epsilon_val}"
 
         # Setup figure
         plt.title(titel, fontsize=16)
         plt.ylabel("$\gamma$")
-        plt.xlabel("$\\varepsilon$")
+        plt.xlabel("$\\varepsilon_{to}$")
         save_fig(f"valid_heatmap_{track_parmas[0]}_{track_parmas[1]}_{not_tracked}.png", "heatmap")
         plt.show()
 
 
-# plot_frozen_res_avg("../Data/Frozen/no_imi/train")
+plot_frozen_res_avg("../Data/Frozen/no_imi/train")
 # plot_frozen_res("../Data/Frozen/train")
-plot_frozen_heatmap("../Data/Frozen/no_imi/valid")
+# plot_frozen_heatmap("../Data/Frozen/no_imi/valid")

@@ -71,7 +71,7 @@ def parse_score_per_round(last_round, curr_round, accumulator=0):
     if diff == 1:
         accumulator += 1
 
-    print(f"last round {last_round} curr_round {curr_round} diff {diff} accumulator {accumulator}")
+    # print(f"last round {last_round} curr_round {curr_round} diff {diff} accumulator {accumulator}")
     return accumulator, last_round
 
 
@@ -99,8 +99,6 @@ def add_random_data(dir):
     for run_params, files in random_runs.items():
         epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=10)
         plt.plot(epochs, avg_win, label="Random Action-Policy", color="k")
-
-        print(f"Len epoch {len(epochs)} len avg win {len(avg_win)}")
 
         mark_won_and_drawn_epochs(dir, files, avg_win)
 
@@ -156,6 +154,7 @@ def calc_drawn_epochs(dir, files):
 
     return drawn_epochs
 
+
 def calc_avg_win_per_epoch(dir, files, window=1):
     tot_win = []
     epochs = []
@@ -173,11 +172,11 @@ def calc_avg_win_per_epoch(dir, files, window=1):
                 # Parse data
                 epoch = int(row[0])
 
-                win = float(row[2])
+                #win = float(row[2])
 
                 # To plot acc score
-                # accumulator, last_round = parse_score_per_round(last_round, float(row[1]), accumulator)
-                # win = accumulator
+                accumulator, last_round = parse_score_per_round(last_round, float(row[1]), accumulator)
+                win = accumulator
 
                 if first_file:
                     epochs.append(epoch)
@@ -190,12 +189,22 @@ def calc_avg_win_per_epoch(dir, files, window=1):
     # Calc avg
     avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
 
-    print(len(avg_win))
-
     # Calc rolling mean
-    N = window
+    N = 1
     avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
     return epochs[:len(avg_win)], avg_win
+
+
+def manual_2_color_line():
+    colors = ['k', 'c']
+    x_val = []
+    for i in range(0, 310, 10):
+        x_val.append(i)
+
+    for i, _ in enumerate(x_val):
+        if i > len(x_val) -2:
+            continue
+        plt.plot([x_val[i], x_val[i+1]], [0, 0], color=colors[i % 2])
 
 
 def mark_won_and_drawn_epochs(dir, files, avg_win):
@@ -209,7 +218,7 @@ def mark_won_and_drawn_epochs(dir, files, avg_win):
 def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
     # Constants
     nr_to_highlight = 5
-    color = ['b', 'g', 'r', 'c', 'm']
+    color = ['b', 'g', 'c', 'r', 'm']
 
     translations = {}
     test_nr = 1
@@ -217,13 +226,25 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
     # Read files from dir and group them
     all_runs = __group_by_run(dir)
 
+    #add_random_data("../Data/Game/random/train")
+
+    manual_2_color_line()
+
     # Plot the results
     for run_params, files in all_runs.items():
         epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=10)
 
-        mark_won_and_drawn_epochs(dir, files, avg_win)
+        # mark_won_and_drawn_epochs(dir, files, avg_win)
 
-        label = f"DQN Agent"
+        if test_nr == 1:
+            label = f"In-Game Score +2000 on Win"
+        if test_nr == 2:
+            label = f"In-Game Score"
+
+        print(f"Agent {test_nr}, file: {run_params}")
+
+
+
         test_nr += 1
         translations[label] = run_params
         plt.plot(epochs, avg_win, label=label, color=color.pop())
@@ -241,20 +262,16 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
             translations[label] = run_params
             plt.plot(epochs, avg_win, label=label, color=color.pop())
 
-    add_random_data("../Data/Game/random/train")
-
-    plt.plot([], [], 'ro', color='g', alpha=.7, label="Round Won")
-    plt.plot([], [], 'ro', color='y', alpha=.7, label="Round Drawn")
+    plt.plot([], [], label="Sparse Reward (1/0)", color='c')
+    plt.plot([], [], label="Random Action-Policy", color='k')
 
     # plt.title("All runs")
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
-    #plt.axvline(x=67, label="End of Imitation Learning", linestyle='--')
-    plt.ylim(5300, 9500)
+    # plt.axvline(x=67, label="End of imitation learning", linestyle='--')
     plt.legend()
-    #plt.title("67 Epochs of Prior Imitation Learning")
-
+    # plt.figlegend()
     save_fig(name + ".png", "")
 
     plt.show()
@@ -264,5 +281,5 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
 # plot_game_res("../Data/game/sc2_score/train", ylabel='Accumulated wins', name='accumulated_wins')
 
 # Sc2 score
-plot_game_res("../Data/game/sc2_score/imi", ylabel='Rolling Mean of Score per Epoch',
-              name='sc2_score_window_100')
+plot_game_res("../Data/game/rewards", ylabel='Accumulated Wins',
+              name='rewards_acc_score')

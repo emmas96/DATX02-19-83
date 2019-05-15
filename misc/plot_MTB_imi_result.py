@@ -48,6 +48,7 @@ def create_axis():
 
 # Returns how many epochs of imi the run used
 def how_much_imi(file_name):
+    return 0
     nr_chars_in_name = 23 # 18 # 23  # How many chars before parmas start
     divide_by = 8
 
@@ -108,10 +109,13 @@ def calc_avg_win_per_epoch(dir, files, no_imi=False):
     # Calc avg
     avg_win = list(map(lambda x: float(x) / (len(files)), tot_win))
 
+    #if len(avg_win) > 2000:
+        #avg_win = avg_win[:2000]
+
     print(len(avg_win))
 
     #Calc rolling mean
-    N = 100
+    N = 2000
     avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
     return epochs[:len(avg_win)], avg_win
 
@@ -247,20 +251,20 @@ def plot_mtb_res_avg(dir):
 
         imi_epochs = how_much_imi(run_params)
         if imi_epochs == 0:
-            label = "No imitation learning"
+            label = "No Prior Imitation Learning"
         else:
-            label = f"{imi_epochs} epochs of prior imitation learning"
+            label = f"{imi_epochs} Epochs of Prior Imitation Learning"
 
         plt.plot(epochs, avg_win, label=label, color=color.pop())
 
-    add_random_data("../Data/MTB/random")
+    #add_random_data("../Data/MTB/random")
 
     # plt.title("All runs")
-    plt.xlabel('Number of epochs')
-    plt.ylabel('Rolling mean of score per epoch [% of max]')
+    plt.xlabel('Number of Epochs')
+    plt.ylabel('Rolling Mean of Score per Epoch [ratio of max]')
     plt.legend()
 
-    save_fig("score_per_epoch_mv_avg_100.png", "imi")
+    save_fig("test.png", "imi")
 
     plt.show()
 
@@ -344,6 +348,6 @@ def plot_mtb_heatmap(dir):
         plt.show()
 
 
-plot_mtb_res_avg("../Data/MTB/long_run/train")
+plot_mtb_res_avg("../Data/MTB/test")
 # plot_mtb_res("../Data/MTB/not_best_param/train")
 # plot_mtb_heatmap("../Data/MTB/valid")
