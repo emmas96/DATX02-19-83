@@ -155,20 +155,7 @@ def calc_drawn_epochs(dir, files):
     return drawn_epochs
 
 
-def how_much_imi(file_name):
-    nr_chars_in_name = 23 # 18 # 23  # How many chars before parmas start
-    divide_by = 8
-
-    cut_name = file_name[nr_chars_in_name:]
-    split = cut_name.split('_')
-    imi = split[3]
-
-    nr_imi = int(imi[3:])
-
-    return int(nr_imi / divide_by)
-
-
-def calc_avg_win_per_epoch(dir, files, window=1, no_imi=True):
+def calc_avg_win_per_epoch(dir, files, window=1):
     tot_win = []
     epochs = []
     first_file = True
@@ -181,11 +168,7 @@ def calc_avg_win_per_epoch(dir, files, window=1, no_imi=True):
             last_round = 0
             accumulator = 0
 
-            if no_imi:
-                skipp_epochs = 0
-            else:
-                skipp_epochs = 100 #how_much_imi(file)
-
+            skipp_epochs = 100 #how_much_imi(file)
             score_when_skipped = 0
 
             for row in data:
@@ -219,10 +202,24 @@ def calc_avg_win_per_epoch(dir, files, window=1, no_imi=True):
     return epochs[:len(avg_win)], avg_win
 
 
+# Returns how many epochs of imi the run used
+def how_much_imi(file_name):
+    nr_chars_in_name = 23 # 18 # 23  # How many chars before parmas start
+    divide_by = 8
+
+    cut_name = file_name[nr_chars_in_name:]
+    split = cut_name.split('_')
+    imi = split[3]
+
+    nr_imi = int(imi[3:])
+
+    return int(nr_imi / divide_by)
+
+
 def manual_2_color_line():
     colors = ['k', 'c']
     x_val = []
-    for i in range(0, 310, 10):
+    for i in range(0, 210, 10):
         x_val.append(i)
 
     for i, _ in enumerate(x_val):
@@ -267,18 +264,25 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
 
         print(f"Agent {test_nr}, file: {run_params}")
 
+
+
         test_nr += 1
         translations[label] = run_params
         plt.plot(epochs, avg_win, label=label, color=color.pop())
 
-    dir = "../Data/game/rewards/imi"
-    all_runs = __group_by_run(dir)
-    color = ['r', 'm']
-    for run_params, files in all_runs.items():
-        epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=10, no_imi=False)
-        plt.plot(epochs, avg_win, '--', color=color.pop())
+    if False:
+        # Plot the results
+        for run_params, files in all_runs.items():
+            epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=100)
 
-    plt.ylim(-2, 46)
+            won_epochs = calc_won_epochs(dir, files)
+            mark_epochs(won_epochs, avg_win)
+
+            label = f"Agent {test_nr} 100"
+            test_nr += 1
+            translations[label] = run_params
+            plt.plot(epochs, avg_win, label=label, color=color.pop())
+
     plt.plot([], [], label="Sparse Reward (1/0)", color='c')
     plt.plot([], [], label="Random Action-Policy", color='k')
 
@@ -289,7 +293,7 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
     # plt.axvline(x=67, label="End of imitation learning", linestyle='--')
     plt.legend()
     # plt.figlegend()
-    save_fig(name + ".png", "")
+    save_fig(name + ".png", "imi")
 
     plt.show()
 
@@ -298,5 +302,5 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
 # plot_game_res("../Data/game/sc2_score/train", ylabel='Accumulated wins', name='accumulated_wins')
 
 # Sc2 score
-plot_game_res("../Data/game/rewards", ylabel='Accumulated Wins',
-              name='rewards_acc_score')
+plot_game_res("../Data/game/rewards/imi", ylabel='Accumulated Wins',
+              name='rewards_acc_score_imi')

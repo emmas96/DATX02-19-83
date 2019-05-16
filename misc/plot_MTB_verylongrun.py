@@ -251,13 +251,10 @@ def plot_mtb_res_avg(dir):
 
         imi_epochs = how_much_imi(run_params)
         if imi_epochs == 0:
-            label = "No Prior Imitation Learning"
-        else:
-            label = f"{imi_epochs} Epochs of Prior Imitation Learning"
+            label = "DQN Agent 4"
 
-        plt.plot(epochs, avg_win, label=label, color=color.pop())
 
-    #add_random_data("../Data/MTB/random")
+        plt.plot(epochs, avg_win, label=label, color='g')
 
     # plt.title("All runs")
     plt.xlabel('Number of Epochs')

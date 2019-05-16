@@ -8,11 +8,13 @@ import pprint
 
 
 def save_fig(name, folder):
-    path_to_res = join("../result/frozen/", folder)
+    path_to_res = join("../result/game/", folder)
 
     # Save fig to disk
     if not isdir(path_to_res):
         makedirs(path_to_res)
+
+    print(f"Saveing to {join(path_to_res, name)}")
     plt.savefig(join(path_to_res, name))
 
 
@@ -33,21 +35,6 @@ def __group_by_run(dir):
             temp[group_name].append(f)
 
     return temp
-
-
-# Returns how many epochs of imi the run used
-def how_much_imi(file_name):
-    nr_chars_in_name = 23 # 18 # 23  # How many chars before parmas start
-    divide_by = 8
-
-    cut_name = file_name[nr_chars_in_name:]
-    split = cut_name.split('_')
-    imi = split[3]
-
-    # nr_imi = int(imi[3:])
-
-    return 0 # 67 # int(nr_imi / divide_by)
-
 
 def calc_avg_win(dir, files):
     tot_win = []
@@ -90,12 +77,17 @@ def parse_score_per_round(last_round, curr_round, accumulator=0):
 
 def was_round_a_win(last_round, curr_round):
     diff = curr_round - last_round
-    return diff == 1, curr_round
+    return diff, curr_round
 
 
-def mark_won_epochs(won_epochs, avg_win):
+def mark_epochs(won_epochs, avg_win, color):
+
+    filtered = []
+
     for epoch in won_epochs:
-        plt.plot(epoch, avg_win[epoch], 'ro', color='g', alpha=.7)
+        filtered.append(avg_win[epoch])
+
+    plt.plot(won_epochs, filtered, 'ro', color=color, alpha=.7)
 
 
 def add_random_data(dir):
@@ -105,23 +97,17 @@ def add_random_data(dir):
     random_runs = __group_by_run(dir)
 
     for run_params, files in random_runs.items():
-        epochs, avg_win = calc_avg_win_per_epoch(dir, files, no_imi=True)
-        plt.plot(epochs, avg_win, label="Random", color="k")
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=10)
+        plt.plot(epochs, avg_win, label="Random Action-Policy", color="k")
 
         print(f"Len epoch {len(epochs)} len avg win {len(avg_win)}")
 
-        won_epochs = calc_won_epochs(dir, files)
-        mark_won_epochs(won_epochs, avg_win)
+        mark_won_and_drawn_epochs(dir, files, avg_win)
 
 
-def calc_won_epochs(dir, files, no_imi=False):
+def calc_won_epochs(dir, files):
 
     for file in files:
-
-        if no_imi:
-            skipp_epochs = 0
-        else:
-            skipp_epochs = how_much_imi(file)
 
         with open(join(dir, file), 'r') as csv_file:
             data = csv.reader(csv_file, delimiter=',')
@@ -135,27 +121,49 @@ def calc_won_epochs(dir, files, no_imi=False):
                 epoch = int(row[0])
                 curr_round = float(row[1])
 
-                is_win, last_round = was_round_a_win(last_round, curr_round)
+                diff, last_round = was_round_a_win(last_round, curr_round)
 
-                if is_win and epoch > skipp_epochs:
-                    won_epochs.append(epoch - skipp_epochs)
+                if diff == 1:
+                    won_epochs.append(epoch)
 
     print(f"Won {len(won_epochs)} epochs: {won_epochs} ")
 
     return won_epochs
 
 
-def calc_avg_win_per_epoch(dir, files, no_imi=False):
+def calc_drawn_epochs(dir, files):
+
+    for file in files:
+
+        with open(join(dir, file), 'r') as csv_file:
+            data = csv.reader(csv_file, delimiter=',')
+
+            drawn_epochs = []
+
+            last_round = 0
+
+            for row in data:
+                # Parse data
+                epoch = int(row[0])
+                curr_round = float(row[1])
+
+                diff, last_round = was_round_a_win(last_round, curr_round)
+
+                if diff == 0:
+                    drawn_epochs.append(epoch)
+
+    print(f"Drawn {len(drawn_epochs)} epochs: {drawn_epochs} ")
+
+    return drawn_epochs
+
+
+
+def calc_avg_win_per_epoch(dir, files, window=1):
     tot_win = []
     epochs = []
     first_file = True
 
     for file in files:
-
-        if no_imi:
-            skipp_epochs = 0
-        else:
-            skipp_epochs = how_much_imi(file)
 
         with open(join(dir, file), 'r') as csv_file:
             data = csv.reader(csv_file, delimiter=',')
@@ -165,12 +173,9 @@ def calc_avg_win_per_epoch(dir, files, no_imi=False):
 
             for row in data:
                 # Parse data
-                epoch = int(row[0]) - skipp_epochs
+                epoch = int(row[0])
 
                 win = float(row[2])
-
-                if epoch < 0:
-                    continue
 
                 # To plot acc score
                 # accumulator, last_round = parse_score_per_round(last_round, float(row[1]), accumulator)
@@ -190,13 +195,20 @@ def calc_avg_win_per_epoch(dir, files, no_imi=False):
     print(len(avg_win))
 
     # Calc rolling mean
-    N = 10
+    N = window
     avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
     return epochs[:len(avg_win)], avg_win
 
 
+def mark_won_and_drawn_epochs(dir, files, avg_win):
+    won_epochs = calc_won_epochs(dir, files)
+    mark_epochs(won_epochs, avg_win, color='g')
+    drawn_epochs = calc_drawn_epochs(dir, files)
+    mark_epochs(drawn_epochs, avg_win, color='y')
+
+
 # Plot one plot with all runs avg
-def plot_game_res(dir):
+def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
     # Constants
     nr_to_highlight = 5
     color = ['b', 'g', 'r', 'c', 'm']
@@ -209,26 +221,39 @@ def plot_game_res(dir):
 
     # Plot the results
     for run_params, files in all_runs.items():
-        epochs, avg_win = calc_avg_win_per_epoch(dir, files)
+        epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=10)
 
-        won_epochs = calc_won_epochs(dir, files)
-        mark_won_epochs(won_epochs, avg_win)
+        mark_won_and_drawn_epochs(dir, files, avg_win)
 
-        label = f"Agent {test_nr}"
+        label = f"DQN Agent (In-Game Score)"
         test_nr += 1
         translations[label] = run_params
         plt.plot(epochs, avg_win, label=label, color=color.pop())
 
+
     add_random_data("../Data/Game/random/train")
 
-    # plt.title("All runs")
-    plt.xlabel('Number of epochs')
-    plt.ylabel('SC2 Score')
-    plt.legend()
+    plt.plot([], [], 'ro', color='g', alpha=.7, label="Round Won")
+    plt.plot([], [], 'ro', color='y', alpha=.7, label="Round Drawn")
 
-    save_fig("score_per_epoch.png", "")
+    # plt.title("All runs")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    plt.axvline(x=67, label="End of Imitation Learning", linestyle='--')
+    plt.ylim(4500, 11500)
+    plt.xlim(-10, 310)
+    plt.legend()
+    #plt.title("67 Epochs of Prior Imitation Learning")
+
+    save_fig(name + ".png", "")
 
     plt.show()
 
 
-plot_game_res("../Data/game/win_reward")
+# Acc wins
+# plot_game_res("../Data/game/sc2_score/train", ylabel='Accumulated wins', name='accumulated_wins')
+
+# Sc2 score
+plot_game_res("../Data/game/sc2_score/imi", ylabel='Rolling Mean of Score per Epoch',
+              name='imi_sc2_score_window_100')

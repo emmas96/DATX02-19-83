@@ -118,14 +118,27 @@ def calc_avg_win_per_epoch(dir, files, no_imi=False):
     avg_win = pd.Series(avg_win).rolling(window=N).mean().iloc[N - 1:].values
     return epochs[:len(avg_win)], avg_win
 
-def mark_first_and_last_epoch(epochs, avg_win, labels):
+
+def mark_first_and_last_epoch_first(epochs, avg_win, labels):
     x = [epochs[0], epochs[-1]]
     y = [avg_win[0], avg_win[-1]]
-    y_annot = [avg_win[0] * 1.3, avg_win[-1] * 1.07]
+    x_annot = [epochs[0], epochs[-1] * 0.99]
+    y_annot = [avg_win[0] * 1.5, avg_win[-1] * 1.07]
     plt.scatter(x, y, facecolors='none', edgecolors='b')
 
     for i, label in enumerate(labels):
-        plt.annotate(label, (x[i], y_annot[i]))
+        plt.annotate(label, (x_annot[i], y_annot[i]), fontsize="x-large")
+
+
+def mark_first_and_last_epoch_second(epochs, avg_win, labels):
+    x = [epochs[0], epochs[-1]]
+    y = [avg_win[0], avg_win[-1]]
+    x_annot = [epochs[0] - 70, epochs[-1] * 0.99]
+    y_annot = [avg_win[0] * 0.94, avg_win[-1] - .05]
+    plt.scatter(x, y, facecolors='none', edgecolors='b')
+
+    for i, label in enumerate(labels):
+        plt.annotate(label, (x_annot[i], y_annot[i]), fontsize="x-large")
 
 
 def calc_avg_win(dir, files):
@@ -260,9 +273,12 @@ def plot_mtb_res_avg(dir):
         imi_epochs = how_much_imi(run_params)
         if imi_epochs == 0:
             label = "No Prior Imitation Learning"
-            mark_first_and_last_epoch(epochs, avg_win, ["(a)", "(b)"])
+            mark_first_and_last_epoch_first(epochs, avg_win, ["(a)", "(b)"])
         else:
             label = f"{imi_epochs} Epochs of Prior Imitation Learning"
+
+        if imi_epochs == 256:
+            mark_first_and_last_epoch_second(epochs, avg_win, ['(c)', '(d)'])
 
         plt.plot(epochs, avg_win, label=label, color=color.pop())
 
@@ -273,7 +289,7 @@ def plot_mtb_res_avg(dir):
     plt.ylabel('Rolling Mean of Score per Epoch [ratio of max]')
     plt.legend()
 
-    save_fig("name.png", "imi")
+    save_fig("marked_run.png", "imi")
 
     plt.show()
 

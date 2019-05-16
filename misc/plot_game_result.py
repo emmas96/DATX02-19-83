@@ -156,6 +156,8 @@ def calc_drawn_epochs(dir, files):
 
     return drawn_epochs
 
+
+
 def calc_avg_win_per_epoch(dir, files, window=1):
     tot_win = []
     epochs = []
@@ -223,23 +225,11 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
 
         mark_won_and_drawn_epochs(dir, files, avg_win)
 
-        label = f"DQN Agent"
+        label = f"DQN Agent (In-Game Score)"
         test_nr += 1
         translations[label] = run_params
         plt.plot(epochs, avg_win, label=label, color=color.pop())
 
-    if False:
-        # Plot the results
-        for run_params, files in all_runs.items():
-            epochs, avg_win = calc_avg_win_per_epoch(dir, files, window=100)
-
-            won_epochs = calc_won_epochs(dir, files)
-            mark_epochs(won_epochs, avg_win)
-
-            label = f"Agent {test_nr} 100"
-            test_nr += 1
-            translations[label] = run_params
-            plt.plot(epochs, avg_win, label=label, color=color.pop())
 
     add_random_data("../Data/Game/random/train")
 
@@ -251,7 +241,8 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
     plt.ylabel(ylabel)
 
     #plt.axvline(x=67, label="End of Imitation Learning", linestyle='--')
-    plt.ylim(5300, 9500)
+    plt.ylim(5300, 9700)
+    plt.xlim(-10, 320)
     plt.legend()
     #plt.title("67 Epochs of Prior Imitation Learning")
 
