@@ -80,7 +80,7 @@ def plot_q_matrix(dir):
         q_df, _ = parse_data(dir, files[Q])
         state_df, state_matrix = parse_data(dir, files[state])
 
-        ax = sns.heatmap(q_df, xticklabels=2, yticklabels=2, cbar_kws={'label': 'Q-Values'})
+        ax = sns.heatmap(q_df, xticklabels=2, yticklabels=2, cbar_kws={'label': 'Q-Values'}, vmax=2, vmin=-0.5)
         beacon_cords = get_xy_coordinates(state_matrix)
 
         print(id)
