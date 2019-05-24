@@ -251,11 +251,12 @@ def plot_mtb_res_avg(dir):
 
         imi_epochs = how_much_imi(run_params)
         if imi_epochs == 0:
-            label = "DQN Agent 4"
+            label = "No Prior Imitation Learning"
 
 
-        plt.plot(epochs, avg_win, label=label, color='g')
+        plt.plot(epochs, avg_win, label=label, color='m')
 
+    plt.ylim(0, 1.05)
     # plt.title("All runs")
     plt.xlabel('Number of Epochs')
     plt.ylabel('Rolling Mean of Score per Epoch [ratio of max]')

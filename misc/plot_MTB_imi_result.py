@@ -273,17 +273,18 @@ def plot_mtb_res_avg(dir):
         imi_epochs = how_much_imi(run_params)
         if imi_epochs == 0:
             label = "No Prior Imitation Learning"
-            mark_first_and_last_epoch_first(epochs, avg_win, ["(a)", "(b)"])
+            # mark_first_and_last_epoch_first(epochs, avg_win, ["(a)", "(b)"])
         else:
             label = f"{imi_epochs} Epochs of Prior Imitation Learning"
 
-        if imi_epochs == 256:
-            mark_first_and_last_epoch_second(epochs, avg_win, ['(c)', '(d)'])
+        # if imi_epochs == 256:
+            # mark_first_and_last_epoch_second(epochs, avg_win, ['(c)', '(d)'])
 
         plt.plot(epochs, avg_win, label=label, color=color.pop())
 
     add_random_data("../Data/MTB/random")
 
+    plt.ylim(0, 1.05)
     # plt.title("All runs")
     plt.xlabel('Number of Epochs')
     plt.ylabel('Rolling Mean of Score per Epoch [ratio of max]')

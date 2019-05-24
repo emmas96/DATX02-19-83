@@ -83,16 +83,18 @@ def plot_q_matrix(dir):
         ax = sns.heatmap(q_df, xticklabels=2, yticklabels=2, cbar_kws={'label': 'Q-Values'})
         beacon_cords = get_xy_coordinates(state_matrix)
 
+        print(id)
+
         if id[-12] == '0':
             title = "No Prior Imitation Learning"
         else:
-            title = "256 Epochs of Prior Imitation Learning"
+            title = "Prior Imitation Learning"
 
         mark_cords(ax, beacon_cords)
 
         plt.xlabel("x")
         plt.ylabel("y")
-        # plt.title(title)
+        plt.title(title)
 
         save_fig(id[:-4] + ".png", "q_matrix/title")
         plt.show()
