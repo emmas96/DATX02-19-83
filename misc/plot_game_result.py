@@ -241,7 +241,7 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
     plt.ylabel(ylabel)
 
     #plt.axvline(x=67, label="End of Imitation Learning", linestyle='--')
-    plt.ylim(5300, 9700)
+    plt.ylim(4500, 11500)
     plt.xlim(-10, 320)
     plt.legend()
     #plt.title("67 Epochs of Prior Imitation Learning")
@@ -256,4 +256,4 @@ def plot_game_res(dir, name, ylabel, xlabel='Number of Epochs'):
 
 # Sc2 score
 plot_game_res("../Data/game/sc2_score/imi", ylabel='Rolling Mean of Score per Epoch',
-              name='sc2_score_window_100')
+              name='sc2_score_window_100_long_axis')
